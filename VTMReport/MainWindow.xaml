@@ -1,0 +1,902 @@
+﻿<Window
+    x:Class="VTM_Report.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTM_Report"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="1500"
+    Height="1000"
+    MaxHeight="1100"
+    AllowsTransparency="True"
+    Background="Black"
+    BorderThickness="0"
+    ResizeMode="CanResize"
+    SnapsToDevicePixels="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CSS/FlatStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="6">
+        <Grid Background="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="100" />
+                <RowDefinition />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!--  Title  -->
+            <Grid
+                x:Name="TittleBar"
+                Grid.ColumnSpan="2"
+                Margin="0"
+                MouseDown="Window_MouseDown">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Offset="0.003" Color="#FF3E3E3E" />
+                        <GradientStop Offset="1" Color="#FF222222" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="35" />
+                </Grid.ColumnDefinitions>
+                <DockPanel MouseDown="Window_MouseDown">
+                    <TextBlock
+                        Width="157"
+                        Margin="45,6,0,6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="MintCream"
+                        SnapsToDevicePixels="True"
+                        Text="T.N.G TECH">
+                        <TextBlock.Effect>
+                            <DropShadowEffect ShadowDepth="0.5" Color="LightGray" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </DockPanel>
+                <!--<Image
+                    Width="32"
+                    Height="29"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    ClipToBounds="True"
+                    Source="img/lcdIcon.ico"
+                    Stretch="UniformToFill">
+                    <Image.Effect>
+                        <DropShadowEffect ShadowDepth="0" Color="White" />
+                    </Image.Effect>
+                    <Image.OpacityMask>
+                        <ImageBrush ImageSource="img/lcdIcon.ico" Stretch="UniformToFill" />
+                    </Image.OpacityMask>
+                </Image>-->
+                <Button
+                    x:Name="btCloseWindow"
+                    Grid.Column="3"
+                    BorderThickness="0"
+                    Click="btCloseWindow_Click"
+                    Foreground="{x:Null}"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+                    <Button.Effect>
+                        <DropShadowEffect
+                            Direction="270"
+                            Opacity="0.8"
+                            ShadowDepth="2"
+                            Color="#FFCDCDCD" />
+                    </Button.Effect>
+                    <Button.Background>
+                        <ImageBrush ImageSource="img/icon-Close.png" Stretch="Uniform" />
+                    </Button.Background>
+                </Button>
+                <Button
+                    x:Name="btMaximizeWindow"
+                    Grid.Column="2"
+                    BorderThickness="0"
+                    Click="btMaximizeWindow_Click"
+                    Foreground="{x:Null}"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+                    <Button.Effect>
+                        <DropShadowEffect
+                            Direction="270"
+                            Opacity="0.8"
+                            ShadowDepth="2"
+                            Color="#FFCDCDCD" />
+                    </Button.Effect>
+                    <Button.Background>
+                        <ImageBrush ImageSource="img/icon-maximized.png" Stretch="Uniform" />
+                    </Button.Background>
+                </Button>
+                <Button
+                    x:Name="btMinimizeWindow"
+                    Grid.Column="1"
+                    BorderThickness="0"
+                    Click="btMinimizeWindow_Click"
+                    Foreground="{x:Null}"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+                    <Button.Effect>
+                        <DropShadowEffect
+                            Direction="270"
+                            Opacity="0.8"
+                            ShadowDepth="2"
+                            Color="#FFCDCDCD" />
+                    </Button.Effect>
+                    <Button.Background>
+                        <ImageBrush ImageSource="img/icon-minimized.png" Stretch="Uniform" />
+                    </Button.Background>
+                </Button>
+            </Grid>
+
+            <Border
+                Grid.Row="1"
+                Margin="3"
+                Background="#1E1E1E"
+                BorderBrush="#3E3E3E"
+                BorderThickness="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="1" Margin="5,10,5,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Margin="5"
+                            Background="#182418"
+                            BorderThickness="0">
+                            <Image Source="img/calendar.png" />
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Margin="5"
+                            Background="#182418"
+                            BorderThickness="0">
+                            <Image Source="img/calendar.png" />
+                        </Border>
+                        <DatePicker
+                            x:Name="startDatePicker"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            SelectedDateFormat="Short" />
+                        <DatePicker
+                            x:Name="endDatePicker"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid
+                        Grid.Column="2"
+                        Width="300"
+                        Margin="25,10,5,10"
+                        HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="img/result.png" />
+                                <Label
+                                    Grid.Column="1"
+                                    Content="RESULT"
+                                    FontWeight="Bold"
+                                    Foreground="White" />
+                            </Grid>
+                        </Label>
+                        <RadioButton
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Click="RadioButton_Click"
+                            Content="All"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            IsChecked="True" />
+                        <RadioButton
+                            Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Click="RadioButton_Click"
+                            Content="Pass"
+                            FontWeight="Bold"
+                            Foreground="Green" />
+                        <RadioButton
+                            Grid.Column="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Click="RadioButton_Click"
+                            Content="Fail"
+                            FontWeight="Bold"
+                            Foreground="Red" />
+                        <Label Grid.Row="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="img/counter.png" />
+                                <Label
+                                    Grid.Column="1"
+                                    Content="Count"
+                                    FontWeight="Bold"
+                                    Foreground="White" />
+                            </Grid>
+                        </Label>
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            Background="#656D65"
+                            Content="All"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            Background="Green"
+                            Content="Pass"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            Background="DarkRed"
+                            Content="Fail"
+                            FontWeight="Bold"
+                            Foreground="White" />
+
+                        <Label
+                            x:Name="lbAllCount"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Content="---"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                        <Label
+                            x:Name="lbPassCount"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Content="---"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                        <Label
+                            x:Name="lbFailCount"
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Content="---"
+                            FontWeight="Bold"
+                            Foreground="White" />
+
+
+                    </Grid>
+                    <Grid Grid.Column="3" Margin="25,10,5,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Margin="5"
+                            Background="#182418"
+                            BorderThickness="0" />
+                        <Border
+                            Grid.Row="1"
+                            Margin="5"
+                            Background="#182418"
+                            BorderThickness="0" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            Background="#656D65"
+                            Content="Model name"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            Background="#656D65"
+                            Content="Barcode"
+                            FontWeight="Bold"
+                            Foreground="White" />
+
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="-2,4,4,4"
+                            BorderBrush="#656D65"
+                            BorderThickness="2">
+                            <TextBox
+                                x:Name="tbModelName"
+                                VerticalAlignment="Center"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                PreviewKeyDown="TextBox_KeyDown"
+                                Text="Model name">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border
+                                                        x:Name="border"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        SnapsToDevicePixels="True">
+                                                        <ScrollViewer
+                                                            x:Name="PART_ContentHost"
+                                                            Focusable="false"
+                                                            HorizontalScrollBarVisibility="Hidden"
+                                                            VerticalScrollBarVisibility="Hidden" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="true">
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsFocused" Value="true">
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="-2,4,4,4"
+                            BorderBrush="#656D65"
+                            BorderThickness="2">
+                            <TextBox
+                                x:Name="tbBarcode"
+                                VerticalAlignment="Center"
+                                Background="#1E1E1E"
+                                BorderBrush="{x:Null}"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                PreviewKeyDown="TextBoxBarcode_KeyDown"
+                                Text="Barcode">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border
+                                                        x:Name="border"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        SnapsToDevicePixels="True">
+                                                        <ScrollViewer
+                                                            x:Name="PART_ContentHost"
+                                                            Focusable="false"
+                                                            HorizontalScrollBarVisibility="Hidden"
+                                                            VerticalScrollBarVisibility="Hidden" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="true">
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsFocused" Value="true">
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </Border>
+
+
+                    </Grid>
+
+
+                    <Button
+                        Grid.Column="5"
+                        Width="100"
+                        Margin="0,5,0,5"
+                        Background="{x:Null}"
+                        BorderThickness="3"
+                        Click="Button_Click"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFCA1DD3"
+                        Template="{StaticResource ButtonControlNonHoverBackground}"
+                        ToolTip="Log data">
+                        <Image Source="/img/search.png" />
+                        <Button.Effect>
+                            <DropShadowEffect
+                                BlurRadius="7"
+                                ShadowDepth="0"
+                                Color="White" />
+                        </Button.Effect>
+                        <Button.BorderBrush>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <LinearGradientBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterX="0.5" CenterY="0.5" />
+                                        <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                        <RotateTransform Angle="90" CenterX="0.5" CenterY="0.5" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </LinearGradientBrush.RelativeTransform>
+                                <GradientStop Color="#FF3E3E3E" />
+                                <GradientStop Offset="0.525" Color="White" />
+                                <GradientStop Offset="1" Color="#FF3E3E3E" />
+                            </LinearGradientBrush>
+                        </Button.BorderBrush>
+                    </Button>
+                </Grid>
+            </Border>
+            <Grid
+                x:Name="pnHistory"
+                Grid.Row="2"
+                Margin="5"
+                Background="#222425"
+                Visibility="Visible">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <DataGrid
+                    x:Name="dgrHistory"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Margin="5,5,5,100"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    AutoGenerateColumns="False"
+                    Background="#222425"
+                    BorderThickness="0"
+                    CanUserSortColumns="False"
+                    ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                    FontSize="12"
+                    FontWeight="DemiBold"
+                    Foreground="White"
+                    GridLinesVisibility="None"
+                    HeadersVisibility="Column"
+                    HorizontalScrollBarVisibility="Disabled"
+                    IsReadOnly="True"
+                    RowHeight="25"
+                    SelectionChanged="dgrHistory_SelectionChanged"
+                    SelectionMode="Extended"
+                    SelectionUnit="FullRow"
+                    Style="{StaticResource FlatDataGrid}">
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="40"
+                            Binding="{Binding No}"
+                            CellStyle="{StaticResource FlatDataGridCellConstance}"
+                            Header="NO" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding StartTest}"
+                            CellStyle="{StaticResource FlatVTMCell}"
+                            Header="TIME" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding ModelName}"
+                            Foreground="White"
+                            Header="MODEL">
+                            <DataGridTextColumn.CellStyle>
+                                <Style BasedOn="{StaticResource VTMDataGridCell}" TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result}" Value="OK">
+                                            <Setter Property="Background" Value="#8f00550C" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="FAIL">
+                                            <Setter Property="Background" Value="#8f52050C" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Background" Value="DarkCyan" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn
+                            Width="2.0*"
+                            Binding="{Binding Barcode}"
+                            Header="BARCODE">
+                            <DataGridTextColumn.CellStyle>
+                                <Style BasedOn="{StaticResource FlatVTMCell}" TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result}" Value="OK">
+                                            <Setter Property="Background" Value="#8f00550C" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="FAIL">
+                                            <Setter Property="Background" Value="#8f52050C" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Background" Value="DarkCyan" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn
+                            Width="80"
+                            Binding="{Binding SiteName}"
+                            Header="SITE">
+                            <DataGridTextColumn.CellStyle>
+                                <Style BasedOn="{StaticResource VTMDataGridCell}" TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result}" Value="OK">
+                                            <Setter Property="Background" Value="#8f00550C" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="FAIL">
+                                            <Setter Property="Background" Value="#8f52050C" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Background" Value="DarkCyan" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn
+                            Width="80"
+                            Binding="{Binding Result}"
+                            Header="RESULT">
+                            <DataGridTextColumn.CellStyle>
+                                <Style BasedOn="{StaticResource VTMDataGridCell}" TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result}" Value="OK">
+                                            <Setter Property="Background" Value="#8f00550C" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="FAIL">
+                                            <Setter Property="Background" Value="#8f52050C" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Background" Value="DarkCyan" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    VerticalAlignment="Top"
+                    Background="#161818">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        x:Name="lbModelName"
+                        Grid.ColumnSpan="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="MODEL : "
+                        FontWeight="Bold"
+                        Foreground="White" />
+                    <Label
+                        x:Name="lbTime"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="TIME : "
+                        FontWeight="Bold"
+                        Foreground="White" />
+                    <Label
+                        x:Name="lbSite"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="SITE : "
+                        FontWeight="Bold"
+                        Foreground="White" />
+                    <Label
+                        x:Name="lbHistoryResult"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="RESULT : "
+                        FontWeight="Bold"
+                        Foreground="White" />
+
+                </Grid>
+
+                <DataGrid
+                    x:Name="dgrHistoryItem"
+                    Grid.Row="1"
+                    Grid.RowSpan="3"
+                    Grid.Column="2"
+                    Margin="5,5,5,50"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    AutoGenerateColumns="False"
+                    Background="#222425"
+                    BorderThickness="0"
+                    CanUserSortColumns="False"
+                    ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                    Foreground="White"
+                    GridLinesVisibility="None"
+                    HeadersVisibility="Column"
+                    HorizontalScrollBarVisibility="Disabled"
+                    IsReadOnly="True"
+                    RowHeight="20"
+                    SelectionMode="Single"
+                    SelectionUnit="FullRow"
+                    Style="{StaticResource FlatDataGrid}"
+                    VerticalScrollBarVisibility="Disabled">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="40"
+                            Binding="{Binding No}"
+                            CellStyle="{StaticResource FlatVTMCell}"
+                            Header="No" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding TestContent}"
+                            CellStyle="{StaticResource FlatVTMCell}"
+                            Header="CONTENT" />
+                        <DataGridTextColumn
+                            Width="50"
+                            Binding="{Binding CMD}"
+                            CellStyle="{StaticResource FlatVTMCellCMD}"
+                            Header="CMD" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding Min_Max}"
+                            CellStyle="{StaticResource FlatVTMCell}"
+                            Header="MIN~MAX" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            MinWidth="50"
+                            Binding="{Binding Value}"
+                            Header="VALUE">
+                            <DataGridTextColumn.CellStyle>
+                                <Style BasedOn="{StaticResource VTMDataGridCell}" TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ResultValue}" Value="Ng">
+                                            <Setter Property="Background" Value="#8f52050C" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Background" Value="DarkCyan" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button
+                    x:Name="btExport"
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Width="150"
+                    Height="40"
+                    Margin="5"
+                    Padding="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Background="#161818"
+                    BorderBrush="Green"
+                    BorderThickness="0"
+                    Click="btExport_Click"
+                    Content="Excel"
+                    FontSize="15"
+                    FontWeight="DemiBold"
+                    Foreground="White"
+                    Template="{StaticResource ResourceKey=ButtonControlNonHoverBackground}" />
+                <Button
+                    x:Name="btExportDetail"
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Width="150"
+                    Height="40"
+                    Margin="5"
+                    Padding="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Background="#161818"
+                    BorderBrush="Green"
+                    BorderThickness="0"
+                    Click="btExportDetail_Click"
+                    Content="Excel"
+                    FontSize="15"
+                    FontWeight="DemiBold"
+                    Foreground="White"
+                    Template="{StaticResource ResourceKey=ButtonControlNonHoverBackground}" />
+                <Grid
+                    Name="pnLoading"
+                    Grid.Row="2"
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="2"
+                    Background="#222425"
+                    Visibility="Hidden">
+                    <ProgressBar
+                        x:Name="ProgressTestSlider"
+                        Width="500"
+                        Height="40"
+                        Margin="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Maximum="100"
+                        Minimum="0"
+                        Style="{StaticResource ProgressBarStyle}"
+                        Value="50" />
+                    <Label
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="{Binding Value, ElementName=ProgressTestSlider}"
+                        ContentStringFormat=" {0} %"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="White">
+                        <Label.Effect>
+                            <DropShadowEffect
+                                BlurRadius="10"
+                                Direction="319"
+                                ShadowDepth="0"
+                                Color="Black" />
+                        </Label.Effect>
+                    </Label>
+                </Grid>
+            </Grid>
+
+
+            <!--  Status Bar  -->
+            <DockPanel
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Height="32"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Background="#FF222222"
+                FlowDirection="RightToLeft">
+                <TextBlock
+                    Height="Auto"
+                    Margin="0,4,40,0"
+                    Padding="20,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    FontWeight="Bold"
+                    Foreground="#FFD1D1D1"><Run Text="T.N.G TECH" /><Run Text=" " /><Span><Run Text=" " /><Run Text=" " /><Run Text="" /></Span></TextBlock>
+
+                <TextBlock
+                    Height="Auto"
+                    Margin="0,4,20,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    FontWeight="Bold"
+                    Foreground="#FFD1D1D1"
+                    Text="" />
+
+                <TextBlock
+                    x:Name="tbDateTime"
+                    Height="Auto"
+                    Margin="0,4,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    FontWeight="Bold"
+                    Foreground="#FFD1D1D1" />
+                <TextBlock
+                    Height="Auto"
+                    Margin="0,4,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    FontWeight="Bold"
+                    Foreground="#FFD1D1D1"
+                    Text="Version 1.0.0" />
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>

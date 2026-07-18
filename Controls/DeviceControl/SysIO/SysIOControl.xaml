@@ -1,0 +1,421 @@
+﻿<UserControl
+    x:Class="Controls.SysIOControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type=local:SystemMachineIO}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <local:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+
+<ControlTemplate x:Key="ButtonControlNonHoverEffect" TargetType="{x:Type Button}">
+            <Grid>
+                <Border
+                    x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Cursor="Hand"
+                    SnapsToDevicePixels="True">
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        Cursor="Hand"
+                        Focusable="False"
+                        RecognizesAccessKey="True"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{x:Null}" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                    <Setter TargetName="border" Property="BorderThickness" Value="1" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="#4F808080" />
+                </Trigger>
+
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="border" Property="Background" Value="Gray" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="#FFADB2B5" />
+                    <Setter Property="Foreground" Value="#FF838383" />
+                </Trigger>
+
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Template without the disableLine strike-through, used for DOWN/UP (already grayed out via Style) -->
+        <ControlTemplate x:Key="ToggleButtonNoLine" TargetType="{x:Type ToggleButton}">
+            <Border
+                x:Name="border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="0"
+                Cursor="Hand">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        Focusable="False"
+                        RecognizesAccessKey="True"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                    <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,2" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                    <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,3" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ToggleButton" TargetType="{x:Type ToggleButton}">
+            <Border
+                x:Name="border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="0"
+                Cursor="Hand">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        Focusable="False"
+                        RecognizesAccessKey="True"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    <Line
+                        x:Name="disableLine"
+                        Stroke="Black"
+                        StrokeThickness="2"
+                        X1="{Binding ElementName=contentPresenter, Path=Margin.Top}"
+                        X2="{Binding ElementName=contentPresenter, Path=ActualWidth}"
+                        Y1="0"
+                        Y2="{Binding ElementName=contentPresenter, Path=ActualHeight}" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                    <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,2" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                    <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,3" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="disableLine" Property="Visibility" Value="Visible" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter TargetName="disableLine" Property="Visibility" Value="Hidden" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+    </UserControl.Resources>
+    <Grid Margin="2" Background="#e6e6e6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.6*" />
+            <RowDefinition Height="0.6*" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="0.4*" />
+        </Grid.RowDefinitions>
+        <ToggleButton
+            Grid.RowSpan="2"
+            Margin="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="DarkGreen"
+            Click="ToggleButton_Click"
+            Content="DOWN"
+            FontSize="15"
+            Foreground="White"
+            IsChecked="{Binding MainUP, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}"
+            IsEnabled="{Binding CanCommandCylinder}"
+            Template="{StaticResource ToggleButtonNoLine}" />
+
+<ToggleButton
+            Grid.RowSpan="2"
+            Grid.Column="4"
+            Margin="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="DarkRed"
+            Click="ToggleButton_Click"
+            Content="UP"
+            FontSize="15"
+            Foreground="White"
+            IsChecked="{Binding MainUP, UpdateSourceTrigger=PropertyChanged}"
+            IsEnabled="{Binding CanCommandCylinder}"
+            Template="{StaticResource ToggleButtonNoLine}" />
+
+        <ToggleButton
+            Grid.RowSpan="1"
+            Grid.Column="1"
+            Margin="2"
+            Background="#b6b6b6"
+            Click="ToggleButton_Click"
+            Content="TF"
+            Foreground="Black"
+            IsChecked="{Binding Card_TOP_LOCK}"
+            IsEnabled="{Binding NotEMC}"
+            Template="{StaticResource ToggleButton}"
+            ToolTip="Top jig lock, top card insert" />
+        <ToggleButton
+            Grid.Row="1"
+            Grid.RowSpan="1"
+            Grid.Column="1"
+            Margin="2"
+            Background="#b6b6b6"
+            Click="ToggleButton_Click"
+            Content="BF"
+            Foreground="Black"
+            IsChecked="{Binding Card_BOT_LOCK}"
+            IsEnabled="{Binding NotEMC}"
+            Template="{StaticResource ToggleButton}"
+            ToolTip="Bot jig lock, bot card insert" />
+
+        <ToggleButton
+            Grid.RowSpan="1"
+            Grid.Column="3"
+            Margin="2"
+            Background="#b6b6b6"
+            Click="ToggleButton_Click"
+            Content="TB"
+            Foreground="Black"
+            IsChecked="{Binding JIG_TOP_LOCK}"
+            IsEnabled="{Binding NotEMC}"
+            Template="{StaticResource ToggleButton}"
+            ToolTip="Top jig release, top card insert" />
+        <ToggleButton
+            Grid.Row="1"
+            Grid.RowSpan="1"
+            Grid.Column="3"
+            Margin="2"
+            Background="#b6b6b6"
+            Click="ToggleButton_Click"
+            Content="BB"
+            Foreground="Black"
+            IsChecked="{Binding JIG_BOT_LOCK}"
+            IsEnabled="{Binding NotEMC}"
+            Template="{StaticResource ToggleButton}"
+            ToolTip="Bot jig release, bot card insert" />
+
+        <ToggleButton
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Margin="5"
+            BorderThickness="0"
+            Content="EMC"
+            FontSize="15"
+            FontWeight="Bold"
+            IsChecked="{Binding SW_EMC}"
+            IsEnabled="False">
+            <ToggleButton.Template>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="0">
+                        <Grid>
+                            <Label
+                                x:Name="contentPresenter"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Content="EMC"
+                                Cursor="Hand" />
+                            <Label
+                                x:Name="mark"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Background="{TemplateBinding Background}"
+                                Content="EMC"
+                                Cursor="Hand"
+                                Foreground="Green" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#b6b6b6" />
+                            <Setter TargetName="mark" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="Black" />
+                            <Setter TargetName="mark" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#111111" />
+                        </Trigger>
+                        <EventTrigger RoutedEvent="ToggleButton.Checked">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            AutoReverse="True"
+                                            RepeatBehavior="Forever"
+                                            SpeedRatio="5"
+                                            Storyboard.TargetName="contentPresenter"
+                                            Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                            From="Yellow"
+                                            To="Red"
+                                            Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ToggleButton.Template>
+        </ToggleButton>
+
+
+        <Grid
+            Grid.Row="2"
+            Grid.RowSpan="3"
+            Grid.ColumnSpan="5">
+            <!-- Two columns only: Power A\C and Power B\D. The empty 3rd column (where the removed MIC panel used
+                 to sit) was the dead gap on the right - dropping it lets the two power groups fill the full width. -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Power A\C"
+                Foreground="Black" />
+            <ToggleButton
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content=" 110V "
+                Foreground="Black"
+                IsChecked="{Binding AC110}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+            <ToggleButton
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content=" 220V "
+                Foreground="Black"
+                IsChecked="{Binding AC220}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+
+            <Label
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Power B\D"
+                Foreground="Black" />
+            <ToggleButton
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content=" 110V "
+                Foreground="Black"
+                IsChecked="{Binding BC110}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+            <ToggleButton
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content=" 220V "
+                Foreground="Black"
+                IsChecked="{Binding BC220}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+
+            <ToggleButton
+                Grid.Row="3"
+                Grid.Column="0"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content="DISCHARGE A\C"
+                FontSize="10"
+                Foreground="Black"
+                IsChecked="{Binding ADSC}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+            <ToggleButton
+                Grid.Row="3"
+                Grid.Column="1"
+                Margin="2"
+                Background="#b6b6b6"
+                Click="ToggleButton_Click"
+                Content="DISCHAGRE B\D"
+                FontSize="10"
+                Foreground="Black"
+                IsChecked="{Binding BDSC}"
+                IsEnabled="{Binding NotEMC}"
+                Template="{StaticResource ToggleButton}" />
+
+
+        </Grid>
+
+    </Grid>
+</UserControl>

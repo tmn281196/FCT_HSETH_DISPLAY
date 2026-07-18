@@ -1,0 +1,1790 @@
+﻿<Page
+    x:Class="VTMMain.VisionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cc="clr-namespace:Camera;assembly=Camera"
+    xmlns:ctr="clr-namespace:Controls;assembly=Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTMMain"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+
+    Title="VisionPage"
+    d:Height="1000"
+    d:Width="1800"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CSS/FlatStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <TransformGroup x:Key="sharedTransform">
+                <ScaleTransform x:Name="scaleTransform" ScaleX="1.0" ScaleY="1.0" />
+                <TranslateTransform x:Name="translateTransform" X="0" Y="0" />
+            </TransformGroup>
+
+            <!-- Icon-only "Use all" / "Use none" keys, shared by the FND Segments and LEDs tabs. -->
+            <Style x:Key="UseAllKey" TargetType="Button">
+                <Setter Property="Width" Value="34" />
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Margin" Value="2,0" />
+                <Setter Property="Foreground" Value="#37474F" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" Background="#FFFFFF" BorderBrush="#c6c6c6"
+                                    BorderThickness="1" CornerRadius="3">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#E3F2FD" />
+                                    <Setter TargetName="bd" Property="BorderBrush" Value="#1976D2" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#1976D2" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="5,5,-2,5"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
+            Background="#f6f6f6"
+            CornerRadius="0,0,0,0">
+            <Grid Margin="3,3,3,3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="4,5,0,0"
+                    Text="VISION PROCESSING"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="Black" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="185,0,0,0" VerticalAlignment="Top">
+                    <!-- Nudge EVERY vision ROI of EVERY step (LED + FND + LCD, all steps at once) -->
+                    <Border BorderBrush="#b6b6b6" BorderThickness="1" CornerRadius="4" Padding="5,3" VerticalAlignment="Center">
+                        <Border.Resources>
+                            <!-- Flat square keys: bigger hit target than the 26x24 default, and a visible
+                                 hover/press state so a click that lands is obvious. -->
+                            <Style x:Key="NudgeKey" TargetType="Button">
+                                <Setter Property="Width" Value="34" />
+                                <Setter Property="Height" Value="32" />
+                                <Setter Property="Margin" Value="3,0,0,0" />
+                                <Setter Property="FontSize" Value="16" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Foreground" Value="#37474F" />
+                                <Setter Property="Cursor" Value="Hand" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" Background="#FFFFFF" BorderBrush="#c6c6c6"
+                                                    BorderThickness="1" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#E3F2FD" />
+                                                    <Setter TargetName="bd" Property="BorderBrush" Value="#1976D2" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#1976D2" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Border.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource NudgeKey}" Margin="0,0,8,0" Click="Button_Click" ToolTip="Reset zoom">
+                                <fa:IconBlock Icon="UpDownLeftRight" FontSize="15" />
+                            </Button>
+                            <Button Style="{StaticResource NudgeKey}" Margin="0" Click="NudgeLeft_Click"  ToolTip="Move every ROI of every step left">
+                                <fa:IconBlock Icon="ArrowLeft" FontSize="14" />
+                            </Button>
+                            <Button Style="{StaticResource NudgeKey}" Click="NudgeRight_Click" ToolTip="Move every ROI of every step right">
+                                <fa:IconBlock Icon="ArrowRight" FontSize="14" />
+                            </Button>
+                            <Button Style="{StaticResource NudgeKey}" Click="NudgeUp_Click"    ToolTip="Move every ROI of every step up">
+                                <fa:IconBlock Icon="ArrowUp" FontSize="14" />
+                            </Button>
+                            <Button Style="{StaticResource NudgeKey}" Click="NudgeDown_Click"  ToolTip="Move every ROI of every step down">
+                                <fa:IconBlock Icon="ArrowDown" FontSize="14" />
+                            </Button>
+                            <TextBlock Text="Step(px):" VerticalAlignment="Center" Margin="10,0,4,0"/>
+                            <TextBox x:Name="txtNudgeStep" Width="44" Height="26" Text="2" FontSize="13"
+                                     VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <StackPanel
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <ToggleButton
+                        x:Name="tgbSelectA"
+                        Margin="50,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalContentAlignment="Center"
+                        Click="BoardSelect_Click"
+                        Content="A"
+                        Foreground="Black"
+                        IsChecked="True"
+                        Template="{StaticResource ToggleButtonVertical}" />
+                    <ToggleButton
+                        x:Name="tgbSelectB"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalContentAlignment="Center"
+                        Click="BoardSelect_Click"
+                        Content="B"
+                        Foreground="Black"
+                        Template="{StaticResource ToggleButtonVertical}" />
+                    <ToggleButton
+                        x:Name="tgbSelectC"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalContentAlignment="Center"
+                        Click="BoardSelect_Click"
+                        Content="C"
+                        Foreground="Black"
+                        Template="{StaticResource ToggleButtonVertical}" />
+                    <ToggleButton
+                        x:Name="tgbSelectD"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalContentAlignment="Center"
+                        Click="BoardSelect_Click"
+                        Content="D"
+                        Foreground="Black"
+                        Template="{StaticResource ToggleButtonVertical}" />
+                </StackPanel>
+
+                <Canvas
+                    x:Name="mainCanvas"
+                    Grid.Row="1"
+                    ClipToBounds="True"
+                    Width="774"
+                    Height="435.375"
+                    MouseWheel="Canvas_MouseWheel">
+                    <Image
+                        x:Name="cameraViewer"
+                        Width="774"
+                        Height="435.375"
+                        Margin="5"
+                        RenderTransform="{StaticResource sharedTransform}"
+                        Source="{Binding LastFrame, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <cc:VisionBuilder
+                        x:Name="VisionBuider"
+                        Width="774"
+                        Height="435.375"
+                        Margin="5"
+                        RenderTransform="{StaticResource sharedTransform}" />
+                </Canvas>
+
+                <!-- Calibration-grid overlay removed (Grid feature dropped); kept collapsed to avoid layout churn. -->
+                <Grid Grid.Row="1" Visibility="Collapsed">
+                    <Ellipse
+                        Width="200"
+                        Height="200"
+                        Stroke="Yellow" />
+                    <Border
+                        Width="1"
+                        HorizontalAlignment="Center"
+                        Background="Yellow" />
+                    <Border
+                        Height="1"
+                        VerticalAlignment="Center"
+                        Background="Yellow" />
+                </Grid>
+
+                <!-- cameraSetting (CameraSettingPanel) moved out of this canvas overlay to the Communications Log
+                     area below (at user request); it now shows its sliders + an Apply-to-Model button. -->
+            </Grid>
+        </Border>
+
+        <TabControl
+            x:Name="tabVisionFamilies"
+            Grid.Column="1"
+            Margin="0,3,5,5"
+            VerticalContentAlignment="Center"
+            Background="#f6f6f6"
+            BorderThickness="0">
+            <!-- Tab visibility AND selection are driven by the selected step's cmd - see ShowRoisFor(). -->
+            <!-- LCD-only tab: just the shared detect-option panel (Spect string/Brightness/Noise/Blur), shown when
+                 an LCD step is selected. The FND lookup table moved to the dedicated "FND" tab below. The detect
+                 panel is a single reused control reparented here vs the FND holder per-cmd (see PlaceDetectPanel). -->
+            <TabItem
+                x:Name="tabLcdFnd"
+                Width="80"
+                Height="40"
+                Margin="0"
+                Foreground="Black"
+                Header="LCD"
+                Style="{StaticResource FlatTabControl}">
+                <Border
+                    x:Name="componentOptionHolder"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    Background="#f6f6f6"
+                    CornerRadius="0" />
+            </TabItem>
+
+            <!-- FND tab: just the 7-segment truth-table editor (Character/Digits), full width. FND no longer uses
+                 the detect-option panel (removed at user request) - that panel is LCD-only now. -->
+            <TabItem
+                x:Name="tabFnd"
+                Width="120"
+                Height="40"
+                Margin="0"
+                Foreground="Black"
+                Header="7-SEGMENT"
+                Style="{StaticResource FlatTabControl}">
+                <Border
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="#f6f6f6"
+                    CornerRadius="0">
+                    <cc:FND_SegementBuilder x:Name="FND_lookupTable" VerticalAlignment="Stretch" />
+                </Border>
+            </TabItem>
+
+            <TabItem
+                x:Name="tabFndSegments"
+                Width="80"
+                Height="40"
+                Margin="0"
+                Foreground="Black"
+                Header="FND"
+                Style="{StaticResource FlatTabControl}">
+
+                <Grid Margin="3,3,3,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="48*" />
+                        <ColumnDefinition Width="155*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        x:Name="FNDSegmentsLabel"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="3"
+                        VerticalAlignment="Top"
+                        Content="FND Segments"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Visibility="Collapsed" />
+                    <TabControl
+                        x:Name="tabFndChars"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        Margin="0,3,5,5"
+                        VerticalContentAlignment="Center"
+                        Background="#11ffffff"
+                        BorderThickness="0">
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND1" />
+                                    <CheckBox x:Name="chkFndUse0" Tag="0" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+
+                            <DataGrid
+                                x:Name="DataGrid_FND_0"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                  
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND2" />
+                                    <CheckBox x:Name="chkFndUse1" Tag="1" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+
+                            <DataGrid
+                                x:Name="DataGrid_FND_1"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"     
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                  
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                    
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND3" />
+                                    <CheckBox x:Name="chkFndUse2" Tag="2" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+
+                            <DataGrid
+                                x:Name="DataGrid_FND_2"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"          
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                   
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND4" />
+                                    <CheckBox x:Name="chkFndUse3" Tag="3" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+
+                            <DataGrid
+                                x:Name="DataGrid_FND_3"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"                                
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                 
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+              
+                                    
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND5" />
+                                    <CheckBox x:Name="chkFndUse4" Tag="4" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <DataGrid
+                                x:Name="DataGrid_FND_4"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                               
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                    
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND6" />
+                                    <CheckBox x:Name="chkFndUse5" Tag="5" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <DataGrid
+                                x:Name="DataGrid_FND_5"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                 
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                    
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem
+                            Width="80"
+                            Height="28"
+                            Margin="0"
+                            Foreground="Black"
+                            Style="{StaticResource SubFlatTabControl}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="FND7" />
+                                    <CheckBox x:Name="chkFndUse6" Tag="6" Click="FndCharUse_Click" VerticalAlignment="Center" ToolTip="Use all segments of this char" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <DataGrid
+                                x:Name="DataGrid_FND_6"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5,5,5,0"
+                                VerticalAlignment="Top"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                ColumnHeaderHeight="30"
+                                ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                                GridLinesVisibility="All"
+                                HeadersVisibility="Column"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsEnabled="true"
+                                RowHeight="18"
+                                SelectedCellsChanged="FNDSegmentsData_SelectedCellsChanged"
+                                SelectionMode="Single"
+                                SelectionUnit="Cell"
+                                Style="{StaticResource FlatDataGrid}">
+                                <DataGrid.Resources>
+                                    <Style
+                                        x:Key="LEDcell"
+                                        BasedOn="{StaticResource FlatDataGridCell}"
+                                        TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="White" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Use}" Value="False">
+                                                <Setter Property="Background" Value="#e6e6e6" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="60"
+                                        Binding="{Binding Path=Index}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Index"
+                                        IsReadOnly="True" />
+
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=X}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="X" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Y}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Y" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Dir}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Dir" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=ON}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="On" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=OFF}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="OFF" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Thresh}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Thresh" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding Path=Intens}"
+                                        CellStyle="{StaticResource LEDcell}"
+                                        Header="Intens"
+                                        IsReadOnly="True" />
+                                    
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                    <StackPanel Grid.Row="1" Margin="5,5,5,5">
+                        <Label
+                            x:Name="lbMatrixPointValue"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content=""
+                            FontWeight="Bold"
+                            Foreground="Black" />
+                        <!-- Copy the live reading into the step's Condition1 (teach the expected value). Replaces
+                             the old GetValue button - the value is already read in realtime. -->
+                        <Button Click="CopyFndValueToCondition1_Click" Margin="0,4,0,0" Padding="6,2"
+                                HorizontalAlignment="Center" Cursor="Hand" ToolTip="Copy this reading into Oper (the expected value for FND/LED/LCD)">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconBlock Icon="Copy" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                <TextBlock Text="Copy to Oper" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem
+                x:Name="tabLeds"
+                Width="100"
+                Height="40"
+                Margin="0"
+                Foreground="Black"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Style="{StaticResource FlatTabControl}">
+                <TabItem.Header>
+                    <TextBlock Text="LED" HorizontalAlignment="Center" TextAlignment="Center" />
+                </TabItem.Header>
+                <Grid Margin="3,3,3,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Content="LEDs Data"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Visibility="Collapsed" />
+                    <DataGrid
+                        x:Name="LEDsData"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5"
+                        VerticalAlignment="Top"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        ColumnHeaderHeight="30"
+                        ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                        GridLinesVisibility="All"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Hidden"
+                        IsEnabled="true"
+                        RowHeight="18"
+                        SelectedCellsChanged="LEDsData_SelectedCellsChanged"
+                        SelectionMode="Single"
+                        SelectionUnit="Cell"
+                        Style="{StaticResource FlatDataGrid}">
+                        <DataGrid.Resources>
+                            <Style
+                                x:Key="LEDcell"
+                                BasedOn="{StaticResource FlatDataGridCell}"
+                                TargetType="DataGridCell">
+                                <Setter Property="Background" Value="White" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Use}" Value="False">
+                                        <Setter Property="Background" Value="#e6e6e6" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style x:Key="DataGridColumnHeaderCheckbox" TargetType="DataGridColumnHeader">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                                            <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter
+                                                    Margin="10,0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center" />
+                                                <CheckBox
+                                                    x:Name="waitCheckbox"
+                                                    Grid.Column="1"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Checked="waitCheckboxLED_Checked"
+                                                    Foreground="White"
+                                                    Unchecked="waitCheckboxLED_Unchecked" BorderBrush="Black"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background" Value="#c6c6c6" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Height" Value="30" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="60"
+                                Binding="{Binding Path=Index}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Index"
+                                IsReadOnly="True" />
+
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=X}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="X" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Y}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Y" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Dir}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Dir" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=ON}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="On" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=OFF}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="OFF" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Thresh}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Thresh" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Intens}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Intens"
+                                IsReadOnly="True" />
+                            <DataGridCheckBoxColumn
+                                Width="1*"
+                                Binding="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Use"
+                                />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" Margin="5">
+                        <Label
+                            x:Name="lbLEDvalue"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content=""
+                            FontWeight="Bold"
+                            Foreground="Black" />
+                        <!-- Use all / none. Two explicit buttons instead of a tri-state checkbox buried in the
+                             column header: a header checkbox reads as "this column is checked" rather than as a
+                             control, and its own state kept drifting out of sync with the rows. -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                            <Button Style="{StaticResource UseAllKey}" Click="LedUseAll_Click" ToolTip="Use every LED">
+                                <fa:IconBlock Icon="SquareCheck" FontSize="15" />
+                            </Button>
+                            <Button Style="{StaticResource UseAllKey}" Click="LedUseNone_Click" ToolTip="Use no LED">
+                                <fa:IconBlock Icon="Square" FontSize="15" />
+                            </Button>
+                        </StackPanel>
+                        <!-- Copy the live LED reading into Condition1 (teach the expected value). -->
+                        <Button Click="CopyLedValueToCondition1_Click" Margin="0,4,0,0" Padding="6,2"
+                                HorizontalAlignment="Center" Cursor="Hand" ToolTip="Copy this reading into Oper (the expected value for FND/LED/LCD)">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconBlock Icon="Copy" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                <TextBlock Text="Copy to Oper" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <!-- GLED is retired: no deployed model uses it. Collapsed here rather than deleted so the ~150 lines
+                 of grid below stay available if it is ever revived; its CMDs enum slot must stay regardless. -->
+            <TabItem
+                x:Name="tabGleds"
+                Visibility="Collapsed"
+                Width="100"
+                Height="40"
+                Margin="0"
+                Foreground="Black"
+                Header="GLEDs"
+                Style="{StaticResource FlatTabControl}">
+                <Grid Margin="3,3,3,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Content="GLEDs Data"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                    <DataGrid
+                        x:Name="GLEDsData"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5"
+                        VerticalAlignment="Top"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        ColumnHeaderHeight="30"
+                        ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                        GridLinesVisibility="All"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Hidden"
+                        IsEnabled="true"
+                        RowHeight="18"
+                        SelectedCellsChanged="LEDsData_SelectedCellsChanged"
+                        SelectionMode="Single"
+                        SelectionUnit="Cell"
+                        Style="{StaticResource FlatDataGrid}">
+                        <DataGrid.Resources>
+                            <Style
+                                x:Key="LEDcell"
+                                BasedOn="{StaticResource FlatDataGridCell}"
+                                TargetType="DataGridCell">
+                                <Setter Property="Background" Value="White" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Use}" Value="False">
+                                        <Setter Property="Background" Value="#e6e6e6" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style x:Key="DataGridColumnHeaderCheckbox" TargetType="DataGridColumnHeader">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                                            <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter
+                                                    Margin="10,0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center" />
+                                                <CheckBox
+                                                    x:Name="waitCheckbox"
+                                                    Grid.Column="1"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Checked="waitCheckboxGLED_Checked"
+                                                    Foreground="White"
+                                                    Unchecked="waitCheckboxGLED_Unchecked" BorderBrush="Black" />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background" Value="#c6c6c6" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Height" Value="30" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="60"
+                                Binding="{Binding Path=Index}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Index"
+                                IsReadOnly="True" />
+
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=X}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="X" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Y}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Y" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Width}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Width" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Height}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Height" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=ON}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="On" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=OFF}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="OFF" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Thresh}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Thresh" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding Path=Intens}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Intens"
+                                IsReadOnly="True" />
+                            <DataGridCheckBoxColumn
+                                Width="1*"
+                                Binding="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                CellStyle="{StaticResource LEDcell}"
+                                Header="Use"
+                                />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Row="1" Margin="5">
+                        <Label
+                            x:Name="lbGLEDvalue"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content=""
+                            FontWeight="Bold"
+                            Foreground="Black" />
+                        <Button
+                            x:Name="btGetGLEDValue"
+                            Click="btGetGLEDValue_Click"
+                            Content="GetValue" />
+                        <Button
+                            x:Name="btGLEDThresholdCalculate"
+                            Click="btGLEDThresholdCalculate_Click"
+                            Content="Threshold Calculate" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel
+            Grid.Column="2"
+            Margin="20,5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
+
+            <Label
+                x:Name="lblModel"
+                Grid.Column="1"
+                Margin="5,0,0,0"
+                Padding="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="MODEL: "
+                FontSize="15"
+                FontStyle="Italic"
+                FontWeight="DemiBold"
+                Foreground="Black" />
+            <TextBlock
+                x:Name="lbModelName"
+                Grid.Column="1"
+                Margin="0,0,5,0"
+                Padding="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontStyle="Italic"
+                FontWeight="DemiBold"
+                Foreground="Black"
+                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Button
+                x:Name="btOpenModel"
+                Width="120"
+                Height="30"
+                Margin="0,5,0,5"
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="btOpenModel_Click"
+                FontSize="14"
+                Foreground="#FF109322"
+                Template="{DynamicResource ButtonControlNonHoverEffect}">
+
+                <Grid Margin="0" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:IconImage  Margin="2" Icon="FolderOpen" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#ffa000"/>
+
+                    <Label
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="Open Model"
+                        FontSize="12"
+                        FontStretch="UltraExpanded"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                </Grid>
+            </Button>
+            <Button
+                x:Name="btSaveModel"
+                Width="80"
+                Height="30"
+                Margin="0,5,0,5"
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="btSaveModel_Click"
+                FontSize="14"
+                Foreground="#FF109322"
+                Template="{DynamicResource ButtonControlNonHoverEffect}">
+
+                <Grid Margin="0" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:IconImage  Margin="2" Icon="Save" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#ffa000"/>
+
+                    <Label
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="Save"
+                        FontSize="12"
+                        FontStretch="UltraExpanded"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                </Grid>
+            </Button>
+            <Button
+                x:Name="btSaveAsModel"
+                Width="80"
+                Height="30"
+                Margin="0,5,0,5"
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="btSaveAsModel_Click"
+                FontSize="14"
+                Foreground="#FF109322"
+                Template="{DynamicResource ButtonControlNonHoverEffect}">
+
+                <Grid Margin="0" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+
+                    </Grid.ColumnDefinitions>
+                    <fa:IconImage  Margin="2" Icon="Save" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#ffa000"/>
+                    <fa:IconImage  Icon="CirclePlus" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="#ffa000" Margin="16,0,0,0" Height="7" Width="7" Grid.ColumnSpan="2" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="Save As"
+                        FontSize="12"
+                        FontStretch="UltraExpanded"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                </Grid>
+            </Button>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border Grid.Column="1" Margin="5,0,5,0" Background="#f6f6f6">
+                <ctr:SolenoidControls x:Name="SolenoidControl" />
+            </Border>
+            <Border
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,0"
+                Background="#f6f6f6">
+                <ctr:RelayControls x:Name="RelayControl" />
+            </Border>
+            <Border
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                Background="#f6f6f6">
+                <ctr:SysIOControl x:Name="SystemControl" Margin="5" />
+            </Border>
+
+            <Border
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Grid.Column="0"
+                Margin="5,5,5,5"
+                Background="#f6f6f6"
+                CornerRadius="0">
+                <Grid>
+                    <!-- Camera settings panel (moved from the camera-canvas gear overlay, at user request),
+                         replacing the Communications Log view. The old comm-log content is kept below but
+                         Collapsed so its code-behind (UUT1Com..4, lbTxData, send/clear) stays valid unchanged. -->
+                    <Grid Margin="6">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="26" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                               Content="CAMERA SETTINGS" FontSize="12" FontWeight="Bold" Foreground="Black" />
+                        <cc:CameraSettingPanel x:Name="cameraSetting" Grid.Row="1" AllowControl="True" />
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0">
+                            <Button x:Name="btnWriteCameraSettings" Height="30" Margin="0,0,6,0"
+                                    Padding="14,0" Cursor="Hand" FontSize="13"
+                                    Background="{x:Null}" BorderThickness="0"
+                                    Click="btnApplyCameraManual_Click"
+                                    ToolTip="Push the current slider values to the camera"
+                                    Template="{DynamicResource ButtonControlNonHoverEffect}">
+                                <StackPanel Orientation="Horizontal">
+                                    <fa:IconImage Icon="Upload" Width="16" Height="16" VerticalAlignment="Center" Foreground="#1976D2" Margin="0,0,6,0" />
+                                    <TextBlock Text="Write Setting to Camera" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="btnReadCameraSettings" Height="30"
+                                    Padding="14,0" Cursor="Hand" FontSize="13"
+                                    Background="{x:Null}" BorderThickness="0"
+                                    Click="btnReadCameraSettings_Click"
+                                    ToolTip="Read the camera's current settings into the sliders"
+                                    Template="{DynamicResource ButtonControlNonHoverEffect}">
+                                <StackPanel Orientation="Horizontal">
+                                    <fa:IconImage Icon="Download" Width="16" Height="16" VerticalAlignment="Center" Foreground="#2e7d32" Margin="0,0,6,0" />
+                                    <TextBlock Text="Read Setting From Camera" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                <Grid Margin="3,3,3,3" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+
+                    <TabControl
+                        Grid.Row="2"
+                        Margin="5,-30,5,5"
+                        Background="White"
+                        BorderThickness="0"
+                        Foreground="White">
+
+                        <TabItem
+                            x:Name="UUT1Com"
+                            Background="Black"
+                            Header="UUT1"
+                            Style="{StaticResource FlatTabControl}" />
+                        <TabItem
+                            x:Name="UUT2Com"
+                            Background="Black"
+                            Header="UUT2"
+                            Style="{StaticResource FlatTabControl}" />
+                        <TabItem
+                            x:Name="UUT3Com"
+                            Background="Black"
+                            Header="UUT3"
+                            Style="{StaticResource FlatTabControl}" />
+                        <TabItem
+                            x:Name="UUT4Com"
+                            Background="Black"
+                            Header="UUT4"
+                            Style="{StaticResource FlatTabControl}" />
+                    </TabControl>
+                    <Label
+                        Margin="0,0,5,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Content="Communications Log"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                    <!-- Clear log (ZEROC style: trash icon, hover red). Clears all UUT comm logs. -->
+                    <Button
+                        x:Name="btnClearUUTLog"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="150,0,0,0"
+                        Padding="6,2"
+                        Cursor="Hand"
+                        Foreground="#555555"
+                        Click="ClearUUTLog_Click"
+                        ToolTip="Clear communications log">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="Transparent">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="#C0392B" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Foreground" Value="#7A1F16" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <fa:IconBlock Icon="TrashCan" FontSize="14"
+                                      Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                    </Button>
+                    <Label
+                        Margin="240,5,200,5"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Content="TxDatas:"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                    <Label
+                        x:Name="lbTxData"
+                        Grid.Row="1"
+                        Width="433"
+                        Margin="294,5,6,0"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Content="5A FD FC 12 12 35 33 25 ...."
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                    <ComboBox
+                        x:Name="cbbTxnaming_Manual"
+                        Width="280"
+                        Margin="0,5,160,5"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="cbbTxnaming_Mainual_SelectionChanged" />
+                    <ComboBox
+                        x:Name="cbbUUTconfig_Manual"
+                        Width="50"
+                        Margin="0,5,100,5"
+                        HorizontalAlignment="Right"
+                        SelectedIndex="0">
+                        <ComboBoxItem Content="P1" />
+                        <ComboBoxItem Content="P2" />
+                    </ComboBox>
+                    <Button
+                        Width="50"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        Background="#c1c1c1"
+                        Click="ButtonSendUUT_Click"
+                        Content="Send"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Template="{StaticResource ButtonControlNonHoverBackground}" />
+                </Grid>
+                </Grid>
+            </Border>
+            <Grid
+                Grid.RowSpan="3"
+                Grid.Column="3"
+                Margin="5"
+                Background="#f6f6f6">
+                <Label
+                    Content="Vistion Steps"
+                    FontWeight="DemiBold"
+                    Foreground="Black" />
+                <DataGrid
+                    x:Name="VisionStepsGrid"
+                    Margin="5,30,5,5"
+                    AutoGenerateColumns="False"
+                    ColumnHeaderStyle="{StaticResource FlatDataGridHeaderNomal}"
+                    GridLinesVisibility="All"
+                    ItemsSource="{Binding Steps}"
+                    SelectionChanged="VisionStepsGrid_SelectionChanged"
+                    Style="{StaticResource FlatDataGrid}">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Height" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CMD}" Value="FND">
+                                    <Setter Property="Height" Value="18" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CMD}" Value="LCD">
+                                    <Setter Property="Height" Value="18" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CMD}" Value="LED">
+                                    <Setter Property="Height" Value="18" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CMD}" Value="GLED">
+                                    <Setter Property="Height" Value="18" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="0.3*"
+                            Binding="{Binding No}"
+                            CellStyle="{StaticResource FlatVTMCellConstance}"
+                            Header="No"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding TestContent}"
+                            CellStyle="{StaticResource FlatVTMCell}"
+                            Header="Content" />
+                        <DataGridTextColumn
+                            Width="0.3*"
+                            Binding="{Binding CMD}"
+                            CellStyle="{StaticResource FlatVTMCellCMD}"
+                            Header="CMD"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding Oper}"
+                            CellStyle="{StaticResource VTMDataGridCellOper}"
+                            Header="Oper" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding Condition2}"
+                            CellStyle="{StaticResource VTMDataGridCellCondition2}"
+                            Header="Condition2" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
+        <Label
+            x:Name="saveLabel"
+            Grid.RowSpan="10"
+            Grid.ColumnSpan="10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#AF000000"
+            Content="Saved!"
+            FontSize="50"
+            FontWeight="Bold"
+            Foreground="White"
+            Visibility="Hidden" />
+    </Grid>
+</Page>
