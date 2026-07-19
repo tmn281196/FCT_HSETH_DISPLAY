@@ -19,7 +19,7 @@ using Color = System.Windows.Media.Color;
 using Image = System.Windows.Controls.Image;
 using Rect = System.Windows.Rect;
 
-namespace Camera
+namespace Controls.DevicesControl
 {
     public class GLED : INotifyPropertyChanged
     {

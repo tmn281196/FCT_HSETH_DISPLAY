@@ -1,5 +1,5 @@
-﻿using Camera;
-using Camera.VisionTest;
+﻿using Controls.DevicesControl;
+using Controls.DevicesControl.VisionTest;
 using VTMBase;
 using System;
 using System.Collections.Generic;

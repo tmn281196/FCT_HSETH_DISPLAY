@@ -1,4 +1,4 @@
-﻿using Controls.Devices_Control;
+﻿using Controls.DevicesControl;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -1,4 +1,4 @@
-﻿using Camera;
+﻿using Controls.DevicesControl;
 using VTMBase;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 ﻿using Controls.DeviceControl;
-using Controls.Devices_Control;
+using Controls.DevicesControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;

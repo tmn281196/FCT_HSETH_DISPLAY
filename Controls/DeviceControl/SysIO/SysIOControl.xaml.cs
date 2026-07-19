@@ -1,5 +1,5 @@
 ﻿using Controls.DeviceControl;
-using Controls.Devices_Control;
+using Controls.DevicesControl;
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;

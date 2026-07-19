@@ -1,4 +1,4 @@
-﻿using Controls.Devices_Control;
+﻿using Controls.DevicesControl;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
+using Utility;
 namespace Controls
 {
     public class SolenoidCard

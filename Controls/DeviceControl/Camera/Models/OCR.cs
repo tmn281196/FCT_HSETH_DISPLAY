@@ -4,7 +4,7 @@ using Sdcb.PaddleOCR;
 using Sdcb.PaddleOCR.Models.Local;
 using System;
 
-namespace Camera.VisionTest
+namespace Controls.DevicesControl.VisionTest
 {
 
     public class OCR : IDisposable

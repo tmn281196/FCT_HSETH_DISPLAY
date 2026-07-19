@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Camera.Models
+namespace Controls.DevicesControl.Models
 {
     public class SettingParram
     {

@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="Camera.CameraControl"
+﻿<UserControl x:Class="Controls.DevicesControl.CameraControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Camera"
+             xmlns:local="clr-namespace:Controls.DevicesControl"
              mc:Ignorable="d" d:Width="800" d:Height="800">
     <UserControl.Resources>
         <Style x:Key="ContentLabelStyle" TargetType="Label">

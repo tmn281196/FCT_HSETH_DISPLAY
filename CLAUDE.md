@@ -20,13 +20,13 @@
   - `VTMBase/Program/Device/ProgramDevices.cs` - Serial port init, event handlers
   - `VTMBase/Program/Boards/Program.cs` - Board setup (SetBoards)
   - The former VTMProgram Helper (`CheckSum`/`XOR`/`CheckSumType`/`EnumToItemsSource`) was dead-duplicate code; **moved to `Utility` (namespace Utility) 2026-07-19**. `Controls` keeps its OWN live `Controls.CheckSum` (used by the device drivers).
-- `Controls/` - Reusable controls and device drivers **+ the merged `Camera` project** (2026-07-19): camera capture, vision models, and PaddleOCR now live under `Controls/Camera/` with namespace **`Camera.*` preserved**, all compiled into `Controls.dll`. So `using Camera;` resolves from Controls, and XAML uses `assembly=Controls`. Camera's Sdcb/OpenCvSharp `PackageReference`s moved into `Controls.csproj` (versions unchanged — Sdcb native stays 3.0.0.51, deployed by VTMTester's Import).
+- `Controls/` - Reusable controls and device drivers **+ the merged `Camera` project** (2026-07-19): camera capture, vision models, and PaddleOCR now live under `Controls/DeviceControl/Camera/`, **renamed from namespace `Camera.*` to `Controls.DevicesControl[.Models/.VisionTest]`**, all compiled into `Controls.dll`. XAML uses `clr-namespace:Controls.DevicesControl;assembly=Controls`. Camera's Sdcb/OpenCvSharp `PackageReference`s moved into `Controls.csproj` (versions unchanged — Sdcb native stays 3.0.0.51, deployed by VTMTester's Import). The old device-driver namespace `Controls.Devices_Control` was also renamed to `Controls.DevicesControl` (underscore dropped) — so the merged Camera code and the device drivers (BoardExtension/PowerMetter) now share one namespace. `Controls.CheckSum` was removed too (identical to `Utility.CheckSum`; drivers now use Utility's).
   - `DeviceControl/Solenoid/` - SolenoidCard, SolenoidChannel, SolenoidControls
   - `DeviceControl/SysIO/` - SystemBoard, SystemMachineIO
   - `OtherControls/Serial Display/` - SerialPortDisplay (serial communication)
   - `SystemComunication.cs` - Frame builders: `BuildFrame`/`FrameOk` + opcodes/keys (system v2); `GetFrame` (legacy, other devices)
 - `Utility/Debug.cs` - **the** Diagnostic Log utility (the old stale top-level duplicate was removed in the restructure; there is now exactly one)
-- `Controls/Camera/` - (formerly the `Camera` project, merged into Controls 2026-07-19) CameraControl OpenCvSharp capture loop, vision models (`Models/FND,LCD,GLED,LED`), and PaddleOCR via `Camera.VisionTest.OCR`
+- `Controls/DeviceControl/Camera/` - (formerly the `Camera` project, merged into Controls 2026-07-19, namespace now `Controls.DevicesControl`) CameraControl OpenCvSharp capture loop, vision models (`Models/FND,LCD,GLED,LED`), and PaddleOCR via `Controls.DevicesControl.VisionTest.OCR`
 - `VTMBase/` - Model/step data structures
 - `Firmware/Solenoid/` - Arduino firmware for solenoid board
 - `Firmware/sys_io/` - Arduino firmware for the **system board** (v2 protocol, time-based debounce, polling flag)

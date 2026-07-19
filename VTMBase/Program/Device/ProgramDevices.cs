@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using Utility;
 using System.Windows;
 using Controls;
-using Camera;
-using Controls.Devices_Control;
+using Controls.DevicesControl;
+using Controls.DevicesControl;
 using Controls.DeviceControl;
 
 namespace VTMBase

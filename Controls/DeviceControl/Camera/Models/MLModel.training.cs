@@ -8,7 +8,7 @@ using Microsoft.ML.Data;
 using Microsoft.ML.Vision;
 using Microsoft.ML;
 
-namespace Camera
+namespace Controls.DevicesControl
 {
     public partial class MLModel
     {

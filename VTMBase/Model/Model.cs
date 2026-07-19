@@ -1,4 +1,4 @@
-﻿using Camera;
+﻿using Controls.DevicesControl;
 using Utility;
 using Microsoft.Win32;
 using System;

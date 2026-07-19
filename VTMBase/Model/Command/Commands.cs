@@ -528,7 +528,7 @@ namespace VTMBase
             CMD = CMDs.CAM,
             Condition1 = "Property",
             IsListCondition1 = true,
-            Condition1List = Enum.GetNames(typeof(Camera.CameraControl.VideoProperties)).ToList(),
+            Condition1List = Enum.GetNames(typeof(Controls.DevicesControl.CameraControl.VideoProperties)).ToList(),
             Oper = "Value",
             Description ="Apply setting to camera device.\r\n",
             },

@@ -76,7 +76,6 @@
     <Compile Include="AutoCompleteTextBox\AutoCompleteTextBox.xaml.cs">
       <DependentUpon>AutoCompleteTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CheckSum.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="DeviceControl\DMM\DMM.cs" />
@@ -381,53 +380,53 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera\CameraControl.xaml.cs">
+    <Compile Include="DeviceControl\Camera\CameraControl.xaml.cs">
       <DependentUpon>CameraControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\CameraSettingPanel.xaml.cs">
+    <Compile Include="DeviceControl\Camera\CameraSettingPanel.xaml.cs">
       <DependentUpon>CameraSettingPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\FND_SegementBuilder.xaml.cs">
+    <Compile Include="DeviceControl\Camera\FND_SegementBuilder.xaml.cs">
       <DependentUpon>FND_SegementBuilder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\Models\GLED.cs" />
-    <Compile Include="Camera\Models\LED.cs" />
-    <Compile Include="Camera\Models\LCD.cs" />
-    <Compile Include="Camera\Models\FND.cs" />
-    <Compile Include="Camera\Models\SettingParram.cs" />
-    <Compile Include="Camera\Models\VisionWorker.cs" />
-    <Compile Include="Camera\Models\OCR.cs" />
-    <Compile Include="Camera\Models\VisionModel.cs" />
-    <Compile Include="Camera\VisionTester.xaml.cs">
+    <Compile Include="DeviceControl\Camera\Models\GLED.cs" />
+    <Compile Include="DeviceControl\Camera\Models\LED.cs" />
+    <Compile Include="DeviceControl\Camera\Models\LCD.cs" />
+    <Compile Include="DeviceControl\Camera\Models\FND.cs" />
+    <Compile Include="DeviceControl\Camera\Models\SettingParram.cs" />
+    <Compile Include="DeviceControl\Camera\Models\VisionWorker.cs" />
+    <Compile Include="DeviceControl\Camera\Models\OCR.cs" />
+    <Compile Include="DeviceControl\Camera\Models\VisionModel.cs" />
+    <Compile Include="DeviceControl\Camera\VisionTester.xaml.cs">
       <DependentUpon>VisionTester.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\VisionBuilder.xaml.cs">
+    <Compile Include="DeviceControl\Camera\VisionBuilder.xaml.cs">
       <DependentUpon>VisionBuilder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\VisionModelOption.xaml.cs">
+    <Compile Include="DeviceControl\Camera\VisionModelOption.xaml.cs">
       <DependentUpon>VisionModelOption.xaml</DependentUpon>
     </Compile>
-    <Page Include="Camera\CameraControl.xaml">
+    <Page Include="DeviceControl\Camera\CameraControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Camera\CameraSettingPanel.xaml">
+    <Page Include="DeviceControl\Camera\CameraSettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Camera\FND_SegementBuilder.xaml">
+    <Page Include="DeviceControl\Camera\FND_SegementBuilder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Camera\VisionTester.xaml">
+    <Page Include="DeviceControl\Camera\VisionTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Camera\VisionBuilder.xaml">
+    <Page Include="DeviceControl\Camera\VisionBuilder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Camera\VisionModelOption.xaml">
+    <Page Include="DeviceControl\Camera\VisionModelOption.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
