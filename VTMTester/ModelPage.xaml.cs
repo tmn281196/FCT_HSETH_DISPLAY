@@ -1,6 +1,6 @@
 ﻿using VTMControls;
 using VTMControls.DeviceControl;
-using Utility;
+using VTMUtility;
 using VTMBase;
 using Microsoft.Win32;
 using System;
@@ -123,14 +123,14 @@ namespace VTMTester
             openFile.RestoreDirectory = true;
             if (openFile.ShowDialog() == true)
             {
-                Utility.Debug.Write("Load model:" + openFile.FileName, Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.Write("Load model:" + openFile.FileName, VTMUtility.Debug.ContentType.Notify);
                 //var fileInfor = new FileInfo(openFile.FileName);
                 string modelStr = System.IO.File.ReadAllText(openFile.FileName);
                 try
                 {
-                    string modelString = Utility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
-                    //TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
-                    Program.EditModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
+                    string modelString = VTMUtility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
+                    //TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
+                    Program.EditModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
                     EditModel = Program.EditModel;
 
                     Program.EditModel.Path = openFile.FileName;
@@ -146,12 +146,12 @@ namespace VTMTester
                     LevelCardViewer.Card.PCB_Count = EditModel.Layout.PCB_Count;
                     // Nho path cho auto-load lan sau
                     Program.appSetting.LastModelPath = openFile.FileName;
-                    Utility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
+                    VTMUtility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
                 }
                 catch (Exception)
                 {
-                    Utility.Debug.Write("Load model fail, file not correct format. \n" +
-                        "Model folder: " + openFile.FileName, Utility.Debug.ContentType.Error);
+                    VTMUtility.Debug.Write("Load model fail, file not correct format. \n" +
+                        "Model folder: " + openFile.FileName, VTMUtility.Debug.ContentType.Error);
                 }
             }
         }
@@ -361,7 +361,7 @@ namespace VTMTester
                 switch (e.Key)
                 {
                     case Key.Insert:
-                        var newRowItem = Utility.Extensions.Clone(rowItem);
+                        var newRowItem = VTMUtility.Extensions.Clone(rowItem);
                         newRowItem.No = rowIndex + 1;
                         EditModel.Steps.Insert(rowIndex + 1, newRowItem);
                         for (int i = 0; i < EditModel.Steps.Count; i++)

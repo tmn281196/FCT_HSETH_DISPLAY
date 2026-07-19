@@ -228,7 +228,7 @@ namespace VTMTester
 
                 ManualPage.TestModel = AutoPage.TestModel;
                 MainProgram.SetBoards();
-                MainProgram.EditModel = Utility.Extensions.ConvertFromJson<VTMBase.Model>(str);
+                MainProgram.EditModel = VTMUtility.Extensions.ConvertFromJson<VTMBase.Model>(str);
                 if (MainProgram.EditModel != null)
                 {
                     MainProgram.EditModel.Path = path;
@@ -240,9 +240,9 @@ namespace VTMTester
                     ManualPage.cameraSetting.ApplyModelSettings(cs);
                     VisionPage.cameraSetting.ApplyModelSettings(cs);
                     if (cs != null)
-                        Utility.Debug.Write("CAMERA: set from model (Bri=" + cs.Brightness + " Con=" + cs.Contrast
+                        VTMUtility.Debug.Write("CAMERA: set from model (Bri=" + cs.Brightness + " Con=" + cs.Contrast
                             + " Exp=" + cs.Exposure + " Foc=" + cs.Focus + " WB=" + cs.WBTemperature + " Gain=" + cs.Gain + ")",
-                            Utility.Debug.ContentType.Notify);
+                            VTMUtility.Debug.ContentType.Notify);
                 }
             }
             catch
@@ -361,8 +361,13 @@ namespace VTMTester
             btAutoPage.IsChecked = true;
             ManualPage.camera.START();
             MainProgram.START();
-            MainProgram.ResetTest();
+
+
+
+            AutoPage.AttachVisionTester();   // the shared VisionTester follows the visible page
             AutoPage.EnableLive();
+            MainProgram.ResetTest();
+
             VisionPage.DisableLive();
             ManualPage.DisableLive();
         }
@@ -386,7 +391,7 @@ namespace VTMTester
             MainProgram.SetBoards();
             if (str != null)
             {
-                MainProgram.EditModel = Utility.Extensions.ConvertFromJson<Model>(str);
+                MainProgram.EditModel = VTMUtility.Extensions.ConvertFromJson<Model>(str);
                 MainProgram.EditModel.Path = AutoPage.TestModel.Path;   // Name follows the ACTUAL opened file
                 ModelPage.EditModel = MainProgram.EditModel;
                 VisionPage.EditModel = MainProgram.EditModel;
@@ -563,7 +568,7 @@ namespace VTMTester
             ManualPage.TestModel = AutoPage.TestModel;
             if (str != null)
             {
-                MainProgram.EditModel = Utility.Extensions.ConvertFromJson<Model>(str);
+                MainProgram.EditModel = VTMUtility.Extensions.ConvertFromJson<Model>(str);
                 MainProgram.EditModel.Path = AutoPage.TestModel.Path;   // Name follows the ACTUAL opened file
                 ModelPage.EditModel = MainProgram.EditModel;
                 VisionPage.EditModel = MainProgram.EditModel;
@@ -576,9 +581,9 @@ namespace VTMTester
                 ManualPage.cameraSetting.ApplyModelSettings(cs);
                 VisionPage.cameraSetting.ApplyModelSettings(cs);
                 if (cs != null)
-                    Utility.Debug.Write("CAMERA: set from model (Bri=" + cs.Brightness + " Con=" + cs.Contrast
+                    VTMUtility.Debug.Write("CAMERA: set from model (Bri=" + cs.Brightness + " Con=" + cs.Contrast
                         + " Exp=" + cs.Exposure + " Foc=" + cs.Focus + " WB=" + cs.WBTemperature + " Gain=" + cs.Gain + ")",
-                        Utility.Debug.ContentType.Notify);
+                        VTMUtility.Debug.ContentType.Notify);
             }
             HIDE_LOADING();
         }

@@ -1,4 +1,4 @@
-﻿using Utility;
+﻿using VTMUtility;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -96,7 +96,7 @@ namespace VTMBase
             }
             catch (Exception err)
             {
-                Utility.Debug.Write(String.Format("{0} -> {1}: {2}", serial.DeviceName, serial.PortName, err.Message), Debug.ContentType.Error);
+                VTMUtility.Debug.Write(String.Format("{0} -> {1}: {2}", serial.DeviceName, serial.PortName, err.Message), Debug.ContentType.Error);
             }
         }
 

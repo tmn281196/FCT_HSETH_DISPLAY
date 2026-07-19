@@ -12,7 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Xml.Serialization;
 
-namespace Utility
+namespace VTMUtility
 {
     // Writes a System.Windows.Rect as just {X,Y,Width,Height} instead of the 15 computed properties STJ emits by
     // default (IsEmpty, Location, Size, Left, Top, Right, Bottom, TopLeft, TopRight, BottomLeft, BottomRight, ...).

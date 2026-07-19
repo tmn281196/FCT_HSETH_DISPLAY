@@ -1,7 +1,7 @@
 ﻿using VTMControls.DeviceControl;
 using VTMControls.DeviceControl;
 using VTMControls.DeviceControl.VisionTest;
-using Utility;
+using VTMUtility;
 using VTMBase;
 using Microsoft.Win32;
 using System;
@@ -322,14 +322,14 @@ namespace VTMTester
             openFile.RestoreDirectory = true;
             if (openFile.ShowDialog() == true)
             {
-                Utility.Debug.Write("Load model:" + openFile.FileName, Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.Write("Load model:" + openFile.FileName, VTMUtility.Debug.ContentType.Notify);
                 //var fileInfor = new FileInfo(openFile.FileName);
                 string modelStr = System.IO.File.ReadAllText(openFile.FileName);
                 try
                 {
-                    string modelString = Utility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
-                    //TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
-                    EditModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
+                    string modelString = VTMUtility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
+                    //TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
+                    EditModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
                     EditModel.Path = openFile.FileName;
                     foreach (var item in EditModel.Steps)
                     {
@@ -342,8 +342,8 @@ namespace VTMTester
                 }
                 catch (Exception)
                 {
-                    Utility.Debug.Write("Load model fail, file not correct format. \n" +
-                        "Model folder: " + openFile.FileName, Utility.Debug.ContentType.Error);
+                    VTMUtility.Debug.Write("Load model fail, file not correct format. \n" +
+                        "Model folder: " + openFile.FileName, VTMUtility.Debug.ContentType.Error);
                 }
             }
         }
@@ -399,8 +399,8 @@ namespace VTMTester
             {
                 // Name the offender: there are ~450 ROI slots across a model, and "something is out of frame"
                 // leaves the operator no way to find which one.
-                Utility.Debug.Write("VISION:NUDGE REFUSED - " + blocker + " would leave the frame",
-                                        Utility.Debug.ContentType.Warning);
+                VTMUtility.Debug.Write("VISION:NUDGE REFUSED - " + blocker + " would leave the frame",
+                                        VTMUtility.Debug.ContentType.Warning);
                 return;
             }
 
@@ -633,7 +633,7 @@ namespace VTMTester
                 saveLabel.Visibility = Visibility.Visible;
                 await Task.Delay(100);
                 EditModel.SaveTo(EditModel.Path);
-                Utility.Debug.Write("MODEL: Saved " + System.IO.Path.GetFileName(EditModel.Path), Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.Write("MODEL: Saved " + System.IO.Path.GetFileName(EditModel.Path), VTMUtility.Debug.ContentType.Notify);
                 //Program.OnEditModelSave();
                 await Task.Delay(100);
                 saveLabel.Visibility = Visibility.Hidden;
@@ -651,7 +651,7 @@ namespace VTMTester
                     EditModel.Name = saveFileDialog.SafeFileName;
                     EditModel.Path = saveFileDialog.FileName;
                     EditModel.SaveTo(saveFileDialog.FileName);
-                    Utility.Debug.Write("MODEL: Saved " + saveFileDialog.SafeFileName, Utility.Debug.ContentType.Notify);
+                    VTMUtility.Debug.Write("MODEL: Saved " + saveFileDialog.SafeFileName, VTMUtility.Debug.ContentType.Notify);
                     await Task.Delay(100);
                     saveLabel.Visibility = Visibility.Hidden;
                 }
@@ -737,7 +737,7 @@ namespace VTMTester
                 CommitCameraToModel();   // persist the CURRENT slider values (not a fresh camera read)
                 EditModel.ModelSegmentLookup = VTMControls.DeviceControl.FND.SEG_LOOKUP.Clone();
                 EditModel.SaveTo(saveFileDialog.FileName);
-                Utility.Debug.Write("MODEL: Saved " + saveFileDialog.SafeFileName, Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.Write("MODEL: Saved " + saveFileDialog.SafeFileName, VTMUtility.Debug.ContentType.Notify);
                 saveLabel.Visibility = Visibility.Hidden;
                 await Task.Delay(100);
             }
@@ -838,7 +838,7 @@ namespace VTMTester
             var step = currentStep ?? (VisionStepsGrid != null ? VisionStepsGrid.SelectedItem as Step : null);
             if (step == null)
             {
-                Utility.Debug.Write("VISION:COPY - no step selected", Utility.Debug.ContentType.Warning);
+                VTMUtility.Debug.Write("VISION:COPY - no step selected", VTMUtility.Debug.ContentType.Warning);
                 return;
             }
             step.Oper = detected ?? "";
@@ -864,9 +864,9 @@ namespace VTMTester
             m.Gain = live.Gain;
             m.Backlight = live.Backlight;
             EditModel.HaveApplyCamsetting = true;
-            Utility.Debug.Write("CAMERA: saved to model (Bri=" + m.Brightness + " Con=" + m.Contrast + " Exp="
+            VTMUtility.Debug.Write("CAMERA: saved to model (Bri=" + m.Brightness + " Con=" + m.Contrast + " Exp="
                 + m.Exposure + " Foc=" + m.Focus + " WB=" + m.WBTemperature + " Gain=" + m.Gain + ")",
-                Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.ContentType.Notify);
         }
 
         // "Write Setting to Camera": push the current slider values to the live camera (sliders alone no longer
@@ -881,8 +881,8 @@ namespace VTMTester
         private void btnReadCameraSettings_Click(object sender, RoutedEventArgs e)
         {
             cameraSetting?.GetcameraSettingValue();
-            Utility.Debug.Write("CAMERA: settings read from camera into sliders",
-                                    Utility.Debug.ContentType.Notify);
+            VTMUtility.Debug.Write("CAMERA: settings read from camera into sliders",
+                                    VTMUtility.Debug.ContentType.Notify);
         }
 
         private void ShowRoisFor(Step step)
@@ -1352,7 +1352,7 @@ namespace VTMTester
             var step = currentStep ?? (VisionStepsGrid != null ? VisionStepsGrid.SelectedItem as Step : null);
             if (step == null)
             {
-                Utility.Debug.Write("VISION:COPY - no step selected", Utility.Debug.ContentType.Warning);
+                VTMUtility.Debug.Write("VISION:COPY - no step selected", VTMUtility.Debug.ContentType.Warning);
                 return;
             }
             string value = valueLabel != null && valueLabel.Content != null ? valueLabel.Content.ToString() : "";

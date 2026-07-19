@@ -1,7 +1,7 @@
 ﻿using VTMControls.DeviceControl;
 using VTMControls.DeviceControl;
 using VTMControls.DeviceControl.VisionTest;
-using Utility;
+using VTMUtility;
 using VTMBase;
 using Microsoft.Win32;
 
@@ -127,8 +127,8 @@ namespace VTMTester
             ocr = new OCR();             
 
             InitializeComponent();
-            Utility.Debug.dispatcher = this.Dispatcher;
-            Utility.Debug.LogBox = rtbProgramLog;
+            VTMUtility.Debug.dispatcher = this.Dispatcher;
+            VTMUtility.Debug.LogBox = rtbProgramLog;
             btAutoRun.IsEnabled = false;
 
             dtttSite1.Visibility = TestModel.Layout.PCB_Count >= 1 ? Visibility.Visible : Visibility.Collapsed;
@@ -152,7 +152,7 @@ namespace VTMTester
 
         private void ClearProgramLog_Click(object sender, RoutedEventArgs e)
         {
-            Utility.Debug.ClearLog();
+            VTMUtility.Debug.ClearLog();
         }
 
         // Stand-in for the scanner: same barcode path, same logs, no hardware. Needs a model, since the fake
@@ -161,7 +161,7 @@ namespace VTMTester
         {
             if (!Program.IsloadModel)
             {
-                Utility.Debug.Write("SCANNER:FAKE SCAN needs a model loaded", Utility.Debug.ContentType.Warning);
+                VTMUtility.Debug.Write("SCANNER:FAKE SCAN needs a model loaded", VTMUtility.Debug.ContentType.Warning);
                 return;
             }
             // fake:true rides with the barcode so the run it starts skips the .lgd export.
@@ -179,15 +179,15 @@ namespace VTMTester
             openFile.RestoreDirectory = true;
             if (openFile.ShowDialog() == true)
             {
-                Utility.Debug.Write("MODEL: Load " + System.IO.Path.GetFileName(openFile.FileName), Utility.Debug.ContentType.Notify);
+                VTMUtility.Debug.Write("MODEL: Load " + System.IO.Path.GetFileName(openFile.FileName), VTMUtility.Debug.ContentType.Notify);
                 //var fileInfor = new FileInfo(openFile.FileName);
                 string modelStr = System.IO.File.ReadAllText(openFile.FileName);
                 try
                 {
-                    string modelString = Utility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
+                    string modelString = VTMUtility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
                     //Console.WriteLine(modelString);
-                    //TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
-                    TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
+                    //TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
+                    TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
                     TestModel.Path = openFile.FileName;
                     foreach (var item in TestModel.Steps)
                     {
@@ -200,13 +200,13 @@ namespace VTMTester
                     btAutoRun.IsEnabled = true;
                     // Nho path cho auto-load lan sau
                     Program.appSetting.LastModelPath = openFile.FileName;
-                    Utility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
+                    VTMUtility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
                     return modelString;
                 }
                 catch (Exception)
                 {
-                    Utility.Debug.Write("Load model fail, file not correct format. \n" +
-                        "Model folder: " + openFile.FileName, Utility.Debug.ContentType.Error);
+                    VTMUtility.Debug.Write("Load model fail, file not correct format. \n" +
+                        "Model folder: " + openFile.FileName, VTMUtility.Debug.ContentType.Error);
                 }
             }
 
@@ -215,7 +215,7 @@ namespace VTMTester
 
         public string LoadModel(string path)
         {
-            Utility.Debug.Write("MODEL: Load " + System.IO.Path.GetFileName(path), Utility.Debug.ContentType.Notify);
+            VTMUtility.Debug.Write("MODEL: Load " + System.IO.Path.GetFileName(path), VTMUtility.Debug.ContentType.Notify);
             if (path == null) return null;
 
             //var fileInfor = new FileInfo(openFile.FileName);
@@ -226,10 +226,10 @@ namespace VTMTester
             }
             try
             {
-                string modelString = Utility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
+                string modelString = VTMUtility.Extensions.Decoder(modelStr, System.Text.Encoding.UTF7);
                 //Console.WriteLine(modelString);
-                //TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
-                TestModel = Utility.Extensions.ConvertFromJson<Model>(modelString);
+                //TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
+                TestModel = VTMUtility.Extensions.ConvertFromJson<Model>(modelString);
                 TestModel.Path = path;   // Name derives from Path - use the ACTUAL opened file, not the serialized one
                 foreach (var item in TestModel.Steps)
                 {
@@ -242,7 +242,7 @@ namespace VTMTester
                 btAutoRun.IsEnabled = true;
                 // Nho path cho auto-load lan sau
                 Program.appSetting.LastModelPath = path;
-                Utility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
+                VTMUtility.Extensions.SaveToFile(Program.appSetting, "Config.cfg");
                 return modelString;
             }
             catch (Exception)

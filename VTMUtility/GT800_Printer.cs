@@ -1,4 +1,4 @@
-﻿using Utility;
+﻿using VTMUtility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing.Printing;
 
-namespace Utility
+namespace VTMUtility
 {
     public class GT800_Printer
     {

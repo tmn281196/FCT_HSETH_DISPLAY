@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Runtime.CompilerServices;
 using System.Timers;
-using Utility;
+using VTMUtility;
 using System.Threading;
 using Timer = System.Timers.Timer;
 
@@ -64,12 +64,12 @@ namespace VTMControls
         public string LogName => !string.IsNullOrEmpty(LogTag) ? LogTag
                                : (!string.IsNullOrEmpty(deviceName) ? deviceName : (Port?.PortName ?? portName ?? "COM"));
 
-        private void LogTx(byte[] data) { if (LogTxRx) Utility.Debug.Tx(LogName, data); }
-        private void LogRx(byte[] data) { if (LogTxRx) Utility.Debug.Rx(LogName, data); }
+        private void LogTx(byte[] data) { if (LogTxRx) VTMUtility.Debug.Tx(LogName, data); }
+        private void LogRx(byte[] data) { if (LogTxRx) VTMUtility.Debug.Rx(LogName, data); }
         private void LogTxStr(string s)
         {
             if (LogTxRx)
-                Utility.Debug.Write(LogName + " >> FCT \"" + (s ?? "").Replace("\r", "\\r").Replace("\n", "\\n") + "\"", Utility.Debug.ContentType.Tx);
+                VTMUtility.Debug.Write(LogName + " >> FCT \"" + (s ?? "").Replace("\r", "\\r").Replace("\n", "\\n") + "\"", VTMUtility.Debug.ContentType.Tx);
         }
 
         private string portName;

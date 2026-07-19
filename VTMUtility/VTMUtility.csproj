@@ -7,8 +7,8 @@
     <ProjectGuid>{1F26009D-C483-4DBF-AF0E-F3274C32D21A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Utility</RootNamespace>
-    <AssemblyName>Utility</AssemblyName>
+    <RootNamespace>VTMUtility</RootNamespace>
+    <AssemblyName>VTMUtility</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

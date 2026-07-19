@@ -8,7 +8,7 @@ using System.Windows;
 using Microsoft.Office.Interop.Excel;
 using Neodynamic.SDK.Printing;
 
-namespace Utility
+namespace VTMUtility
 {
     public class SamsungQRcode
     {
@@ -206,7 +206,7 @@ namespace Utility
             return code;
         }
 
-        //public void SQCI_SAVE(FanSiteTester siteTester, TestHistory history, Utility.SQCI sqci)
+        //public void SQCI_SAVE(FanSiteTester siteTester, TestHistory history, VTMUtility.SQCI sqci)
         //{
 
         //    string qr = "A3";
@@ -244,7 +244,7 @@ namespace Utility
         //            if ( testItem != null)
         //            {
         //                sqci.Items.Add(
-        //                    new Utility.SQCI_Item()
+        //                    new VTMUtility.SQCI_Item()
         //                    {
         //                        Code = testItem,
         //                        Value = realTestitem.Value,

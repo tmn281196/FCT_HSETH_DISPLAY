@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Linq;
 using System.Collections.Generic;
-using Utility;
+using VTMUtility;
 using System.Windows;
 using VTMControls;
 using VTMControls.DeviceControl;
@@ -106,7 +106,7 @@ namespace VTMBase
             var comm = appSetting.Communication;
 
             // Annotate SYS (system board output/input signals) and SOL (solenoid channels) frames in the log.
-            Utility.Debug.FrameAnnotator = (dev, f, n, tx) =>
+            VTMUtility.Debug.FrameAnnotator = (dev, f, n, tx) =>
                   dev == "SYS" ? VTMControls.DeviceControl.SystemBoard.AnnotateFrame(f, n, tx)
                 : dev == "SOL" ? VTMControls.DeviceControl.SolenoidCard.AnnotateFrame(f, n, tx)
                 : "";

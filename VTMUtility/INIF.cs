@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Utility
+namespace VTMUtility
 {
     class INIF
     {

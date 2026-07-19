@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VTMControls.DeviceControl.CameraControl;
 
 namespace VTMControls.DeviceControl
 {
@@ -68,7 +67,7 @@ namespace VTMControls.DeviceControl
         public void ApplyManual()
         {
             Capture?.ApplyCurrentToCamera();
-            Utility.Debug.Write("CAMERA: settings applied to camera", Utility.Debug.ContentType.Notify);
+            VTMUtility.Debug.Write("CAMERA: settings applied to camera", VTMUtility.Debug.ContentType.Notify);
         }
 
         public CameraSetting GetParammeter()

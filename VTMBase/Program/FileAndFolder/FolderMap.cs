@@ -93,7 +93,7 @@ namespace VTMBase
         public void SaveHistory(object HistoryObject)
         {
             Console.WriteLine(String.Format("{0}\\{1}", RootFolder + HistoryFolder, DateTime.Now.Date.ToString("dd") + ".vtmh"));
-            File.AppendAllText(String.Format("{0}\\{1}", RootFolder + HistoryFolder, DateTime.Now.Date.ToString("dd") + ".vtmh"), Utility.Extensions.ConvertToJson(HistoryObject) + Environment.NewLine);
+            File.AppendAllText(String.Format("{0}\\{1}", RootFolder + HistoryFolder, DateTime.Now.Date.ToString("dd") + ".vtmh"), VTMUtility.Extensions.ConvertToJson(HistoryObject) + Environment.NewLine);
         }
 
         // exportLog=false skips writing the .lgd file (Settings -> "Export log"), but the method still runs.

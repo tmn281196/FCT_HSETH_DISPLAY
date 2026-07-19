@@ -22,7 +22,7 @@ namespace VTMBase
         public int TplHeight { get; set; }
 
         // Runtime scoring result (NOT serialized) - used for realtime UI coloring. Both the model save AND the
-        // Revert snapshot now go through System.Text.Json (Utility.Extensions), so only its JsonIgnore is needed.
+        // Revert snapshot now go through System.Text.Json (VTMUtility.Extensions), so only its JsonIgnore is needed.
         // Without it, the last pass/fail gets written to the model and reloads pre-colored.
         [System.Text.Json.Serialization.JsonIgnore]
         public bool? LastPass { get; set; }

@@ -255,9 +255,9 @@
     <Resource Include="DeviceControl\SysIO\stop-button.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utility\Utility.csproj">
+    <ProjectReference Include="..\VTMUtility\VTMUtility.csproj">
       <Project>{1f26009d-c483-4dbf-af0e-f3274c32d21a}</Project>
-      <Name>Utility</Name>
+      <Name>VTMUtility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

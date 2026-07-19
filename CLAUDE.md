@@ -25,7 +25,7 @@
   - `DeviceControl/SysIO/` - SystemBoard, SystemMachineIO
   - `OtherControls/Serial Display/` - SerialPortDisplay (serial communication)
   - `SystemComunication.cs` - Frame builders: `BuildFrame`/`FrameOk` + opcodes/keys (system v2); `GetFrame` (legacy, other devices)
-- `Utility/Debug.cs` - **the** Diagnostic Log utility (the old stale top-level duplicate was removed in the restructure; there is now exactly one)
+- `VTMUtility/Debug.cs` - **the** Diagnostic Log utility (the old stale top-level duplicate was removed in the restructure; there is now exactly one)
 - `Controls/DeviceControl/Camera/` - (formerly the `Camera` project, merged into Controls 2026-07-19, namespace now `Controls.DeviceControl.Camera`) CameraControl OpenCvSharp capture loop, vision models (`Models/FND,LCD,GLED,LED`), and PaddleOCR via `Controls.DeviceControl.Camera.VisionTest.OCR`
 - `VTMBase/` - Model/step data structures
 - `Firmware/Solenoid/` - Arduino firmware for solenoid board
@@ -76,7 +76,7 @@
   - **Re-sync is the FIRMWARE's job, not the PC's.** An earlier PC-side 500ms heartbeat (`ProgramState` calling `GetInput()`) was **removed**: v2 has no PC→board input-poll frame at all. Instead `POLLING_ENABLED`/`POLLING_INTERVAL_MS` in the firmware re-sends SDOWN periodically. Don't re-add a PC poll.
   - `SerialPortDisplay.SendBytes` still serializes `Port.Write` under `_txLock` (state machine + UI + retry can all send at once) — keep it.
 
-## Diagnostic Log (AutoPage) — `Utility/Debug.cs`
+## Diagnostic Log (AutoPage) — `VTMUtility/Debug.cs`
 Amber-CRT RichTextBox (`rtbProgramLog`, Consolas 12, bg `#0A0A0A`, read-only + Clear button). Reworked 2026-07-15/16:
 - **One uniform tone.** `AmberDim = AmberBright = #E89800`, everything normal weight. Earlier bright-label/dim-value and bold variants were all rejected — keep it uniform unless told otherwise. (Consolas has **no SemiBold face** — SemiBold silently renders as Regular, which is why weight was abandoned.)
 - **Every line is `Debug.Write`** → `HH:mm:ss` + content, flush-left. `Appent`/`ContentPad` (the indented continuation style) are **deleted** — detail lines group by sharing the parent's timestamp instead.

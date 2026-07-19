@@ -1,5 +1,5 @@
 ﻿using DirectShowLib;
-using Utility;
+using VTMUtility;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System;
@@ -229,8 +229,8 @@ namespace VTMControls.DeviceControl
                                     if (key == VideoProperties.WhiteBalance)
                                     {
                                         int readback = GetParammeter(key);
-                                        Utility.Debug.Write("CAMERA: WhiteBalance set=" + v + " readback=" + readback,
-                                            Utility.Debug.ContentType.Notify);
+                                        VTMUtility.Debug.Write("CAMERA: WhiteBalance set=" + v + " readback=" + readback,
+                                            VTMUtility.Debug.ContentType.Notify);
                                     }
                                 }
                             }

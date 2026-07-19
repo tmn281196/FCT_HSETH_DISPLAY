@@ -1,4 +1,4 @@
-﻿using Utility;
+﻿using VTMUtility;
 using OpenCvSharp;
 using OpenCvSharp.Flann;
 using OpenCvSharp.WpfExtensions;

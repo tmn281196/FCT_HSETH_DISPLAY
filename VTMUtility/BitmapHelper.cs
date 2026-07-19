@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace Utility
+namespace VTMUtility
 {
     public static class BitmapHelper
     {

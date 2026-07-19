@@ -9,7 +9,7 @@ using System.Windows.Threading;
 using DataFormats = System.Windows.DataFormats;
 using RichTextBox = System.Windows.Controls.RichTextBox;
 
-namespace Utility
+namespace VTMUtility
 {
     public static class Debug
     {

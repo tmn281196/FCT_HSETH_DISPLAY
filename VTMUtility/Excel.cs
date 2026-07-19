@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
 
-namespace Utility
+namespace VTMUtility
 {
     public class Excel
     {

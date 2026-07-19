@@ -2,7 +2,7 @@ name: Build
 
 # Builds the VTM solution on every push / PR to main. This is a .NET Framework 4.8
 # WPF solution with a MIX of packages.config (VTMBase / VTMTester / VTMReport) and
-# PackageReference (VTMControls / Utility) projects, so it needs BOTH a nuget restore
+# PackageReference (VTMControls / VTMUtility) projects, so it needs BOTH a nuget restore
 # (packages.config -> solution `packages\` folder) and an msbuild restore
 # (PackageReference -> global NuGet cache, which is also where VTMTester's Sdcb
 # PaddleOCR native props Import expects the 3.0.0.51 runtime).
@@ -31,7 +31,7 @@ jobs:
       - name: NuGet restore (packages.config)
         run: nuget restore VTM.sln
 
-      # PackageReference projects (VTMControls / Utility) + Sdcb native to the global cache
+      # PackageReference projects (VTMControls / VTMUtility) + Sdcb native to the global cache
       - name: MSBuild restore (PackageReference)
         run: msbuild VTM.sln -t:Restore -p:Configuration=Debug
 

@@ -323,9 +323,9 @@
       <Project>{8c737116-eacf-4dd6-b0a0-9e757e8a6961}</Project>
       <Name>VTMControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Utility\Utility.csproj">
+    <ProjectReference Include="..\VTMUtility\VTMUtility.csproj">
       <Project>{1f26009d-c483-4dbf-af0e-f3274c32d21a}</Project>
-      <Name>Utility</Name>
+      <Name>VTMUtility</Name>
     </ProjectReference>
     <ProjectReference Include="..\VTMBase\VTMBase.csproj">
       <Project>{1634e2ca-c43c-4749-91c8-540e38d808cc}</Project>

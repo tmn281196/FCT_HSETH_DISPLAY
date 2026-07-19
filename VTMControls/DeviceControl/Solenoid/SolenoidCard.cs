@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
-using Utility;
+using VTMUtility;
 namespace VTMControls.DeviceControl
 {
     public class SolenoidCard

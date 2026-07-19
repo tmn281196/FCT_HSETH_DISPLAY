@@ -79,7 +79,7 @@ namespace VTMControls.DeviceControl
             }
             catch (Exception e)
             {
-                Utility.Debug.Write(Name + ": " + e.Message, Utility.Debug.ContentType.Error);
+                VTMUtility.Debug.Write(Name + ": " + e.Message, VTMUtility.Debug.ContentType.Error);
             }
         }
 

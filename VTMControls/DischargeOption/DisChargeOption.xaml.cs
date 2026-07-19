@@ -43,7 +43,7 @@ namespace VTMControls
 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(Utility.Extensions.ConvertToJson(DisChargeOptionProperties));
+            Console.WriteLine(VTMUtility.Extensions.ConvertToJson(DisChargeOptionProperties));
         }
     }
 }

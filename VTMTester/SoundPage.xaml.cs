@@ -800,8 +800,8 @@ namespace VTMTester
             _selectedRoi = null;
             RefreshSelRoiUi();
 
-            // Snapshot for Revert (System.Text.Json, same serializer the model itself uses - see Utility.Extensions)
-            _stepSavedJson = Utility.Extensions.ConvertToJson(cfg);
+            // Snapshot for Revert (System.Text.Json, same serializer the model itself uses - see VTMUtility.Extensions)
+            _stepSavedJson = VTMUtility.Extensions.ConvertToJson(cfg);
 
             Dispatcher.BeginInvoke(new Action(RepaintRois), DispatcherPriority.Loaded);
         }
@@ -874,7 +874,7 @@ namespace VTMTester
             if (_program?.appSetting != null)
             {
                 _program.appSetting.SpectrogramColorMap = _selectedColormap;
-                try { Utility.Extensions.SaveToFile(_program.appSetting, "Config.cfg"); } catch { }
+                try { VTMUtility.Extensions.SaveToFile(_program.appSetting, "Config.cfg"); } catch { }
             }
         }
 
@@ -908,7 +908,7 @@ namespace VTMTester
             if (string.IsNullOrEmpty(_stepSavedJson) || model == null) return;
             try
             {
-                model.SoundConfig = Utility.Extensions.ConvertFromJson<SoundStepConfig>(_stepSavedJson)
+                model.SoundConfig = VTMUtility.Extensions.ConvertFromJson<SoundStepConfig>(_stepSavedJson)
                                     ?? new SoundStepConfig();
                 LoadFromStep();
                 txtInfo.Text = "Reverted to saved state";

@@ -1,6 +1,6 @@
 ﻿using VTMBase;
 using VTMControls.DeviceControl;
-using Utility;
+using VTMUtility;
 using System;
 
 namespace VTMBase
