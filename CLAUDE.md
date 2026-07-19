@@ -19,14 +19,14 @@
   - `VTMBase/Program/ModelTester/Program.cs` - Main state machine (~6700+ lines), `namespace VTMProgram`
   - `VTMBase/Program/Device/ProgramDevices.cs` - Serial port init, event handlers
   - `VTMBase/Program/Boards/Program.cs` - Board setup (SetBoards)
-  - ⚠️ `VTMBase.Helper.CheckSum`/`EnumHelper` and `VTMProgram.Helper.CheckSum`/`EnumHelper` are DISTINCT types (different namespaces) that now coexist in the same assembly - the merge kept them under `Helper/` and `Program/Helper/` respectively.
-- `Controls/` - Reusable controls and device drivers
+  - The former VTMProgram Helper (`CheckSum`/`XOR`/`CheckSumType`/`EnumToItemsSource`) was dead-duplicate code; **moved to `Utility` (namespace Utility) 2026-07-19**. `Controls` keeps its OWN live `Controls.CheckSum` (used by the device drivers).
+- `Controls/` - Reusable controls and device drivers **+ the merged `Camera` project** (2026-07-19): camera capture, vision models, and PaddleOCR now live under `Controls/Camera/` with namespace **`Camera.*` preserved**, all compiled into `Controls.dll`. So `using Camera;` resolves from Controls, and XAML uses `assembly=Controls`. Camera's Sdcb/OpenCvSharp `PackageReference`s moved into `Controls.csproj` (versions unchanged — Sdcb native stays 3.0.0.51, deployed by VTMTester's Import).
   - `DeviceControl/Solenoid/` - SolenoidCard, SolenoidChannel, SolenoidControls
   - `DeviceControl/SysIO/` - SystemBoard, SystemMachineIO
   - `OtherControls/Serial Display/` - SerialPortDisplay (serial communication)
   - `SystemComunication.cs` - Frame builders: `BuildFrame`/`FrameOk` + opcodes/keys (system v2); `GetFrame` (legacy, other devices)
 - `Utility/Debug.cs` - **the** Diagnostic Log utility (the old stale top-level duplicate was removed in the restructure; there is now exactly one)
-- `Camera/` - CameraControl (OpenCvSharp capture loop)
+- `Controls/Camera/` - (formerly the `Camera` project, merged into Controls 2026-07-19) CameraControl OpenCvSharp capture loop, vision models (`Models/FND,LCD,GLED,LED`), and PaddleOCR via `Camera.VisionTest.OCR`
 - `VTMBase/` - Model/step data structures
 - `Firmware/Solenoid/` - Arduino firmware for solenoid board
 - `Firmware/sys_io/` - Arduino firmware for the **system board** (v2 protocol, time-based debounce, polling flag)

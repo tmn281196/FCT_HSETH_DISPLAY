@@ -278,5 +278,159 @@
       <Version>6.0.6</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <!-- Merged from the Camera project (2026-07-19): source now under Controls\Camera\, namespace Camera.* kept. -->
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+
+    <PackageReference Include="DirectShowLib">
+      <Version>1.0.0</Version>
+    </PackageReference>
+
+    <PackageReference Include="FontAwesome.Sharp">
+      <Version>6.6.0</Version>
+    </PackageReference>
+
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
+      <Version>10.0.10</Version>
+    </PackageReference>
+
+    <PackageReference Include="OpenCvSharp4">
+      <Version>4.13.0.20260627</Version>
+    </PackageReference>
+
+    <PackageReference Include="OpenCvSharp4.Extensions">
+      <Version>4.13.0.20260627</Version>
+    </PackageReference>
+
+    <PackageReference Include="OpenCvSharp4.runtime.win">
+      <Version>4.13.0.20260627</Version>
+    </PackageReference>
+
+    <PackageReference Include="OpenCvSharp4.Windows">
+      <Version>4.13.0.20260627</Version>
+    </PackageReference>
+
+    <PackageReference Include="OpenCvSharp4.WpfExtensions">
+      <Version>4.13.0.20260627</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleInference">
+      <Version>3.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleInference.runtime.win64.mkl">
+      <Version>3.0.0.51</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR">
+      <Version>3.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR.Models.Local">
+      <Version>3.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR.Models.LocalV3">
+      <Version>2.7.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR.Models.LocalV4">
+      <Version>2.7.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR.Models.LocalV5">
+      <Version>3.0.0</Version>
+    </PackageReference>
+
+    <PackageReference Include="Sdcb.PaddleOCR.Models.Shared">
+      <Version>2.7.0.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Buffers">
+      <Version>4.6.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Drawing.Common">
+      <Version>10.0.10</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Memory">
+      <Version>4.6.3</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Numerics.Vectors">
+      <Version>4.6.1</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Text.Encodings.Web">
+      <Version>10.0.10</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.6.3</Version>
+    </PackageReference>
+
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.6.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Camera\CameraControl.xaml.cs">
+      <DependentUpon>CameraControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Camera\CameraSettingPanel.xaml.cs">
+      <DependentUpon>CameraSettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Camera\FND_SegementBuilder.xaml.cs">
+      <DependentUpon>FND_SegementBuilder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Camera\Models\GLED.cs" />
+    <Compile Include="Camera\Models\LED.cs" />
+    <Compile Include="Camera\Models\LCD.cs" />
+    <Compile Include="Camera\Models\FND.cs" />
+    <Compile Include="Camera\Models\SettingParram.cs" />
+    <Compile Include="Camera\Models\VisionWorker.cs" />
+    <Compile Include="Camera\Models\OCR.cs" />
+    <Compile Include="Camera\Models\VisionModel.cs" />
+    <Compile Include="Camera\VisionTester.xaml.cs">
+      <DependentUpon>VisionTester.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Camera\VisionBuilder.xaml.cs">
+      <DependentUpon>VisionBuilder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Camera\VisionModelOption.xaml.cs">
+      <DependentUpon>VisionModelOption.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Camera\CameraControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Camera\CameraSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Camera\FND_SegementBuilder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Camera\VisionTester.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Camera\VisionBuilder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Camera\VisionModelOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
