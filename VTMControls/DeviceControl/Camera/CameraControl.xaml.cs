@@ -117,7 +117,7 @@ namespace VTMControls.DeviceControl
                         CameraDeviceId = cameras[0].OpenCvId;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Debug.Write("Camera : No camera detected, check your camera device and restart this software.", Debug.ContentType.Error, 20);
                 }

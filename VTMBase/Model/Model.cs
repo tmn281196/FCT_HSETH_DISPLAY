@@ -16,7 +16,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using VTMControls;
-using VTMControls.DeviceControl;
 
 namespace VTMBase
 {
@@ -493,17 +492,6 @@ namespace VTMBase
         }
 
         #endregion UUT config
-
-        #region Event
-
-        public event EventHandler LoadFinish;
-
-        #endregion Event
-
-        //public void LoadFinishEvent()
-        //{
-        //    LoadFinish?.Invoke(null, null);
-        //}
 
         public Model()
         {

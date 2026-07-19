@@ -1,5 +1,4 @@
 ﻿using VTMControls.DeviceControl;
-using VTMControls.DeviceControl;
 using VTMControls.DeviceControl.VisionTest;
 using VTMBase;
 using System;

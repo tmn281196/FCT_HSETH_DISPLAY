@@ -1,5 +1,4 @@
 ﻿using VTMControls.DeviceControl;
-using VTMControls.DeviceControl;
 using VTMBase;
 using System;
 using System.Collections.Generic;
@@ -445,7 +444,7 @@ namespace VTMTester
                 {
                     this.DragMove();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }

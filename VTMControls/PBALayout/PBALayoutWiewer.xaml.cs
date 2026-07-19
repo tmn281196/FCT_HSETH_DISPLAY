@@ -129,7 +129,7 @@ namespace VTMControls
 
         private void nUD_PCBcount_ValueChanged(object sender, EventArgs e)
         {
-            if ((sender as IntegerUpDown).Value != null)
+            if (sender is IntegerUpDown)
             {
                 int Count = (int)((sender as IntegerUpDown).Value);
                 if ((sender as IntegerUpDown).Name == "nUD_PCBcount")

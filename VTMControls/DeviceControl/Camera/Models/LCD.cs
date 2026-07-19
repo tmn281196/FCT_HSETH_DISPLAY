@@ -169,8 +169,6 @@ namespace VTMControls.DeviceControl
             end
         }
 
-        private TurnningState turnningState = LCD.TurnningState.wait;
-
         private bool _IsTurning;
 
         [JsonIgnore]

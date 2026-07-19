@@ -594,7 +594,7 @@ namespace VTMControls
             {
                 port.Open();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 OpenPort();
                 return false;
@@ -665,7 +665,7 @@ namespace VTMControls
             {
                 port.Open();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 OpenPort();
                 return false;

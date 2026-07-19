@@ -57,8 +57,6 @@ namespace VTMControls.DeviceControl
             }
         }
 
-        private bool RenderFinnish = false;
-
         public VisionBuilder()
         {
             InitializeComponent();
@@ -97,7 +95,6 @@ namespace VTMControls.DeviceControl
 
         private void functionCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            RenderFinnish = true;
             foreach (var fnd_model in Models.FNDs)
             {
                 foreach (var item in fnd_model)

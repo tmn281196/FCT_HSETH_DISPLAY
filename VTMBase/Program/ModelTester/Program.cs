@@ -53,8 +53,6 @@ namespace VTMBase
 
         public event EventHandler StepTestChange;
 
-        public event EventHandler AutoPageStepTestChange;
-
         public event EventHandler TestRunFinish;
 
         public event EventHandler StateChange;

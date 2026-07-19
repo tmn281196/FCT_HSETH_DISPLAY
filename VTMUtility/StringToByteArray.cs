@@ -11,9 +11,9 @@ namespace VTMUtility
     {
         public static byte[] Convert(string Str)
         {
-            if (Str.Length == null)    //lấy phần dư khác 0
+            if (Str == null)
             {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Not define", Str)); //Hệ thập lục phân k có chữ số lẻ
+                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Not define", Str));
             }
             if (Str.Length % 2 != 0)    //lấy phần dư khác 0
             {

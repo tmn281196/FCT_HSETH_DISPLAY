@@ -1205,7 +1205,7 @@ namespace VTMControls.DeviceControl
                         DetectedString = data;
                         brightness.IsPass = IsPass;
                         var cropImage = VisionModel.MatToBitmapSource(processedBitmap);
-                        CropImageHolder.Dispatcher.BeginInvoke(new Action(() => CropImageHolder.Source = cropImage));
+                        _ = CropImageHolder.Dispatcher.BeginInvoke(new Action(() => CropImageHolder.Source = cropImage));
                         CropImage = cropImage;
                     }
                     if (i % 100 == 0)
@@ -1251,8 +1251,6 @@ namespace VTMControls.DeviceControl
             Mat blurgreen = blurred.Threshold(50, 255, ThresholdTypes.Binary);
             blurred.Dispose();
             blurgreen.Dispose();
-            OpenCvSharp.Point[][] contour;
-            HierarchyIndex[] hierarchy;
             List<OpenCvSharp.Rect> digitContour = new List<OpenCvSharp.Rect>();
 
             Mat moutput = edge.CvtColor(ColorConversionCodes.GRAY2RGB);
