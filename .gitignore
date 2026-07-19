@@ -400,3 +400,8 @@ FodyWeavers.xsd
 # Claude Code local state (temp worktrees + personal settings)
 .claude/worktrees/
 .claude/settings.local.json
+
+# ML.NET model artifacts (unused leftover; the 91MB MLModel.zip must never be tracked)
+MLModel.zip
+MLModel.*.cs
+**/Models/MLModel.zip
