@@ -20,19 +20,16 @@ namespace VTMBase
         public int TplWidth { get; set; }
         public int TplHeight { get; set; }
 
-        // Runtime scoring result (NOT serialized) - used for realtime UI coloring. The model is saved with
-        // System.Text.Json, so it needs the System.Text.Json attribute; the Newtonsoft one covers the Revert
-        // snapshot. Without both, the last pass/fail gets written to the model and reloads pre-colored.
-        [Newtonsoft.Json.JsonIgnore]
+        // Runtime scoring result (NOT serialized) - used for realtime UI coloring. Both the model save AND the
+        // Revert snapshot now go through System.Text.Json (Utility.Extensions), so only its JsonIgnore is needed.
+        // Without it, the last pass/fail gets written to the model and reloads pre-colored.
         [System.Text.Json.Serialization.JsonIgnore]
         public bool? LastPass { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public double? LastScore { get; set; }
 
         // Transient bench-tuning flag (NOT serialized): in CHECK mode the user left-clicks ROIs to
         // designate them (✓); the stop-on-pass flag freezes capture once all designated ROIs pass.
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public bool StopChecked { get; set; }
     }

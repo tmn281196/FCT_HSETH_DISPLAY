@@ -14,7 +14,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -27,7 +27,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Label
@@ -40,101 +39,49 @@
                 FontSize="20"
                 FontWeight="Bold"
                 Foreground="Black" />
-            <Label
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="12,0,0,0"
-                Padding="0"
-                VerticalAlignment="Center"
-                Content="{Binding DetectedString}"
-                ContentStringFormat="Detect string: {0}"
-                Foreground="Black" />
-            <Label
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="12,0,0,0"
-                Padding="0"
-                VerticalAlignment="Center"
-                Content="{Binding SpectString}"
-                ContentStringFormat="Spect string: {0}"
-                Foreground="Black" />
-            <Ellipse
-                Grid.Row="0"
-                Grid.RowSpan="2"
-                Grid.Column="2"
-                Width="20"
-                Height="20"
-                VerticalAlignment="Center">
-                <Ellipse.Style>
-                    <Style TargetType="Ellipse">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsPass}" Value="True">
-                                <Setter Property="Fill" Value="Green" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsPass}" Value="False">
-                                <Setter Property="Fill" Value="Red" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Ellipse.Style>
-            </Ellipse>
+
+     
         </Grid>
 
         <Image
-            Grid.Row="1"
-            Margin="5,0,5,5"
+            Grid.Row="2"
+            Margin="0 5"
             Source="{Binding CropImage}" />
 
         <!-- Parameters: label in a fixed left column, control right-aligned - everything lines up. -->
-        <Grid Grid.Row="2" Margin="10,4,10,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <!-- Brightness Threshold / Noise size filter / Blur removed at user request. The detection still reads
-                 the component's Threshold/NoiseSize/Blur (from the saved model / defaults) - only the manual tuning
-                 spinners and their handlers are gone, so existing models keep their tuned values. -->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="34" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid Grid.Row="1" >
+       
 
-            <Label
-                Grid.Row="0"
-                Grid.Column="0"
-                Padding="0"
-                VerticalAlignment="Center"
-                Content="Spect string"
-                Foreground="Black" />
-            <TextBox
-                Grid.Row="0"
-                Grid.Column="1"
-                Height="26"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                FontSize="15"
-                TextChanged="SpectText_TextChanged"
-                Text="{Binding SpectString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel  Grid.Row="0"  Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Height="25" Foreground="White" Width="100" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding DetectedString}" HorizontalContentAlignment="Center">
+                    <!-- Bar colour = pass/fail state (replaces the removed dot): green when the detected string matches
+                         the expected value, red otherwise. -->
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="Background" Value="#C62828" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                                    <Setter Property="Background" Value="#2E7D32" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <Button      
+       Height="25"
+    
+       Padding="10,0"
+       HorizontalAlignment="Center"
+       Cursor="Hand"
+       Click="CopyDetectToOper_Click"
+       ToolTip="Copy the detected string into Oper (step expected value) and the Spect string">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconBlock Icon="Check" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <TextBlock Text="Apply to Spec" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 
-            <!-- Copy the live detected string into BOTH this component's Spect string AND the step's Oper (the latter
-                 raised as an event to VisionPage, which owns the step). Same "teach expected value" action as the
-                 FND/LED Copy-to-Oper buttons. -->
-            <Button
-                Grid.Row="1"
-                Grid.ColumnSpan="2"
-                Height="28"
-                Margin="0,8,0,0"
-                Padding="24,0"
-                HorizontalAlignment="Center"
-                Cursor="Hand"
-                Click="CopyDetectToOper_Click"
-                ToolTip="Copy the detected string into Oper (step expected value) and the Spect string">
-                <StackPanel Orientation="Horizontal">
-                    <fa:IconBlock Icon="Copy" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" />
-                    <TextBlock Text="Copy detect to Oper + Spect" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
         </Grid>
     </Grid>
 </UserControl>

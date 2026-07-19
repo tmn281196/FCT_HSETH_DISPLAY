@@ -1,0 +1,848 @@
+﻿<Window
+    x:Class="VTMTester.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cc="clr-namespace:Controls;assembly=Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTMTester"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    Title="DISPLAY FUNCTION TESTER"
+    Width="1920"
+    Height="1080"
+    MaxHeight="1100"
+    AllowsTransparency="True"
+    Background="Black"
+    BorderThickness="0"
+    Loaded="Window_Loaded"
+    ResizeMode="CanResize"
+    SnapsToDevicePixels="True"
+    SourceInitialized="window_SourceInitialized"
+    WindowState="Maximized"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CSS/FlatStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="6">
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!--  Title  -->
+            <Grid
+                x:Name="TittleBar"
+                Grid.Column="1"
+                Margin="0"
+                Background="#e6e6e6"
+                MouseDown="Window_MouseDown">
+                <!-- title | About | Minimize | Close. The maximize/restore button is permanently Collapsed, so it
+                     gets NO column of its own - leaving its 35px column here was the empty gap between min and close. -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="35" />
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.ColumnSpan="4" MouseDown="Window_MouseDown">
+                    <TextBlock
+                        Margin="0,6,0,6"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        FontWeight="DemiBold"
+                        Foreground="Black"
+                        SnapsToDevicePixels="True"
+                        Text="DISPLAY FUNCTION TESTER"/>
+                </DockPanel>
+
+                <!-- Version + About merged into ONE button: "Version X.Y (i)". Click opens the About dialog.
+                     lbAppVersion text is set in code from AppInfo.Version. Column is Auto to fit the text. -->
+                <Button
+                    x:Name="btAbout"
+                    Grid.Column="1"
+                    Padding="10,0"
+                    Background="#000000ff"
+                    BorderThickness="0"
+                    Click="btAbout_Click"
+                    Foreground="{x:Null}"
+                    Cursor="Hand" ToolTip="About / version"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="lbAppVersion" VerticalAlignment="Center" Margin="0,0,7,0"
+                                       FontSize="13" FontWeight="Bold" Foreground="#555555" />
+                            <fa:IconBlock Icon="CircleInfo" FontSize="18" Foreground="Black"
+                                          VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
+                <Button
+                    x:Name="btCloseWindow"
+                    Grid.Column="3"
+                    Background ="#000000ff"
+                    BorderThickness="0"
+                    Click="btCloseWindow_Click"
+                    Foreground="{x:Null}"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+                    <Button.Content>
+                        <TextBlock  Foreground="Black" FontSize="25"> ✕</TextBlock>
+                    </Button.Content>
+                </Button>
+                <!-- (removed) the maximize/restore toggle. This is a full-screen machine UI - the window opens
+                     Maximized and the only sensible states are full screen or minimised to the taskbar. Letting
+                     an operator restore it down just hid half the test view behind other windows. Minimise + close
+                     remain. -->
+                <Button
+                    x:Name="btMaximizeWindow"
+                    Grid.Column="3"
+                    Visibility="Collapsed"
+                    BorderThickness="0"
+                    Background ="#000000ff"
+                    Click="btMaximizeWindow_Click"
+                    Foreground="{x:Null}"
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+
+                    <Button.Content>
+                        <TextBlock  Foreground="Black" FontSize="25" VerticalAlignment="Stretch" > 🗖</TextBlock>
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="btMinimizeWindow"
+                    Grid.Column="2"
+                    Background ="#000000ff"
+                    BorderThickness="0"
+                    Click="btMinimizeWindow_Click"
+                    Foreground="{x:Null}"                    
+                    Template="{DynamicResource ButtonControlNonHoverBackground}">
+
+                    <Button.Content >
+                        <TextBlock  Foreground="Black" FontSize="25">🗕</TextBlock>
+                    </Button.Content>
+                </Button>
+            </Grid>
+
+            <!--  Main window  -->
+            <!--  Menu Bar  -->
+            <StackPanel
+                x:Name="MenuPanel"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+
+                Width="50"
+                d:Width="130"
+                Background="#003a71">
+                <!--<StackPanel.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard AutoReverse="False">
+                                <DoubleAnimation To="130"
+                                            AccelerationRatio="0.9" SpeedRatio="4"
+                                            Storyboard.TargetName="MenuPanel"
+                                            Storyboard.TargetProperty="Width" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+
+                    <EventTrigger RoutedEvent="FrameworkElement.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard AutoReverse="False">
+                                <DoubleAnimation To="50"
+                                            AccelerationRatio="0.9" SpeedRatio="4"
+                                            Storyboard.TargetName="MenuPanel"
+                                            Storyboard.TargetProperty="Width" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </StackPanel.Triggers>-->
+
+
+                <Button
+                    x:Name="btOpenModel"
+                    Height="40"
+                    Margin="0,0,0,0"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Background="{x:Null}"
+                    BorderThickness="0"
+                    Click="btOpenModel_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{DynamicResource ButtonControlNonHoverEffect}">
+
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage  Margin="2" Icon="FolderOpen" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open model"
+                            FontSize="12"
+                            FontWeight="Light"
+                            Foreground="White" />
+                    </Grid>
+                </Button>
+                <!-- "Recent models" dropdown-arrow button removed at user request ("don't need that arrow").
+                     It had no Click handler and no code-behind references - purely a dead affordance. -->
+                
+
+                <ToggleButton
+                    x:Name="btAutoPage"
+                    Margin="0,0,0,0"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage  Margin="2" Icon="Display" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Auto"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+
+                <ToggleButton
+                    x:Name="btManualPage"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <fa:IconImage  Margin="2" Icon="ComputerMouse" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Manual"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+
+                <ToggleButton
+                    x:Name="btModelPage"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage  Margin="2" Icon="Edit" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Model Edit"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+
+                <ToggleButton
+                    x:Name="btVisionPage"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage  Margin="2" Icon="EyeLowVision" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Model Vision"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton
+                    x:Name="btSoundPage"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage Margin="2" Icon="EarListen" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Sound Processing"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton
+                    x:Name="btSettingPage"
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Click="btSelectPage_Click"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    Template="{StaticResource ToggleButton}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage  Margin="2" Icon="Gear" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Setting"
+                            FontSize="12"
+                            Foreground="WhiteSmoke" />
+                    </Grid>
+                </ToggleButton>
+            </StackPanel>
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Width="50"
+                Margin="0"
+                VerticalAlignment="Bottom">
+                <!-- Check device connections - bottom-left corner, FLUSH with the window bottom (spans into the
+                     status-bar row); height = status bar (30px). -->
+                <Button
+                    x:Name="btCheckCommunications"
+                    Height="30"
+                    Padding="5,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Background="{x:Null}"
+                    BorderThickness="0"
+                    Click="btCheckCommunications_Click"
+                    IsEnabledChanged="btCheckCommunications_IsEnabledChanged"
+                    FontSize="14"
+                    Foreground="#FF109322"
+                    ToolTip="Check device connections"
+                    Template="{DynamicResource ButtonControlNonHoverEffect}">
+                    <Grid Margin="0" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <fa:IconImage Margin="2" Icon="PowerOff"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="20"/>
+                        <Label Grid.Column="1" Margin="5,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Content="Power" FontSize="12" FontWeight="Light" Foreground="White" />
+                    </Grid>
+                </Button>
+                
+            </StackPanel>
+            <!--  Pages  -->
+            <Frame
+                x:Name="AutoPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Navigated="AutoPageHolder_Navigated" />
+            <Frame
+                x:Name="ManualPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Visibility="Hidden" />
+            <Frame
+                x:Name="ModelPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Visibility="Hidden" />
+            <Frame
+                x:Name="VisionPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Visibility="Hidden" />
+            <Frame
+                x:Name="SoundPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Visibility="Hidden" />
+            <Frame
+                x:Name="SettingPageHolder"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5,5,5,5"
+                JournalOwnership="UsesParentJournal"
+                Visibility="Hidden" />
+
+            <!--  Status Bar  -->
+            <DockPanel
+                Grid.Row="3"
+                Grid.Column="2"
+                Grid.ColumnSpan="2"
+                Height="30"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Background="#e6e6e6">
+                <!-- Margin, not Padding: a StackPanel has none. Keeps the device chips off the Check button on
+                     the left and off the empty filler on the right, so the block reads as its own group. -->
+                <StackPanel
+                    DockPanel.Dock="Left"
+                    x:Name="stackpanelComunication"
+                    Margin="10,0,16,0"
+                    VerticalAlignment="Stretch"
+                    Orientation="Horizontal">
+                    <!-- Check-connections button moved to the sidebar (MenuPanel). The device status chips are still
+                         added to this StackPanel at runtime. -->
+                </StackPanel>
+
+                <!-- Bench tools moved here from the AutoPage Diagnostic Log header (user request). Lock toggle
+                     (default locked = red padlock) keeps FAKE SCAN / -1 FAIL disabled so a stray click on a
+                     production screen can't fire them. Both actions are delegated to the Auto page. -->
+                <StackPanel
+                    DockPanel.Dock="Left"
+                    x:Name="pnlBenchTools"
+                    Margin="0,0,16,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <ToggleButton
+                        x:Name="btnBenchLock"
+                        Margin="0,0,8,0"
+                        Padding="3,0"
+                        Cursor="Hand"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        VerticalAlignment="Center"
+                        ToolTip="Lock / unlock the FAKE SCAN and -1 FAIL buttons">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                        <fa:IconBlock FontSize="14">
+                            <fa:IconBlock.Style>
+                                <Style TargetType="fa:IconBlock">
+                                    <Setter Property="Icon" Value="Lock" />
+                                    <Setter Property="Foreground" Value="#C0392B" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=btnBenchLock}" Value="True">
+                                            <Setter Property="Icon" Value="LockOpen" />
+                                            <Setter Property="Foreground" Value="#2E7D32" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </fa:IconBlock.Style>
+                        </fa:IconBlock>
+                    </ToggleButton>
+                    <Button
+                        x:Name="btnFakeScan"
+                        Height="20"
+                        Width="75"
+                        Margin="0,0,8,0"
+                        Cursor="Hand"
+                        Content="FAKE SCAN"
+                        FontSize="10"
+                        IsEnabled="{Binding IsChecked, ElementName=btnBenchLock}"
+                        Click="Bench_FakeScan_Click"
+                        ToolTip="Simulate a barcode scan (no scanner needed). Results are NOT exported." />
+                    <Button
+                        x:Name="btnMinusFail"
+                        Height="20"
+                        Width="55"
+                        Margin="0,0,8,0"
+                        Cursor="Hand"
+                        Content="-1 FAIL"
+                        FontSize="10"
+                        IsEnabled="{Binding IsChecked, ElementName=btnBenchLock}"
+                        Click="Bench_MinusFail_Click"
+                        ToolTip="Subtract one from the FAIL count (miscount correction)" />
+                </StackPanel>
+
+                <!--<TextBlock
+                    Height="Auto"
+                    Margin="0,0,10,0"
+                    Padding="10,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    DockPanel.Dock="Right"
+                    FontWeight="Bold"
+                    Foreground="#FFD1D1D1"><Run Text="T.N.G Tech" />-->
+                <!--</TextBlock>-->
+
+                <!--<Image
+                    Width="30"
+                    DockPanel.Dock="Right"
+                    Source="img/TNG Logo.png" />-->
+
+             
+
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"  >
+
+                    <!-- Log-directory warning. Collapsed unless the export directory is unreachable; this
+                         replaces the old startup MessageBox, so it must stay visible the whole session
+                         rather than fire once and be dismissed. -->
+                    <Border x:Name="LogDirWarnPanel" Visibility="Collapsed"
+                            Margin="0,2,15,2" Padding="5,0"
+                            Background="#FFEBEE" BorderBrush="#D32F2F" BorderThickness="1"
+                            CornerRadius="3" VerticalAlignment="Center">
+                        <TextBlock x:Name="lbLogDirWarn" FontSize="10" FontWeight="Bold"
+                                   Foreground="#D32F2F" VerticalAlignment="Center" />
+                    </Border>
+
+                    <!-- Machine IO indicators: SDOWN / START / STOP (IN) + Main (OUT) - ben TRAI Version.
+                         All of these bind to SystemMachineIO, whose DataContext is set once on this panel
+                         (MainWindow.xaml.cs). Anything added here inherits it; anything added outside binds to null. -->
+                    <StackPanel x:Name="CylinderIoPanel" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,15,0">
+
+                        <!-- INPUT: SDOWN sensor -->
+                        <Border Margin="0,2,6,2" Padding="4,0"
+                                Background="#F0F0F0" BorderBrush="#B0B0B0" BorderThickness="1"
+                                CornerRadius="3" VerticalAlignment="Center"
+                                ToolTip="SS_DOWN sensor (Arduino -> software)">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#1976D2" CornerRadius="2" Padding="3,0" Margin="0,0,4,0" VerticalAlignment="Center">
+                                    <TextBlock Text="IN" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="SDOWN" FontSize="10" Foreground="#333333"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBlock Text="&#x23EC;" FontFamily="Segoe UI Symbol" FontSize="14" FontWeight="Bold"
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#888888"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SS_DOWN}" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- INPUT: START button (manual). Momentary: the board sends both the press and the
+                             release, so this lights only while the operator holds it. Unlike SDOWN it is never
+                             re-sent by the firmware polling, so treat it as an event blink, not a live state. -->
+                        <Border Margin="0,2,6,2" Padding="4,0"
+                                Background="#F0F0F0" BorderBrush="#B0B0B0" BorderThickness="1"
+                                CornerRadius="3" VerticalAlignment="Center"
+                                ToolTip="START button (Arduino -> software). Lights while held.">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#1976D2" CornerRadius="2" Padding="3,0" Margin="0,0,4,0" VerticalAlignment="Center">
+                                    <TextBlock Text="IN" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="START" FontSize="10" Foreground="#333333"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBlock Text="&#x25B6;" FontFamily="Segoe UI Symbol" FontSize="12" FontWeight="Bold"
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#888888"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BTN_START_MANUAL}" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- INPUT: STOP button (stops both auto and manual). Same momentary caveat as START. -->
+                        <Border Margin="0,2,6,2" Padding="4,0"
+                                Background="#F0F0F0" BorderBrush="#B0B0B0" BorderThickness="1"
+                                CornerRadius="3" VerticalAlignment="Center"
+                                ToolTip="STOP button (Arduino -> software). Lights while held.">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#1976D2" CornerRadius="2" Padding="3,0" Margin="0,0,4,0" VerticalAlignment="Center">
+                                    <TextBlock Text="IN" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="STOP" FontSize="10" Foreground="#333333"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBlock Text="&#x25A0;" FontFamily="Segoe UI Symbol" FontSize="12" FontWeight="Bold"
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#888888"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BTN_STOP_ALL}" Value="True">
+                                                    <Setter Property="Foreground" Value="#D32F2F"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- OUTPUT: Main cylinder command -->
+                        <Border Margin="0,2,0,2" Padding="4,0"
+                                Background="#F0F0F0" BorderBrush="#B0B0B0" BorderThickness="1"
+                                CornerRadius="3" VerticalAlignment="Center"
+                                ToolTip="Main cylinder command (software -> Arduino): UP or DOWN">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#F57C00" CornerRadius="2" Padding="3,0" Margin="0,0,4,0" VerticalAlignment="Center">
+                                    <TextBlock Text="OUT" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="MAIN" FontSize="10" Foreground="#333333"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBlock FontFamily="Segoe UI Symbol" FontSize="14" FontWeight="Bold"
+                                           VerticalAlignment="Center" Foreground="LimeGreen">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="&#x23EC;"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding MainUP}" Value="True">
+                                                    <Setter Property="Text" Value="&#x23EB;"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- OUTPUT: power / buzzer / tower-lamp indicators (Font Awesome glyphs, coloured by state).
+                             Read-only - they mirror the commanded output (SystemMachineIO.AC110/AC220/BUZZER/LPR/LPY/
+                             LPG), same DataContext as the panel. Grouped into one badge to keep the bottom-bar width down. -->
+                        <Border Margin="0,2,0,2" Padding="4,1"
+                                Background="#F0F0F0" BorderBrush="#B0B0B0" BorderThickness="1"
+                                CornerRadius="3" VerticalAlignment="Center"
+                                ToolTip="Outputs (software -> Arduino): 110V / 220V / Buzzer / Tower lamp Red-Yellow-Green">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#F57C00" CornerRadius="2" Padding="3,0" Margin="0,0,6,0" VerticalAlignment="Center">
+                                    <TextBlock Text="OUT" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+
+                                <!-- 110V -->
+                                <fa:IconBlock Icon="Bolt" FontSize="12" VerticalAlignment="Center" ToolTip="AC 110V">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AC110}" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+                                <TextBlock Text="110" FontSize="10" Foreground="#333333" VerticalAlignment="Center" Margin="1,0,8,0"/>
+
+                                <!-- 220V -->
+                                <fa:IconBlock Icon="Bolt" FontSize="12" VerticalAlignment="Center" ToolTip="AC 220V">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AC220}" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+                                <TextBlock Text="220" FontSize="10" Foreground="#333333" VerticalAlignment="Center" Margin="1,0,8,0"/>
+
+                                <!-- Buzzer -->
+                                <fa:IconBlock Icon="Bell" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="Buzzer">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BUZZER}" Value="True">
+                                                    <Setter Property="Foreground" Value="#F57C00"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+
+                                <!-- Tower lamp Red / Yellow / Green -->
+                                <fa:IconBlock Icon="Lightbulb" FontSize="12" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Tower lamp RED">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding LPR}" Value="True">
+                                                    <Setter Property="Foreground" Value="#E53935"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+                                <fa:IconBlock Icon="Lightbulb" FontSize="12" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Tower lamp YELLOW">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding LPY}" Value="True">
+                                                    <Setter Property="Foreground" Value="#FBC02D"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+                                <fa:IconBlock Icon="Lightbulb" FontSize="12" VerticalAlignment="Center" ToolTip="Tower lamp GREEN">
+                                    <fa:IconBlock.Style>
+                                        <Style TargetType="fa:IconBlock">
+                                            <Setter Property="Foreground" Value="#C8C8C8"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding LPG}" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </fa:IconBlock.Style>
+                                </fa:IconBlock>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <!-- App version (lbAppVersion) moved up to the title bar at user request. -->
+
+                    <TextBlock
+                    x:Name="tbDateTime"
+                    Height="Auto"
+                    Margin="0,4,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    FontWeight="Bold"
+                    Foreground="Black" />
+
+                    <Label
+                    x:Name="lbDateTime"
+                    Height="Auto"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    ContentStringFormat="Date time: {0}"
+                    FontWeight="Bold"
+                    Foreground="Black" />
+                    <Label />
+
+                </StackPanel>
+                
+                <TextBlock
+                   DockPanel.Dock="Left"
+                   Width="Auto" 
+                   Height="Auto"
+                   Margin="0,0,20,0"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Center"
+                   Background="{x:Null}"
+                   Foreground="Black"
+                   FontWeight="Bold"
+                   Text="" />
+            </DockPanel>
+        </Grid>
+        <Grid
+            x:Name="pnLoading"
+            Margin="50,30,0,30"
+            Background="#71000000"
+            Visibility="Collapsed">
+            <Label
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Loading..."
+                FontSize="30"
+                Foreground="WhiteSmoke" />
+        </Grid>
+    </Grid>
+</Window>

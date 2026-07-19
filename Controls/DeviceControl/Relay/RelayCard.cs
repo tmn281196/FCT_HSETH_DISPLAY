@@ -147,12 +147,10 @@ namespace Controls
                     data |= 1;
                 }
             }
-            Console.WriteLine("- {0}- ", Convert.ToString(data, 2).PadLeft(64, '0'));
             var bytes = BitConverter.GetBytes(data);
             for (int i = cardChannel.Length - 1 ; i >= 1 ; i--)
             {
                 cardChannel[i] = bytes[cardChannel.Length - 1 - i];
-                Console.WriteLine("byte {0} : {1}", i, Convert.ToString(cardChannel[i], 2));
             }
 
             return SerialPort.SendToControls(cardChannel, 500, new byte[] { 0x52, 0x00 });
@@ -172,7 +170,6 @@ namespace Controls
             for (int i = cardChannel.Length - 1; i >= 1; i--)
             {
                 cardChannel[i] = bytes[cardChannel.Length - 1 - i];
-                Console.WriteLine("byte {0} : {1}", i, Convert.ToString(cardChannel[i], 2));
             }
 
             return SerialPort.SendToControls(cardChannel, 500, new byte[] { 0x52, 0x00 });

@@ -281,11 +281,7 @@ namespace Controls
         public void SendBytes(byte[] buf, bool logTx = true)
         {
             if (Port == null) { return; }
-            Tx.Dispatcher.Invoke(new Action(() =>
-            {
-                Tx.Fill = new SolidColorBrush(Colors.Yellow);
-                txTimer.Start();
-            }), DispatcherPriority.Normal);
+            SerialSend();
             try
             {
                 if (Port.IsOpen)
@@ -303,11 +299,7 @@ namespace Controls
         public void SendToControls(byte[] buf, bool IsNoSize = false)
         {
             if (Port == null) { return; }
-            Tx.Dispatcher.Invoke(new Action(() =>
-            {
-                Tx.Fill = new SolidColorBrush(Colors.Yellow);
-                txTimer.Start();
-            }), DispatcherPriority.Normal);
+            SerialSend();
             try
             {
                 if (Port.IsOpen)
@@ -617,11 +609,7 @@ namespace Controls
                     port.ReadTimeout = TimeOut;
                     port.Write(DATA_ASK + "\r\n");
                     Console.WriteLine("Send:\t " + DATA_ASK);
-                    Tx.Dispatcher.Invoke(new Action(() =>
-                    {
-                        Tx.Fill = new SolidColorBrush(Colors.Yellow);
-                        txTimer.Start();
-                    }), DispatcherPriority.Normal);
+                    SerialSend();
                     await Task.Delay(100);
                     string answerString = "No anwser";
                     try

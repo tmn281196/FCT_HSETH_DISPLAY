@@ -3,8 +3,8 @@ using Utility;
 // Models are saved with System.Text.Json (Extensions.ConvertToJson -> AutoPage.LoadModel), so [JsonIgnore] must
 // resolve to ITS attribute. This used to be "using Newtonsoft.Json;", which made every [JsonIgnore] below a
 // Newtonsoft attribute that System.Text.Json does not understand - so all the runtime-only fields marked below
-// were being written into every .vmdl anyway. Step is never serialized by Newtonsoft (its only use in this repo
-// is the SoundStepConfig revert snapshot in SoundPage), so nothing here needs the Newtonsoft attribute.
+// were being written into every .vmdl anyway. Newtonsoft has since been removed from the whole solution (the
+// SoundStepConfig revert snapshot now also uses System.Text.Json), so STJ's JsonIgnore is the only one that exists.
 using System.Text.Json.Serialization;
 using OpenCvSharp.Flann;
 using System;

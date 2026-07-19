@@ -735,7 +735,7 @@ namespace Camera
 
         public SingleGLED()
         {
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;
@@ -803,7 +803,7 @@ namespace Camera
             Name = "G" + (index + 1);
             Index = index;
 
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;

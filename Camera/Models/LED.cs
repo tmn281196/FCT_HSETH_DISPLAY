@@ -1,5 +1,4 @@
 ﻿using Neodynamic.SDK.Printing;
-using Newtonsoft.Json.Linq;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System;
@@ -781,7 +780,7 @@ namespace Camera
 
             Label.Content = grid;
 
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;
@@ -813,7 +812,7 @@ namespace Camera
             Name = index.ToString();
             Index = index;
 
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.MouseUp -= Label_MouseUp;
 

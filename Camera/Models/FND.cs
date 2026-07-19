@@ -280,8 +280,8 @@ namespace Camera
 
         public Label Label = new Label()
         {
-            // FND ROI box: no border colour, translucent WHITE backdrop (~0.3) so the segment probes stand out.
-            Background = new SolidColorBrush(Color.FromArgb(77, 255, 255, 255)),
+            // FND ROI box: no border colour, faint translucent WHITE backdrop (~0.2) so the segment probes stand out.
+            Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.Red),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             // 0 thickness/padding so the dark background fills rect EXACTLY - a 1px (transparent) border used to inset
@@ -298,7 +298,7 @@ namespace Camera
 
         public Label LabelTopLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -311,7 +311,7 @@ namespace Camera
 
         public Label LabelTopMid = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -324,7 +324,7 @@ namespace Camera
 
         public Label LabelTopRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -337,7 +337,7 @@ namespace Camera
 
         public Label LabelMidLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -350,7 +350,7 @@ namespace Camera
 
         public Label LabelMidRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -363,7 +363,7 @@ namespace Camera
 
         public Label LabelBotLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -376,7 +376,7 @@ namespace Camera
 
         public Label LabelBotMid = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -389,7 +389,7 @@ namespace Camera
 
         public Label LabelBotRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -538,7 +538,7 @@ namespace Camera
 
         public FND()
         {
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;
@@ -622,7 +622,7 @@ namespace Camera
 
             PointSegments.Arrange7Segment(VisionModel.FND_DIAMETER_POINT, rect);
 
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;

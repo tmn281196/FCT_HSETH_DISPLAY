@@ -921,6 +921,18 @@ namespace Controls
             }
         }
 
+        // The RATE S/M/F wire command is identical for every DMM mode; only the cached per-mode rate field differs.
+        // Extracted from the six byte-identical inner switches that used to live in ChangeRate.
+        private void SendRateCommand(DMM_Rate rate)
+        {
+            switch (rate)
+            {
+                case DMM_Rate.SLOW: Send("SENSe:DETector:RATE S"); break;
+                case DMM_Rate.MID: Send("SENSe:DETector:RATE M"); break;
+                case DMM_Rate.FAST: Send("SENSe:DETector:RATE F"); break;
+            }
+        }
+
         public void ChangeRate(DMM_Rate _Rate)
         {
             switch (Mode)
@@ -931,22 +943,7 @@ namespace Controls
                     if (_Rate != DCrate)
                     {
                         DCrate = _Rate;
-                        switch (_Rate)
-                        {
-                            case DMM_Rate.NONE:
-                                break;
-                            case DMM_Rate.SLOW:
-                                Send("SENSe:DETector:RATE S");
-                                break;
-                            case DMM_Rate.MID:
-                                Send("SENSe:DETector:RATE M");
-                                break;
-                            case DMM_Rate.FAST:
-                                Send("SENSe:DETector:RATE F");
-                                break;
-                            default:
-                                break;
-                        }
+                        SendRateCommand(_Rate);
                         Task.Delay(500).Wait();
                     }
                     break;
@@ -954,22 +951,7 @@ namespace Controls
                     if (_Rate != ACrate)
                     {
                         ACrate = _Rate;
-                        switch (_Rate)
-                        {
-                            case DMM_Rate.NONE:
-                                break;
-                            case DMM_Rate.SLOW:
-                                Send("SENSe:DETector:RATE S");
-                                break;
-                            case DMM_Rate.MID:
-                                Send("SENSe:DETector:RATE M");
-                                break;
-                            case DMM_Rate.FAST:
-                                Send("SENSe:DETector:RATE F");
-                                break;
-                            default:
-                                break;
-                        }
+                        SendRateCommand(_Rate);
                         Task.Delay(500).Wait();
 
                     }
@@ -978,22 +960,7 @@ namespace Controls
                     if (_Rate != FREQrate)
                     {
                         FREQrate = _Rate;
-                        switch (_Rate)
-                        {
-                            case DMM_Rate.NONE:
-                                break;
-                            case DMM_Rate.SLOW:
-                                Send("SENSe:DETector:RATE S");
-                                break;
-                            case DMM_Rate.MID:
-                                Send("SENSe:DETector:RATE M");
-                                break;
-                            case DMM_Rate.FAST:
-                                Send("SENSe:DETector:RATE F");
-                                break;
-                            default:
-                                break;
-                        }
+                        SendRateCommand(_Rate);
                         Task.Delay(500).Wait();
 
                     }
@@ -1002,22 +969,7 @@ namespace Controls
                     if (_Rate != RESrate)
                     {
                         RESrate = _Rate;
-                        switch (_Rate)
-                        {
-                            case DMM_Rate.NONE:
-                                break;
-                            case DMM_Rate.SLOW:
-                                Send("SENSe:DETector:RATE S");
-                                break;
-                            case DMM_Rate.MID:
-                                Send("SENSe:DETector:RATE M");
-                                break;
-                            case DMM_Rate.FAST:
-                                Send("SENSe:DETector:RATE F");
-                                break;
-                            default:
-                                break;
-                        }
+                        SendRateCommand(_Rate);
                         Task.Delay(500).Wait();
 
                     }
@@ -1026,22 +978,7 @@ namespace Controls
                     if (_Rate != DIODErate)
                     {
                         DIODErate = _Rate;
-                        switch (_Rate)
-                        {
-                            case DMM_Rate.NONE:
-                                break;
-                            case DMM_Rate.SLOW:
-                                Send("SENSe:DETector:RATE S");
-                                break;
-                            case DMM_Rate.MID:
-                                Send("SENSe:DETector:RATE M");
-                                break;
-                            case DMM_Rate.FAST:
-                                Send("SENSe:DETector:RATE F");
-                                break;
-                            default:
-                                break;
-                        }
+                        SendRateCommand(_Rate);
                         Task.Delay(500).Wait();
                     }
                     break;

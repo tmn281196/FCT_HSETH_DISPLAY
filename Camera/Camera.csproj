@@ -139,17 +139,14 @@
     <PackageReference Include="DirectShowLib">
       <Version>1.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Extended.Wpf.Toolkit">
-      <Version>5.1.2</Version>
-    </PackageReference>
-    <PackageReference Include="FontAwesome.Sharp.Pro">
+    <!-- Free FontAwesome.Sharp provides the fa: xmlns (IconImage/IconBlock) for this project's XAML. It replaced
+         FontAwesome.Sharp.Pro (removed 2026-07-19 as redundant) - Camera had ONLY the Pro package before, so the
+         xmlns came from Pro; the free package supplies the same types and every icon this project uses. -->
+    <PackageReference Include="FontAwesome.Sharp">
       <Version>6.6.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
       <Version>10.0.10</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.4</Version>
     </PackageReference>
     <PackageReference Include="OpenCvSharp4">
       <Version>4.13.0.20260627</Version>

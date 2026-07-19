@@ -84,8 +84,8 @@ namespace Camera
                     _DetectedString = value;
                     OnPropertyChanged("DetectedString");
                     IsPass = DetectedString == SpectString;
-                    Label.Dispatcher.BeginInvoke(new Action(() =>
-                        Label.Content = value   // only the detected string (shown white); no "LCD1:" prefix
+                    DetectCaption.Dispatcher.BeginInvoke(new Action(() =>
+                        DetectCaption.Content = value   // detected string shown ABOVE the box (see DetectCaption)
                     ));
                 }
                 OnPropertyChanged("IsPass");
@@ -226,6 +226,7 @@ namespace Camera
             {
                 if (value != _Visibility) _Visibility = value;
                 Label.Visibility = value;
+                DetectCaption.Visibility = value;   // caption follows the box
                 if (_Visibility != Visibility.Visible)
                 {
                     LabelBotLeft.Visibility = value;
@@ -275,9 +276,9 @@ namespace Camera
 
         public Label Label = new Label()
         {
-            // Match the FND box: translucent WHITE backdrop (~0.3), no border; detected string shows dark so it
+            // Match the FND box: faint translucent WHITE backdrop (~0.2), no border; detected string shows dark so it
             // stays readable on the white backdrop (white-on-white would be invisible).
-            Background = new SolidColorBrush(Color.FromArgb(77, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.Black),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -289,11 +290,27 @@ namespace Camera
             HorizontalContentAlignment = HorizontalAlignment.Left,
         };
 
+        // Detected string shown ABOVE the box (sitting on the top edge), not inside it. White text, no background.
+        // Positioned by SetPosition just above rect.Y; IsHitTestVisible=false so it never steals the mouse from the
+        // box/handles underneath.
+        public Label DetectCaption = new Label()
+        {
+            Background = new SolidColorBrush(Colors.Transparent),
+            Foreground = new SolidColorBrush(Colors.White),
+            BorderThickness = new Thickness(0),
+            Padding = new Thickness(4, 0, 4, 0),
+            Height = 22,
+            FontSize = 13,
+            IsHitTestVisible = false,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+        };
+
         public Image CropImageHolder = new Image();
 
         public Label LabelTopLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -306,7 +323,7 @@ namespace Camera
 
         public Label LabelTopMid = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -319,7 +336,7 @@ namespace Camera
 
         public Label LabelTopRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -332,7 +349,7 @@ namespace Camera
 
         public Label LabelMidLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -345,7 +362,7 @@ namespace Camera
 
         public Label LabelMidRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -358,7 +375,7 @@ namespace Camera
 
         public Label LabelBotLeft = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -371,7 +388,7 @@ namespace Camera
 
         public Label LabelBotMid = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -384,7 +401,7 @@ namespace Camera
 
         public Label LabelBotRight = new Label()
         {
-            Background = new SolidColorBrush(Color.FromArgb(110, 255, 255, 255)),
+            Background = new SolidColorBrush(Color.FromArgb(75, 255, 255, 255)),
             Foreground = new SolidColorBrush(Colors.White),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             BorderThickness = new Thickness(0),
@@ -557,7 +574,7 @@ namespace Camera
 
         public LCD()
         {
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;
@@ -631,7 +648,7 @@ namespace Camera
         {
             rect = new Rect(660, 10 + 31 * index, 100, 30);
             Name = "LCD" + (index + 1);
-            Label.ToolTip = CropImageHolder;
+            Label.ToolTip = null;   // no hover crop-preview tooltip (removed at user request)
 
             Label.GotKeyboardFocus += Label_GotKeyboardFocus;
             Label.LostKeyboardFocus += Label_LostKeyboardFocus;
@@ -704,6 +721,7 @@ namespace Camera
             if (ParentCanvas != null)
             {
                 ParentCanvas.Children.Remove(Label);
+                ParentCanvas.Children.Remove(DetectCaption);
                 ParentCanvas.Children.Remove(LabelTopLeft);
                 ParentCanvas.Children.Remove(LabelTopMid);
                 ParentCanvas.Children.Remove(LabelTopRight);
@@ -720,6 +738,10 @@ namespace Camera
 
             Canvas.SetTop(this.Label, rect.Y);
             Canvas.SetLeft(this.Label, rect.X);
+
+            // Detected-string caption sits on the box's top edge (just above rect.Y), left-aligned with the box.
+            Canvas.SetTop(this.DetectCaption, rect.Y - this.DetectCaption.Height);
+            Canvas.SetLeft(this.DetectCaption, rect.X);
 
             // Handles sit OUTSIDE the box, touching each rect edge/corner (like FND): corner handles meet the corner
             // point, edge handles sit against the far edge centred on it. Keep in sync with the SetPosition() block.
@@ -759,6 +781,7 @@ namespace Camera
             //(LabelBotRight.Parent as Canvas).Children.Clear();
 
             placeCanvas.Children.Add(Label);
+            placeCanvas.Children.Add(DetectCaption);
 
             placeCanvas.Children.Add(LabelTopLeft);
             placeCanvas.Children.Add(LabelTopMid);
@@ -1020,6 +1043,10 @@ namespace Camera
             // stale, drifting the right/bottom handles). Handles key off rect, sitting OUTSIDE and touching each edge.
             Label.Width = rect.Width;
             Label.Height = rect.Height;
+
+            // Detected-string caption sits on the box's top edge (just above rect.Y), left-aligned with the box.
+            Canvas.SetTop(this.DetectCaption, rect.Y - this.DetectCaption.Height);
+            Canvas.SetLeft(this.DetectCaption, rect.X);
 
             const double H = 5;   // handle size (LabelTopLeft.Width/Height)
             Canvas.SetTop(this.LabelTopLeft, rect.Y - H);

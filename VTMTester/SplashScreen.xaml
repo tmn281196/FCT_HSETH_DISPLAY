@@ -1,0 +1,50 @@
+﻿<Window
+    x:Class="VTMTester.SplashScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTMTester"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SplashScreen"
+    Width="1920"
+    Height="1080"
+    AllowsTransparency="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <!-- Viewbox scales the 1920x1080 design to whatever the window size is (set to 50% of the screen in the
+         constructor), so the title/version keep their proportions instead of overflowing a smaller window. -->
+    <Viewbox Stretch="Fill">
+    <Grid Background="#003a71" Width="1920" Height="1080">
+        <Label
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="DISPLAY FUNCTION TESTER"
+            FontSize="120"
+            FontWeight="Bold"
+            Foreground="White"
+            d:LayoutOverrides="Width" />
+        <!-- No Content here on purpose: the version is set from AppInfo.Version in the constructor.
+             A hardcoded one here would be dead text that silently disagrees with the real version. -->
+        <Label
+            x:Name="lbVersion"
+            Margin="1500,660,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontSize="40"
+            FontWeight="Bold"
+            Foreground="White" />
+
+        <!--<Label
+            Margin="1172,418,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="TEST PROGRAM"
+            FontSize="40"
+            FontWeight="Bold"
+            Foreground="White"
+            d:LayoutOverrides="VerticalAlignment" />-->
+       
+    </Grid>
+    </Viewbox>
+</Window>
