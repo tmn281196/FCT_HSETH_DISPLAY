@@ -110,10 +110,10 @@ namespace VTMTester
             txtBoxExcelFileDir.Text = Setting.Communication.LogDirectory;
 
             // Microphone list (WASAPI capture endpoints)
-            var mics = VTMBase.SoundTester.ListMicrophones();
+            var mics = Microphone.List();
             cbbMicrophone.ItemsSource = mics;
             var savedId = Setting.Communication.MicrophoneId;
-            VTMBase.MicDeviceInfo match = null;
+            MicDeviceInfo match = null;
             foreach (var m in mics)
             {
                 if (m.Id == savedId) { match = m; break; }
@@ -269,7 +269,7 @@ namespace VTMTester
                 Setting.Communication.Scan_Parity = parity;
 
                 // Microphone
-                if (cbbMicrophone.SelectedItem is VTMBase.MicDeviceInfo mic)
+                if (cbbMicrophone.SelectedItem is MicDeviceInfo mic)
                 {
                     Setting.Communication.MicrophoneId = mic.Id;
                     Setting.Communication.MicrophoneName = mic.Name;

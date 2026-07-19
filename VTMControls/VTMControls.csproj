@@ -61,6 +61,27 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <!-- NAudio + its transitive Win32/Security deps (mic capture lives in DeviceControl\Microphone). -->
+    <Reference Include="NAudio.Core">
+      <HintPath>..\libs\NAudio\NAudio.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NAudio.Wasapi">
+      <HintPath>..\libs\NAudio\NAudio.Wasapi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry">
+      <HintPath>..\libs\NAudio\Microsoft.Win32.Registry.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.AccessControl">
+      <HintPath>..\libs\NAudio\System.Security.AccessControl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows">
+      <HintPath>..\libs\NAudio\System.Security.Principal.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomControls\DoubleUpDown.xaml.cs">
@@ -108,6 +129,7 @@
     </Compile>
     <Compile Include="DeviceControl\SysIO\SystemMachineIO.cs" />
     <Compile Include="DeviceControl\SysIO\SystemBoard.cs" />
+    <Compile Include="DeviceControl\Microphone\Microphone.cs" />
     <Compile Include="DeviceControl\UUT\UUTPort.cs" />
     <Compile Include="DeviceControl\UUT\UUTPortConfig.xaml.cs">
       <DependentUpon>UUTPortConfig.xaml</DependentUpon>

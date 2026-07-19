@@ -2710,14 +2710,14 @@ namespace VTMBase
                     case "START":
                         if (SoundTester != null)
                         {
-                            SoundTester.MicrophoneId = appSetting?.Communication?.MicrophoneId ?? "";
-                            SoundTester.Start();
+                            SoundTester.Mic.MicrophoneId = appSetting?.Communication?.MicrophoneId ?? "";
+                            SoundTester.Mic.Start();
                         }
                         SetSoundStepPass(step);
                         break;
 
                     case "STOP":
-                        SoundTester?.Stop();
+                        SoundTester?.Mic.Stop();
                         SetSoundStepPass(step);
                         break;
 

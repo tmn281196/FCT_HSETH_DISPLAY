@@ -57,18 +57,18 @@ namespace VTMTester
             set
             {
                 if (value == null || value == _program) return;
-                if (_program?.SoundTester != null)
+                if (_program?.SoundTester?.Mic != null)
                 {
-                    _program.SoundTester.CaptureStarted -= SoundTester_CaptureStarted;
-                    _program.SoundTester.CaptureStopped -= SoundTester_CaptureStopped;
+                    _program.SoundTester.Mic.CaptureStarted -= SoundTester_CaptureStarted;
+                    _program.SoundTester.Mic.CaptureStopped -= SoundTester_CaptureStopped;
                 }
                 if (_program != null) _program.SoundStepStarted -= Program_SoundStepStarted;
                 _program = value;
-                if (_program?.SoundTester != null)
+                if (_program?.SoundTester?.Mic != null)
                 {
-                    _program.SoundTester.CaptureStarted += SoundTester_CaptureStarted;
-                    _program.SoundTester.CaptureStopped += SoundTester_CaptureStopped;
-                    UpdateCaptureUi(_program.SoundTester.IsCapturing);
+                    _program.SoundTester.Mic.CaptureStarted += SoundTester_CaptureStarted;
+                    _program.SoundTester.Mic.CaptureStopped += SoundTester_CaptureStopped;
+                    UpdateCaptureUi(_program.SoundTester.Mic.IsCapturing);
                 }
                 if (_program != null) _program.SoundStepStarted += Program_SoundStepStarted;
                 RefreshDeviceLabel();
@@ -572,7 +572,7 @@ namespace VTMTester
             if (DiagMode || !_userCapture) return;
 
             var tester = _program?.SoundTester;
-            if (tester == null || !tester.IsCapturing) return;
+            if (tester == null || !tester.Mic.IsCapturing) return;
             RenderSpectrogram(tester);
         }
 
@@ -621,7 +621,7 @@ namespace VTMTester
             // Stop-on-pass (flag): only in CHECK mode. Freeze capture the instant the designated ROIs all match.
             if (CheckMode && chkStopOnPass?.IsChecked == true && AllRoisPass())
             {
-                _program?.SoundTester?.Stop();
+                _program?.SoundTester?.Mic?.Stop();
                 txtInfo.Text = "Stopped on match (designated ROIs pass).";
             }
         }
@@ -1195,15 +1195,15 @@ namespace VTMTester
             {
                 if (_program?.SoundTester == null) { txtInfo.Text = "SoundTester not available"; return; }
                 if (StepMode) SaveToStep();
-                _program.SoundTester.MicrophoneId = _program?.appSetting?.Communication?.MicrophoneId ?? "";
+                _program.SoundTester.Mic.MicrophoneId = _program?.appSetting?.Communication?.MicrophoneId ?? "";
                 _userCapture = true;   // mark BEFORE Start (CaptureStarted fires synchronously inside Start)
-                _program.SoundTester.Start();
+                _program.SoundTester.Mic.Start();
 
                 // If Start fails, show the error on the UI
-                if (!_program.SoundTester.IsCapturing)
+                if (!_program.SoundTester.Mic.IsCapturing)
                 {
                     _userCapture = false;
-                    txtInfo.Text = $"MIC ERR: {_program.SoundTester.LastError} - {_program.SoundTester.LastDetail}";
+                    txtInfo.Text = $"MIC ERR: {_program.SoundTester.Mic.LastError} - {_program.SoundTester.Mic.LastDetail}";
                     // Revert toggle
                     btnCaptureToggle.Checked -= btnCaptureToggle_Changed;
                     btnCaptureToggle.Unchecked -= btnCaptureToggle_Changed;
@@ -1219,7 +1219,7 @@ namespace VTMTester
             }
             else
             {
-                _program?.SoundTester?.Stop();
+                _program?.SoundTester?.Mic?.Stop();
                 iconCaptureToggle.Icon = FontAwesome.Sharp.IconChar.Play;
                 txtCaptureToggle.Text = "START";
                 btnCaptureToggle.Background = new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50));

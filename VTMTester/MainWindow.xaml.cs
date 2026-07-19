@@ -322,12 +322,12 @@ namespace VTMTester
             panel.Children.Add(icon);
             panel.Children.Add(new TextBlock { Text = name, FontSize = 10, FontWeight = FontWeights.DemiBold, VerticalAlignment = VerticalAlignment.Center });
 
-            // Icon goes green while SoundTester is capturing
-            UpdateStatusIcon(icon, MainProgram?.SoundTester?.IsCapturing ?? false);
-            if (MainProgram?.SoundTester != null)
+            // Icon goes green while the mic is capturing
+            UpdateStatusIcon(icon, MainProgram?.SoundTester?.Mic?.IsCapturing ?? false);
+            if (MainProgram?.SoundTester?.Mic != null)
             {
-                MainProgram.SoundTester.CaptureStarted += (s, e) => Dispatcher.Invoke(() => UpdateStatusIcon(icon, true));
-                MainProgram.SoundTester.CaptureStopped += (s, e) => Dispatcher.Invoke(() => UpdateStatusIcon(icon, false));
+                MainProgram.SoundTester.Mic.CaptureStarted += (s, e) => Dispatcher.Invoke(() => UpdateStatusIcon(icon, true));
+                MainProgram.SoundTester.Mic.CaptureStopped += (s, e) => Dispatcher.Invoke(() => UpdateStatusIcon(icon, false));
             }
             return panel;
         }
