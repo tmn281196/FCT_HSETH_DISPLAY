@@ -24,12 +24,6 @@ namespace VTMControls.DeviceControl
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public event PropertyChangedEventHandler STATE_CHANGE;
-        private void StateChanged()
-        {
-            STATE_CHANGE?.Invoke(null, null);
-        }
-
         private int channel;
         public int Channel
         {

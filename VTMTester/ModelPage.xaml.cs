@@ -90,7 +90,6 @@ namespace VTMTester
 
         // Step tab variable
         // Last sellected cell of step data grid.
-        private DataGridCellInfo lastSellectCellInfor = new DataGridCellInfo();
 
         public ModelPage()
         {
@@ -210,25 +209,6 @@ namespace VTMTester
         }
 
         #region Model steps
-
-        private void TestStepsGridData_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            VTMBase.Command command = new Command();
-            var cell = (sender as DataGrid).CurrentCell;
-            if (cell != null)
-            {
-                if (cell != lastSellectCellInfor)
-                {
-                    lastSellectCellInfor = cell;
-                    (sender as DataGrid).BeginEdit();
-                }
-            }
-        }
-
-        private void StepsGridData_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            lastSellectCellInfor = new DataGridCellInfo();
-        }
 
         private DataGrid currentDatagrid;
 

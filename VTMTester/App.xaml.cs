@@ -94,9 +94,5 @@ namespace VTMTester
             base.OnExit(e);
         }
 
-        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            MessageBox.Show("Unhandled exception occurred: \n" + e.Exception.Message + "stacktrace" + e.Exception.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
     }
 }

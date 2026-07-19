@@ -29,13 +29,6 @@ namespace VTMTester
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AllocConsole();
-
-        [DllImport("Kernel32")]
-        public static extern void FreeConsole();
-
         private AutoPage AutoPage = new AutoPage();
         private ManualPage ManualPage = new ManualPage();
         private ModelPage ModelPage = new ModelPage();

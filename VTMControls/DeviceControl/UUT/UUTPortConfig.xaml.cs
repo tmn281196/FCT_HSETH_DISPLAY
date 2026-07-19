@@ -45,10 +45,5 @@ namespace VTMControls.DeviceControl
             this.DataContext = _UUT_config;
         }
 
-        private void Port1_baudrate_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //UUT_config.Baudrate = Convert.ToInt32((sender as ComboBox)?.SelectedItem);
-
-        }
     }
 }

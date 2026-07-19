@@ -1021,27 +1021,12 @@ namespace VTMTester
             UpdateLayout(EditModel.Layout.PCB_Count);
         }
 
-        private void btGetValue_Click(object sender, RoutedEventArgs e)
-        {
-            Program.EditModel.VisionModels.GetLEDSampleImage(Program.Capture?.LastMatFrame);
-            int b = SelectedBoardIndex();
-            if (b < 0) return;
-            lbLEDvalue.Content = Program.EditModel.VisionModels.LED[b].CalculatorOutputString;
-        }
-
         private void btGetGLEDValue_Click(object sender, RoutedEventArgs e)
         {
             Program.EditModel.VisionModels.GetGLEDSampleImage(Program.Capture?.LastMatFrame);
             int b = SelectedBoardIndex();
             if (b < 0) return;
             lbGLEDvalue.Content = Program.EditModel.VisionModels.GLED[b].CalculatorOutputString;
-        }
-
-        private void btThresholdCalculate_Click(object sender, RoutedEventArgs e)
-        {
-            int b = SelectedBoardIndex();
-            if (b < 0) return;
-            Program.EditModel.VisionModels.LED[b].CALC_THRESH();
         }
 
         private void btGLEDThresholdCalculate_Click(object sender, RoutedEventArgs e)
@@ -1396,37 +1381,6 @@ namespace VTMTester
 
         // (removed FND_Use_HeaderCheckBox_Checked/_Unchecked - the per-char header checkboxes they served were
         //  replaced by the FndUseAll/FndUseNone buttons above.)
-
-        private void VisibilityCheckboxFNDSegment_Checked(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void VisibilityCheckboxFNDSegment_Unchecked(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void btGetFNDSegmentValue_Click(object sender, RoutedEventArgs e)
-        {
-            Program.EditModel.VisionModels.GetFNDSampleImage(Program.Capture?.LastMatFrame);
-            int b = SelectedBoardIndex();
-            if (b < 0) return;
-            lbMatrixPointValue.Content = "";
-            for (int i = 0; i < Program.EditModel.VisionModels.FNDs.Count; i++)
-            {
-                // was FNDs[i][b].DetectedString - the old unrolled tgbSelectD branch read char index [2] not [3].
-                lbMatrixPointValue.Content += Program.EditModel.VisionModels.FNDs[i][b].DetectedString;
-            }
-        }
-
-        private void btFNDSegmentThresholdCalculate_Click(object sender, RoutedEventArgs e)
-        {
-            int b = SelectedBoardIndex();
-            if (b < 0) return;
-            for (int i = 0; i < Program.EditModel.VisionModels.FNDs.Count; i++)
-            {
-                Program.EditModel.VisionModels.FNDs[i][b].PointSegments.CALC_THRESH();
-            }
-        }
 
         private ScaleTransform scaleTransform;
         private TranslateTransform translateTransform;

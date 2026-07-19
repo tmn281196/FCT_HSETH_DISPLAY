@@ -507,57 +507,6 @@ namespace VTMTester
             //tbPCBArrayTextFont.Text = Setting.QR.label.PCBArrayText_Font.ToString();
         }
 
-        private void btUndoall_Click(object sender, RoutedEventArgs e)
-        {
-            //this.Setting.QR = Program.appSetting.QR;
-
-            //rbtTestPassAll.IsChecked = Setting.QR.TestPCBPrintAll;
-            //rbtPassOnly.IsChecked = Setting.QR.TestPCBPassPrint;
-            //nudPrintMaxStepCount.Value = Setting.QR.PrintMaxStepCount;
-            //cbPCBArrayPrint.IsChecked = Setting.QR.ArrayPCBPrint;
-            //tbCountryCode.Text = Setting.QR.CountryCode;
-            //tbProductLine.Text = Setting.QR.ProductionLine;
-            //tbProductMachine.Text = Setting.QR.InspectionEquipment;
-
-            //nudPrintSpeed.Value = Setting.QR.label.speed;
-            //nudDarkness.Value = Setting.QR.label.dark;
-            //nudLabelHomeX.Value = Setting.QR.label.home_x;
-            //nudLableHomeY.Value = Setting.QR.label.home_y;
-            //nudQRCodeX.Value = Setting.QR.label.qr_x;
-            //nudQRCodeY.Value = Setting.QR.label.qr_y;
-            //nudSize.Value = Setting.QR.Size;
-
-            //nudSNPart1X.Value = Setting.QR.label.SN1_X;
-            //nudSNPart1Y.Value = Setting.QR.label.SN1_Y;
-            //nudSNPart1W.Value = Setting.QR.label.SN1_W;
-            //nudSNPart1H.Value = Setting.QR.label.SN1_H;
-            //tbSNPart1Font.Text = Setting.QR.label.SN1_Font.ToString();
-
-            //nudSNPart2X.Value = Setting.QR.label.SN2_X;
-            //nudSNPart2Y.Value = Setting.QR.label.SN2_Y;
-            //nudSNPart2W.Value = Setting.QR.label.SN2_W;
-            //nudSNPart2H.Value = Setting.QR.label.SN2_H;
-            //tbSNPart2Font.Text = Setting.QR.label.SN2_Font.ToString();
-
-            //nudMainCodeVersionX.Value = Setting.QR.label.MainCodeVersion_X;
-            //nudMainCodeVersionY.Value = Setting.QR.label.MainCodeVersion_Y;
-            //nudMainCodeVersionW.Value = Setting.QR.label.MainCodeVersion_W;
-            //nudMainCodeVersionH.Value = Setting.QR.label.MainCodeVersion_H;
-            //tbMainCodeVersionFont.Text = Setting.QR.label.MainCodeVersion_Font.ToString();
-
-            //nudInvCodeVersionX.Value = Setting.QR.label.InvCodeVersion_X;
-            //nudInvCodeVersionY.Value = Setting.QR.label.InvCodeVersion_Y;
-            //nudInvCodeVersionW.Value = Setting.QR.label.InvCodeVersion_W;
-            //nudInvCodeVersionH.Value = Setting.QR.label.InvCodeVersion_H;
-            //tbInvCodeVersionFont.Text = Setting.QR.label.InvCodeVersion_Font.ToString();
-
-            //nudPCBArrayTextX.Value = Setting.QR.label.PCBArrayText_X;
-            //nudPCBArrayTextY.Value = Setting.QR.label.PCBArrayText_Y;
-            //nudPCBArrayTextW.Value = Setting.QR.label.PCBArrayText_W;
-            //nudPCBArrayTextH.Value = Setting.QR.label.PCBArrayText_H;
-            //tbPCBArrayTextFont.Text = Setting.QR.label.PCBArrayText_Font.ToString();
-        }
-
         private void pwbCurrentAdminPass_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (pwbCurrentAdminPass.Password == Setting.SystemAccess.AdminPass)
