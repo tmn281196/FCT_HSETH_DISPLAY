@@ -1,4 +1,5 @@
 ﻿using System;
+using Controls.DeviceControl;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;

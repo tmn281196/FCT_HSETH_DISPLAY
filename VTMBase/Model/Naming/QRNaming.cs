@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Controls.DeviceControl;
 using System.Runtime.CompilerServices;
 
 namespace VTMBase

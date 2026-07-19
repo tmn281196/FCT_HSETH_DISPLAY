@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl
 {
     public class PowerMettterValueHolder
     {

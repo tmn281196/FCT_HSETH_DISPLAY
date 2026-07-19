@@ -21,7 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
     /// <summary>
     /// Interaction logic for CameraControl.xaml

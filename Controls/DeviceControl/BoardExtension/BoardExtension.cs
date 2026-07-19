@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Windows.Threading;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl
 {
     public class BoardExtension
     {

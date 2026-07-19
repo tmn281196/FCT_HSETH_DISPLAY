@@ -14,7 +14,7 @@ using OpenCvSharp.WpfExtensions;
 using Rect = System.Windows.Rect;
 using OpenCvSharp.Extensions;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
     public class VisionWorker
     {

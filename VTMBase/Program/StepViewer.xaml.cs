@@ -1,4 +1,5 @@
 ﻿using VTMBase;
+using Controls.DeviceControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;

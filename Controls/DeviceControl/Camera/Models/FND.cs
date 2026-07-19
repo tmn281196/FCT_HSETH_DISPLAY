@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Rect = System.Windows.Rect;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
     public class FND : INotifyPropertyChanged
     {

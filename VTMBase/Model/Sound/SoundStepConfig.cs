@@ -1,3 +1,4 @@
+using Controls.DeviceControl;
 using System.Collections.Generic;
 
 namespace VTMBase

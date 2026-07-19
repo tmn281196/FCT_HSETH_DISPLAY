@@ -1,4 +1,5 @@
-﻿using Controls.DevicesControl;
+﻿using Controls.DeviceControl.Camera;
+using Controls.DeviceControl;
 using Utility;
 // Models are saved with System.Text.Json (Extensions.ConvertToJson -> AutoPage.LoadModel), so [JsonIgnore] must
 // resolve to ITS attribute. This used to be "using Newtonsoft.Json;", which made every [JsonIgnore] below a

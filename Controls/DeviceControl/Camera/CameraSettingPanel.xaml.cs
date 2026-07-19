@@ -14,9 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static Controls.DevicesControl.CameraControl;
+using static Controls.DeviceControl.Camera.CameraControl;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
     /// <summary>
     /// Interaction logic for CameraSettingPanel.xaml

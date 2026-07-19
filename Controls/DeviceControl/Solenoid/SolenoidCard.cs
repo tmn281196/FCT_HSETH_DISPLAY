@@ -1,4 +1,4 @@
-﻿using Controls.DevicesControl;
+﻿using Controls.DeviceControl.Camera;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 
 using Utility;
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class SolenoidCard
     {

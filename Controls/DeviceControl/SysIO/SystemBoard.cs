@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Debug = Utility.Debug;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class SystemBoard
     {

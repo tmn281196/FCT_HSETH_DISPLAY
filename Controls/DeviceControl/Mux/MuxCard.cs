@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class MuxCard : INotifyPropertyChanged
     {

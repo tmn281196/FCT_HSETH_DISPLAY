@@ -7,19 +7,20 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using Controls;
+using Controls.DeviceControl;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
 using OpenCvSharp;
 using System.Runtime.Remoting.Channels;
-using Controls.DevicesControl;
+using Controls.DeviceControl.Camera;
 using System.Windows.Media.Media3D;
 using System.Windows.Documents;
 using System.Reflection;
-using static Controls.DMM;
+using static Controls.DeviceControl.DMM;
 using System.Text;
 using static OpenCvSharp.ML.DTrees;
-using Controls.DevicesControl;
+using Controls.DeviceControl.Camera;
 using System.Linq.Expressions;
 using System.CodeDom.Compiler;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
@@ -1769,11 +1770,11 @@ namespace VTMBase
                 return;
             }
 
-            Controls.DevicesControl.CameraControl.VideoProperties properties;
+            Controls.DeviceControl.Camera.CameraControl.VideoProperties properties;
 
-            if (Enum.TryParse<Controls.DevicesControl.CameraControl.VideoProperties>(step.Condition1, out properties))
+            if (Enum.TryParse<Controls.DeviceControl.Camera.CameraControl.VideoProperties>(step.Condition1, out properties))
             {
-                if (properties == Controls.DevicesControl.CameraControl.VideoProperties.Reset)
+                if (properties == Controls.DeviceControl.Camera.CameraControl.VideoProperties.Reset)
                 {
                     Capture?.SetParammeter(TestModel.CameraSetting);
                     return;

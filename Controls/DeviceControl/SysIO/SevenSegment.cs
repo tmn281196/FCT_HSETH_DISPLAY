@@ -1,4 +1,4 @@
-﻿using Controls.DevicesControl;
+﻿using Controls.DeviceControl.Camera;
 using System.Collections.Generic;
 using System.Linq;
 

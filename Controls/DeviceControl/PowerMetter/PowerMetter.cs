@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
-using static Controls.DMM;
+using static Controls.DeviceControl.DMM;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl
 {
     public class PowerMetter : INotifyPropertyChanged
     {

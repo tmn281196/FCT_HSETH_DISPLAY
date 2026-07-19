@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class MuxChannel : INotifyPropertyChanged
     {

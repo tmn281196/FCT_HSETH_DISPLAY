@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class DMM : INotifyPropertyChanged
     {

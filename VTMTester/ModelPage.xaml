@@ -5,6 +5,7 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:core="clr-namespace:VTMBase;assembly=VTMBase"
     xmlns:ctr="clr-namespace:Controls;assembly=Controls"
+    xmlns:dc="clr-namespace:Controls.DeviceControl;assembly=Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:local="clr-namespace:VTMTester"
@@ -732,7 +733,7 @@
                             Margin="0"
                             Header="MUX channels"
                             Style="{StaticResource FlatTabControlLeft}">
-                            <ctr:MuxCardOption x:Name="MuxCardViewer" />
+                            <dc:MuxCardOption x:Name="MuxCardViewer" />
                         </TabItem>
                         <!--<TabItem  Header="Relay channels" Foreground="White" Style="{StaticResource FlatTabControlLeft}" Width="200" Height="40"  Margin="0">
                         </TabItem>-->
@@ -742,7 +743,7 @@
                             Margin="0"
                             Header="Level channes"
                             Style="{StaticResource FlatTabControlLeft}">
-                            <ctr:LevelCardOption x:Name="LevelCardViewer" />
+                            <dc:LevelCardOption x:Name="LevelCardViewer" />
                         </TabItem>
                     </TabControl>
                 </Grid>
@@ -780,7 +781,7 @@
                                             HorizontalAlignment="Center"
                                             Content="Port P1 config"
                                             Foreground="White" />
-                                        <ctr:UUTPortConfig x:Name="P1_Config_Holder" Margin="0,20,0,0" />
+                                        <dc:UUTPortConfig x:Name="P1_Config_Holder" Margin="0,20,0,0" />
                                     </Grid>
                                 </Border>
                                 <Border
@@ -792,7 +793,7 @@
                                             HorizontalAlignment="Center"
                                             Content="Port P2 config"
                                             Foreground="White" />
-                                        <ctr:UUTPortConfig x:Name="P2_Config_Holder" Margin="0,20,0,0" />
+                                        <dc:UUTPortConfig x:Name="P2_Config_Holder" Margin="0,20,0,0" />
                                     </Grid>
                                 </Border>
                             </StackPanel>

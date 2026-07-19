@@ -1,4 +1,4 @@
-﻿using Controls.DevicesControl.VisionTest;
+﻿using Controls.DeviceControl.Camera.VisionTest;
 using DirectShowLib;
 using OpenCvSharp;
 using OpenCvSharp.Dnn;
@@ -31,7 +31,7 @@ using Image = System.Windows.Controls.Image;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Rect = System.Windows.Rect;
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
     public class LCD : INotifyPropertyChanged
     {

@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using Utility;
 using System.Windows;
 using Controls;
-using Controls.DevicesControl;
-using Controls.DevicesControl;
+using Controls.DeviceControl;
+using Controls.DeviceControl.Camera;
+using Controls.DeviceControl.Camera;
 using Controls.DeviceControl;
 
 namespace VTMBase
@@ -109,8 +110,8 @@ namespace VTMBase
 
             // Annotate SYS (system board output/input signals) and SOL (solenoid channels) frames in the log.
             Utility.Debug.FrameAnnotator = (dev, f, n, tx) =>
-                  dev == "SYS" ? Controls.SystemBoard.AnnotateFrame(f, n, tx)
-                : dev == "SOL" ? Controls.SolenoidCard.AnnotateFrame(f, n, tx)
+                  dev == "SYS" ? Controls.DeviceControl.SystemBoard.AnnotateFrame(f, n, tx)
+                : dev == "SOL" ? Controls.DeviceControl.SolenoidCard.AnnotateFrame(f, n, tx)
                 : "";
 
             // TX/RX serial traffic is logged only for the system board and the solenoid board.

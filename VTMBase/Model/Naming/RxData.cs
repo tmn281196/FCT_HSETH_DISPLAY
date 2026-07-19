@@ -1,4 +1,5 @@
 ﻿using Utility;
+using Controls.DeviceControl;
 using System;
 using System.ComponentModel;
 using System.Linq;

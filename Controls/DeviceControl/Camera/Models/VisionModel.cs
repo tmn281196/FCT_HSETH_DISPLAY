@@ -1,4 +1,4 @@
-﻿using Controls.DevicesControl.VisionTest;
+﻿using Controls.DeviceControl.Camera.VisionTest;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 
 
 
-namespace Controls.DevicesControl
+namespace Controls.DeviceControl.Camera
 {
 
     public class VisionModel

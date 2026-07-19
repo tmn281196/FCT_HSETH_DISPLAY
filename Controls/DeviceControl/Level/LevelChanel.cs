@@ -11,7 +11,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     public class LevelChannel : INotifyPropertyChanged
     {

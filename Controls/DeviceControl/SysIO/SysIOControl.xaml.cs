@@ -1,5 +1,5 @@
 ﻿using Controls.DeviceControl;
-using Controls.DevicesControl;
+using Controls.DeviceControl.Camera;
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     /// <summary>
     /// Interaction logic for SYSIOcontrol.xaml

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Controls;
+using Controls.DeviceControl;
 using System.Windows;
 using System.Threading.Tasks;
 
@@ -22,8 +23,8 @@ namespace VTMBase
             PortName = "COM1"
         };
 
-        private Controls.UUT_Config config = new Controls.UUT_Config();
-        public Controls.UUT_Config Config
+        private Controls.DeviceControl.UUT_Config config = new Controls.DeviceControl.UUT_Config();
+        public Controls.DeviceControl.UUT_Config Config
         {
             get { return config; }
             set

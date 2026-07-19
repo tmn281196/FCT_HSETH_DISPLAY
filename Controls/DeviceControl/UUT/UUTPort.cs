@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 
-namespace Controls
+namespace Controls.DeviceControl
 {
 
     public class UUT_Config : INotifyPropertyChanged

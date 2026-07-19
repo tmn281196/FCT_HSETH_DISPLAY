@@ -1,5 +1,6 @@
-﻿using Controls.DevicesControl;
-using Controls.DevicesControl.VisionTest;
+﻿using Controls.DeviceControl.Camera;
+using Controls.DeviceControl;
+using Controls.DeviceControl.Camera.VisionTest;
 using Utility;
 using VTMBase;
 using Microsoft.Win32;
@@ -324,7 +325,7 @@ namespace VTMTester
             }
         }
 
-        private static void ApplyLcdRoi(System.Collections.Generic.List<Controls.DevicesControl.LCD> lcds, Step step, int boardCount)
+        private static void ApplyLcdRoi(System.Collections.Generic.List<Controls.DeviceControl.Camera.LCD> lcds, Step step, int boardCount)
         {
             // Show a board's LCD only if that board exists (boardCount) AND this step uses it. Gating on boardCount
             // is what keeps the 3 non-existent-board LCDs hidden on the 1-board machine even when the step still

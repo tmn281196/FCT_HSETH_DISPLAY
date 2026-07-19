@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Utility;
 
-namespace Controls
+namespace Controls.DeviceControl
 {
     /// <summary>
     /// Interaction logic for Printer_QR.xaml

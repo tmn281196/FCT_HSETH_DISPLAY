@@ -2,8 +2,9 @@
     x:Class="VTMTester.VisionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cc="clr-namespace:Controls.DevicesControl;assembly=Controls"
+    xmlns:cc="clr-namespace:Controls.DeviceControl.Camera;assembly=Controls"
     xmlns:ctr="clr-namespace:Controls;assembly=Controls"
+    xmlns:dc="clr-namespace:Controls.DeviceControl;assembly=Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:VTMTester"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -1561,13 +1562,13 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0" Margin="5,0,5,0" Background="#f6f6f6">
-                            <ctr:SolenoidControls x:Name="SolenoidControl" />
+                            <dc:SolenoidControls x:Name="SolenoidControl" />
                         </Border>
                         <Border Grid.Row="1" Margin="5,5,5,0"     Background="#f6f6f6">
-                            <ctr:RelayControls x:Name="RelayControl" />
+                            <dc:RelayControls x:Name="RelayControl" />
                         </Border>
                         <Border Grid.Row="2"  Margin="5,5,5,5" Background="#f6f6f6">
-                            <ctr:SysIOControl x:Name="SystemControl" Margin="5" />
+                            <dc:SysIOControl x:Name="SystemControl" Margin="5" />
                         </Border>
 
                     </Grid>
