@@ -35,8 +35,6 @@ namespace VTMBase
         public bool[] LastRoiPass { get; private set; }
         public double[] LastRoiScore { get; private set; }
 
-        public int CurrentSampleRate { get { return Mic.SampleRate; } }
-
         public SoundTester()
         {
             // A fresh capture clears the buffer; reset our live-spectrogram cursor to match so we don't index
@@ -45,13 +43,6 @@ namespace VTMBase
             {
                 lock (_liveGate) { _liveCols.Clear(); _liveConsumed = 0; _liveFft = -1; }
             };
-        }
-
-        // Reset run - call before each test run to clear the buffer and the previous run's result state.
-        public void ResetRun()
-        {
-            Mic.ClearBuffer();
-            HasResult = false; LastError = null; LastDetail = "";
         }
 
         // Analyze the buffer with the step's SoundStepConfig.

@@ -20,7 +20,6 @@ namespace VTMControls.DeviceControl
         public string MicrophoneId { get; set; } = "";
 
         public bool IsCapturing { get; private set; }
-        public bool StartOk { get; private set; }
         public string LastError { get; private set; }
         public string LastDetail { get; private set; }
         public int SampleRate { get { return _sampleRate; } }
@@ -38,7 +37,7 @@ namespace VTMControls.DeviceControl
             lock (_gate)
             {
                 if (IsCapturing) return;
-                LastError = null; LastDetail = ""; StartOk = false;
+                LastError = null; LastDetail = "";
                 try
                 {
                     var en = new MMDeviceEnumerator();
@@ -54,7 +53,7 @@ namespace VTMControls.DeviceControl
                     _samples.Clear();
                     _cap.DataAvailable += OnData;
                     _cap.StartRecording();
-                    IsCapturing = true; StartOk = true;
+                    IsCapturing = true;
                 }
                 catch (Exception ex)
                 {
@@ -94,16 +93,6 @@ namespace VTMControls.DeviceControl
                 _cap = null; IsCapturing = false;
             }
             CaptureStopped?.Invoke(this, EventArgs.Empty);
-        }
-
-        // Clear the sample buffer + the previous run's StartOk/error flags. Call before each test run.
-        public void ClearBuffer()
-        {
-            lock (_gate)
-            {
-                StartOk = false; LastError = null; LastDetail = "";
-                _samples.Clear();
-            }
         }
 
         // Full locked copy of the captured buffer (used by the one-shot Check()).
