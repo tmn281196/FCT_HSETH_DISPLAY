@@ -4,7 +4,7 @@ VisualStudioVersion = 18.8.12009.203 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTMTester", "VTMTester\VTMTester.csproj", "{DF0A670C-1960-41FB-98B7-B3A2DE928DCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "Controls\Controls.csproj", "{8C737116-EACF-4DD6-B0A0-9E757E8A6961}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTMControls", "VTMControls\VTMControls.csproj", "{8C737116-EACF-4DD6-B0A0-9E757E8A6961}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{1F26009D-C483-4DBF-AF0E-F3274C32D21A}"
 EndProject

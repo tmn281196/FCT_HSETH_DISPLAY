@@ -1,5 +1,5 @@
 ﻿using Utility;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using System;
 using System.ComponentModel;
 using System.Linq;

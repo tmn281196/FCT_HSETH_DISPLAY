@@ -1,5 +1,5 @@
 ﻿using OpenCvSharp.XFeatures2D;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -77,7 +77,7 @@ namespace VTMBase
             CMD = CMDs.LOD,
             Condition1 = "KIND",
             Oper = "STATUS",
-            Description = "Controls the output of Channel which Generator B/d is designated.\r\n Frequency range : 0~100kHz"
+            Description = "VTMControls the output of Channel which Generator B/d is designated.\r\n Frequency range : 0~100kHz"
             },
 
             new CommandDescriptions()
@@ -529,7 +529,7 @@ namespace VTMBase
             CMD = CMDs.CAM,
             Condition1 = "Property",
             IsListCondition1 = true,
-            Condition1List = Enum.GetNames(typeof(Controls.DeviceControl.Camera.CameraControl.VideoProperties)).ToList(),
+            Condition1List = Enum.GetNames(typeof(VTMControls.DeviceControl.CameraControl.VideoProperties)).ToList(),
             Oper = "Value",
             Description ="Apply setting to camera device.\r\n",
             },

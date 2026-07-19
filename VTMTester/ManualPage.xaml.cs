@@ -1,6 +1,6 @@
-﻿using Controls.DeviceControl.Camera;
-using Controls.DeviceControl;
-using Controls.DeviceControl.Camera.VisionTest;
+﻿using VTMControls.DeviceControl;
+using VTMControls.DeviceControl;
+using VTMControls.DeviceControl.VisionTest;
 using VTMBase;
 using System;
 using System.Collections.Generic;

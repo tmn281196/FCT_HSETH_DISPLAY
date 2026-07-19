@@ -1,5 +1,5 @@
 ﻿using System;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

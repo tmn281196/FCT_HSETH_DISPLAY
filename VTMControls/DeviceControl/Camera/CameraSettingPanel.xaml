@@ -1,0 +1,333 @@
+﻿<UserControl
+    x:Class="VTMControls.DeviceControl.CameraSettingPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTMControls.DeviceControl"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type=local:CameraSetting}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="ContentLabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="#37474F" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="SliderStyle" TargetType="Slider">
+            <Setter Property="Foreground" Value="#37474F" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid VerticalAlignment="Center" MinHeight="18">
+                            <Border Height="4" CornerRadius="2" Background="#CFD8DC" VerticalAlignment="Center" />
+                            <Track x:Name="PART_Track">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton"><Border Background="Transparent" /></ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton"><Border Background="Transparent" /></ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Width="16" Height="16" Cursor="Hand">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse Fill="#455A64" Stroke="White" StrokeThickness="2" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ToggleButton" TargetType="{x:Type ToggleButton}">
+            <Border
+                x:Name="border"
+                Background="#01000000"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="0"
+                CornerRadius="0">
+                <Grid>
+                    <Ellipse
+                        x:Name="backgroundEllipse"
+                        Width="0"
+                        Height="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Fill="Black" />
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        Cursor="Hand"
+                        Focusable="False"
+                        RecognizesAccessKey="True"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{x:Null}" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="#8F808080" />
+                </Trigger>
+                <EventTrigger RoutedEvent="ToggleButton.Checked">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    DecelerationRatio="0.1"
+                                    SpeedRatio="5"
+                                    Storyboard.TargetName="backgroundEllipse"
+                                    Storyboard.TargetProperty="Width"
+                                    From="0"
+                                    To="170"
+                                    Duration="0:0:1" />
+                                <DoubleAnimation
+                                    AccelerationRatio="0.1"
+                                    SpeedRatio="5"
+                                    Storyboard.TargetName="backgroundEllipse"
+                                    Storyboard.TargetProperty="Height"
+                                    From="0"
+                                    To="100"
+                                    Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    SpeedRatio="5"
+                                    Storyboard.TargetName="backgroundEllipse"
+                                    Storyboard.TargetProperty="Width"
+                                    To="0"
+                                    Duration="0:0:1" />
+                                <DoubleAnimation
+                                    SpeedRatio="5"
+                                    Storyboard.TargetName="backgroundEllipse"
+                                    Storyboard.TargetProperty="Height"
+                                    To="0"
+                                    Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="border" Property="Background" Value="#FFF4F4F4" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="#FFADB2B5" />
+                    <Setter Property="Foreground" Value="#FF838383" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <ToggleButton
+            x:Name="settingButton"
+            Width="20"
+            Height="20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Template="{StaticResource ToggleButton}">
+            <fa:IconImage
+                Margin="2"
+                Icon="Gear"
+                Foreground="#455A64" />
+        </ToggleButton>
+        <!-- Sliders always visible. This used to be a broken Style that Collapsed the Grid in BOTH the checked and
+             unchecked states, so the panel never showed. Transparent bg to fit a light host; the whole
+             CameraSettingPanel is Collapsed on the Auto/Manual pages, so this only shows where it is placed visibly. -->
+        <Grid Background="Transparent" Margin="4,4,4,26">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="42" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Content="Exposure"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="1"
+                Content="Brightness"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="2"
+                Content="Contrast"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="3"
+                Content="Focus"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="4"
+                Content="White"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="5"
+                Content="Sharpness"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="6"
+                Content="Zoom"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="7"
+                Content="Satuation"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="8"
+                Content="Gain"
+                Style="{StaticResource ContentLabelStyle}" />
+            <Label
+                Grid.Row="9"
+                Content="Backlight"
+                Style="{StaticResource ContentLabelStyle}" />
+
+            <Slider
+                x:Name="slExporsure"
+                Grid.Row="0"
+                Grid.Column="1"
+                Maximum="0"
+                Minimum="-10"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Exposure, Mode=OneTime}" />
+            <Slider
+                x:Name="slBrightness"
+                Grid.Row="1"
+                Grid.Column="1"
+                Maximum="255"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Brightness, Mode=OneTime}" />
+            <Slider
+                x:Name="slContrast"
+                Grid.Row="2"
+                Grid.Column="1"
+                Maximum="255"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Contrast, Mode=OneTime}" />
+            <Slider
+                x:Name="slFocus"
+                Grid.Row="3"
+                Grid.Column="1"
+                Maximum="250"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Focus, Mode=OneTime}" />
+            <Slider
+                x:Name="slWhite"
+                Grid.Row="4"
+                Grid.Column="1"
+                Maximum="1000"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding WBTemperature, Mode=OneTime}" />
+            <Slider
+                x:Name="slSharpness"
+                Grid.Row="5"
+                Grid.Column="1"
+                Maximum="255"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Sharpness, Mode=OneTime}" />
+            <Slider
+                x:Name="slZoom"
+                Grid.Row="6"
+                Grid.Column="1"
+                Maximum="500"
+                Minimum="100"
+                Style="{StaticResource SliderStyle}"
+                TickFrequency="1000"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Zoom, Mode=OneTime}" />
+            <Slider
+                x:Name="slSatuation"
+                Grid.Row="7"
+                Grid.Column="1"
+                Maximum="255"
+                Minimum="0"
+                Style="{StaticResource SliderStyle}"
+                TickFrequency="1000"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Saturation, Mode=OneTime}" />
+            <Slider
+                x:Name="slGain"
+                Grid.Row="8"
+                Grid.Column="1"
+                Maximum="255"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Gain, Mode=OneTime}" />
+            <Slider
+                x:Name="slBacklight"
+                Grid.Row="9"
+                Grid.Column="1"
+                Maximum="10"
+                Minimum="0"
+                SmallChange="1"
+                Style="{StaticResource SliderStyle}"
+                ValueChanged="CameraSetting_ValueChanged"
+                Value="{Binding Backlight, Mode=OneTime}" />
+
+            <!-- Live numeric read-out for each slider (Column 2), bound to the slider's own Value. -->
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Value, ElementName=slExporsure, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Value, ElementName=slBrightness, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Value, ElementName=slContrast, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Value, ElementName=slFocus, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Value, ElementName=slWhite, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding Value, ElementName=slSharpness, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding Value, ElementName=slZoom, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="7" Grid.Column="2" Text="{Binding Value, ElementName=slSatuation, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding Value, ElementName=slGain, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+            <TextBlock Grid.Row="9" Grid.Column="2" Text="{Binding Value, ElementName=slBacklight, StringFormat={}{0:0}}" Foreground="#37474F" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6,0,2,0"/>
+        </Grid>
+    </Grid>
+</UserControl>

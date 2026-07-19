@@ -190,9 +190,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Controls\Controls.csproj">
+    <ProjectReference Include="..\VTMControls\VTMControls.csproj">
       <Project>{8c737116-eacf-4dd6-b0a0-9e757e8a6961}</Project>
-      <Name>Controls</Name>
+      <Name>VTMControls</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{1f26009d-c483-4dbf-af0e-f3274c32d21a}</Project>

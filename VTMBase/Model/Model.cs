@@ -1,4 +1,4 @@
-﻿using Controls.DeviceControl.Camera;
+﻿using VTMControls.DeviceControl;
 using Utility;
 using Microsoft.Win32;
 using System;
@@ -15,8 +15,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Controls;
-using Controls.DeviceControl;
+using VTMControls;
+using VTMControls.DeviceControl;
 
 namespace VTMBase
 {
@@ -458,17 +458,17 @@ namespace VTMBase
 
         #region Machine Card
 
-        public Controls.DeviceControl.MuxCard MuxCard { get; set; } = new Controls.DeviceControl.MuxCard();
-        public Controls.DeviceControl.LevelCard LevelCard { get; set; } = new Controls.DeviceControl.LevelCard();
+        public VTMControls.DeviceControl.MuxCard MuxCard { get; set; } = new VTMControls.DeviceControl.MuxCard();
+        public VTMControls.DeviceControl.LevelCard LevelCard { get; set; } = new VTMControls.DeviceControl.LevelCard();
 
         #endregion Machine Card
 
         #region UUT config
 
-        private Controls.DeviceControl.UUT_Config p1_Config = new Controls.DeviceControl.UUT_Config();
-        private Controls.DeviceControl.UUT_Config p2_Config = new Controls.DeviceControl.UUT_Config();
+        private VTMControls.DeviceControl.UUT_Config p1_Config = new VTMControls.DeviceControl.UUT_Config();
+        private VTMControls.DeviceControl.UUT_Config p2_Config = new VTMControls.DeviceControl.UUT_Config();
 
-        public Controls.DeviceControl.UUT_Config P1_Config
+        public VTMControls.DeviceControl.UUT_Config P1_Config
         {
             get { return p1_Config; }
             set
@@ -480,7 +480,7 @@ namespace VTMBase
             }
         }
 
-        public Controls.DeviceControl.UUT_Config P2_Config
+        public VTMControls.DeviceControl.UUT_Config P2_Config
         {
             get { return p2_Config; }
             set

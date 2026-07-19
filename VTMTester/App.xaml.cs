@@ -1,5 +1,5 @@
 ﻿using VTMBase;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

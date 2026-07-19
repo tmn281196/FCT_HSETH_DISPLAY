@@ -1,5 +1,5 @@
-﻿using Controls;
-using Controls.DeviceControl;
+﻿using VTMControls;
+using VTMControls.DeviceControl;
 using Utility;
 using VTMBase;
 using System;

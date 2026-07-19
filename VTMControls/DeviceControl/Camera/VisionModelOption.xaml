@@ -1,0 +1,87 @@
+<UserControl
+    x:Class="VTMControls.DeviceControl.VisionModelOption"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VTMControls.DeviceControl"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:xc="clr-namespace:VTMControls.CustomControls;assembly=VTMControls"
+    mc:Ignorable="d">
+    <!-- Detect-option panel (per component). Restyled: a consistent label|control two-column layout replaces the
+         old absolute-margin placement, and the "AutoTurning" progress bar + toggle were removed. No fixed width -
+         the panel stretches to fill its host (the LCD detect area). -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header: component name, live detect / expected string, pass-fail dot -->
+        <Grid Grid.Row="0" Margin="10,6,10,6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Padding="0"
+                Content="{Binding Name}"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="Black" />
+
+     
+        </Grid>
+
+        <Image
+            Grid.Row="2"
+            Margin="0 5"
+            Source="{Binding CropImage}" />
+
+        <!-- Parameters: label in a fixed left column, control right-aligned - everything lines up. -->
+        <Grid Grid.Row="1" >
+       
+
+            <StackPanel  Grid.Row="0"  Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Height="25" Foreground="White" Width="100" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding DetectedString}" HorizontalContentAlignment="Center">
+                    <!-- Bar colour = pass/fail state (replaces the removed dot): green when the detected string matches
+                         the expected value, red otherwise. -->
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="Background" Value="#C62828" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                                    <Setter Property="Background" Value="#2E7D32" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <Button      
+       Height="25"
+    
+       Padding="10,0"
+       HorizontalAlignment="Center"
+       Cursor="Hand"
+       Click="CopyDetectToOper_Click"
+       ToolTip="Copy the detected string into Oper (step expected value) and the Spect string">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconBlock Icon="Check" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <TextBlock Text="Apply to Spec" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>

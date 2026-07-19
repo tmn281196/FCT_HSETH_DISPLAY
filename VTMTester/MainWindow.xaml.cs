@@ -1,5 +1,5 @@
-﻿using Controls.DeviceControl.Camera;
-using Controls.DeviceControl;
+﻿using VTMControls.DeviceControl;
+using VTMControls.DeviceControl;
 using VTMBase;
 using System;
 using System.Collections.Generic;
@@ -410,7 +410,7 @@ namespace VTMTester
         {
             foreach (var item in stackpanelComunication.Children)
             {
-                (item as Controls.SerialPortDisplay)?._shutDown.Cancel();
+                (item as VTMControls.SerialPortDisplay)?._shutDown.Cancel();
             }
             AutoPage._shutDown?.Cancel();
 

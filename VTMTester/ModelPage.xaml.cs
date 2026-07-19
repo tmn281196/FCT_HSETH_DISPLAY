@@ -1,5 +1,5 @@
-﻿using Controls;
-using Controls.DeviceControl;
+﻿using VTMControls;
+using VTMControls.DeviceControl;
 using Utility;
 using VTMBase;
 using Microsoft.Win32;
@@ -162,7 +162,7 @@ namespace VTMTester
             {
                 saveLabel.Visibility = Visibility.Visible;
                 await Task.Delay(100);
-                EditModel.ModelSegmentLookup = Controls.DeviceControl.Camera.FND.SEG_LOOKUP.Clone();
+                EditModel.ModelSegmentLookup = VTMControls.DeviceControl.FND.SEG_LOOKUP.Clone();
                 EditModel.SaveTo(EditModel.Path);
                 Program.EditModel = EditModel;
                 await Task.Delay(100);
@@ -199,7 +199,7 @@ namespace VTMTester
             {
                 saveLabel.Visibility = Visibility.Visible;
                 await Task.Delay(100);
-                EditModel.ModelSegmentLookup = Controls.DeviceControl.Camera.FND.SEG_LOOKUP.Clone();
+                EditModel.ModelSegmentLookup = VTMControls.DeviceControl.FND.SEG_LOOKUP.Clone();
                 EditModel.Name = saveFileDialog.SafeFileName;
                 EditModel.Path = saveFileDialog.FileName;
                 EditModel.SaveTo(saveFileDialog.FileName);

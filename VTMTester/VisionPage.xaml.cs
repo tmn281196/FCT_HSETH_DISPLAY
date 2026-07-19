@@ -1,6 +1,6 @@
-﻿using Controls.DeviceControl.Camera;
-using Controls.DeviceControl;
-using Controls.DeviceControl.Camera.VisionTest;
+﻿using VTMControls.DeviceControl;
+using VTMControls.DeviceControl;
+using VTMControls.DeviceControl.VisionTest;
 using Utility;
 using VTMBase;
 using Microsoft.Win32;
@@ -69,7 +69,7 @@ namespace VTMTester
                         else
                         {
                             // row 바뀌면 바뀐 cmd 갖고오고 그게 LCD면 LCD 위치 해당 row lcd roi 갖고오기.
-                            EditModel.VisionModels = new Controls.DeviceControl.Camera.VisionModel();
+                            EditModel.VisionModels = new VTMControls.DeviceControl.VisionModel();
                             VisionBuider.Models = EditModel.VisionModels;
                             PlaceDetectPanel(null);
                         }
@@ -561,7 +561,7 @@ namespace VTMTester
 
                     foreach (var item in LEDsData.Items)
                     {
-                        var led = (item as Controls.DeviceControl.Camera.SingleLED);
+                        var led = (item as VTMControls.DeviceControl.SingleLED);
                         //var ledClone = led.Clone();
                         if (led.Use)
                         {
@@ -627,7 +627,7 @@ namespace VTMTester
             //Debug.Write(Program.Capture.videoCapture.Get(OpenCvSharp.VideoCaptureProperties.Pan).ToString(), Debug.ContentType.Notify);
             //Debug.Write(Program.Capture.videoCapture.Get(OpenCvSharp.VideoCaptureProperties.Gain).ToString(), Debug.ContentType.Notify);
 
-            EditModel.ModelSegmentLookup = Controls.DeviceControl.Camera.FND.SEG_LOOKUP.Clone();
+            EditModel.ModelSegmentLookup = VTMControls.DeviceControl.FND.SEG_LOOKUP.Clone();
             if (File.Exists(EditModel.Path))
             {
                 saveLabel.Visibility = Visibility.Visible;
@@ -671,7 +671,7 @@ namespace VTMTester
 
                         foreach (var item in LEDsData.Items)
                         {
-                            var led = (item as Controls.DeviceControl.Camera.SingleLED);
+                            var led = (item as VTMControls.DeviceControl.SingleLED);
                             //var ledClone = led.Clone();
                             if (led.Use)
                             {
@@ -735,7 +735,7 @@ namespace VTMTester
                 EditModel.Name = saveFileDialog.SafeFileName;
                 EditModel.Path = saveFileDialog.FileName;
                 CommitCameraToModel();   // persist the CURRENT slider values (not a fresh camera read)
-                EditModel.ModelSegmentLookup = Controls.DeviceControl.Camera.FND.SEG_LOOKUP.Clone();
+                EditModel.ModelSegmentLookup = VTMControls.DeviceControl.FND.SEG_LOOKUP.Clone();
                 EditModel.SaveTo(saveFileDialog.FileName);
                 Utility.Debug.Write("MODEL: Saved " + saveFileDialog.SafeFileName, Utility.Debug.ContentType.Notify);
                 saveLabel.Visibility = Visibility.Hidden;
@@ -756,7 +756,7 @@ namespace VTMTester
         {
             foreach (var item in LEDsData.Items)
             {
-                (item as Controls.DeviceControl.Camera.SingleLED).Use = false;
+                (item as VTMControls.DeviceControl.SingleLED).Use = false;
             }
         }
 
@@ -764,7 +764,7 @@ namespace VTMTester
         {
             foreach (var item in LEDsData.Items)
             {
-                (item as Controls.DeviceControl.Camera.SingleLED).Use = true;
+                (item as VTMControls.DeviceControl.SingleLED).Use = true;
             }
         }
 
@@ -772,7 +772,7 @@ namespace VTMTester
         {
             foreach (var item in GLEDsData.Items)
             {
-                (item as Controls.DeviceControl.Camera.SingleGLED).Use = false;
+                (item as VTMControls.DeviceControl.SingleGLED).Use = false;
             }
         }
 
@@ -780,7 +780,7 @@ namespace VTMTester
         {
             foreach (var item in GLEDsData.Items)
             {
-                (item as Controls.DeviceControl.Camera.SingleGLED).Use = true;
+                (item as VTMControls.DeviceControl.SingleGLED).Use = true;
             }
         }
 
@@ -1132,7 +1132,7 @@ namespace VTMTester
 
                 foreach (var item in LEDsData.Items)
                 {
-                    var led = (item as Controls.DeviceControl.Camera.SingleLED);
+                    var led = (item as VTMControls.DeviceControl.SingleLED);
                     //var ledClone = led.Clone();
                     if (led.Use)
                     {
@@ -1191,7 +1191,7 @@ namespace VTMTester
 
                 foreach (var item in LEDsData.Items)
                 {
-                    (item as Controls.DeviceControl.Camera.SingleLED).Use = false;
+                    (item as VTMControls.DeviceControl.SingleLED).Use = false;
                 }
 
                 // LEDs = 32
@@ -1199,7 +1199,7 @@ namespace VTMTester
                 {
                     foreach (var item in buf.LedList)
                     {
-                        var led = (LEDsData.Items[item.Index] as Controls.DeviceControl.Camera.SingleLED);
+                        var led = (LEDsData.Items[item.Index] as VTMControls.DeviceControl.SingleLED);
                         led.X = item.X;
                         led.Y = item.Y;
                         led.Dir = item.Dir;
@@ -1227,7 +1227,7 @@ namespace VTMTester
                 // Only an FND step has an FND store to load from, and only a complete one is safe to index -
                 // this loop runs a hardcoded 7 times bounded by the LIVE model, not by buf's own Count.
                 int index_char = 0;
-                foreach (var FNDchar in Fnd(buf) ? VisionBuider.Models.FNDs : new List<List<Controls.DeviceControl.Camera.FND>>())
+                foreach (var FNDchar in Fnd(buf) ? VisionBuider.Models.FNDs : new List<List<VTMControls.DeviceControl.FND>>())
                 {
                     if (EditModel.Layout.PCB_Count >= 1)
                     {
@@ -1323,7 +1323,7 @@ namespace VTMTester
             if (LEDsData == null) return;
             foreach (var item in LEDsData.Items)
             {
-                var led = item as Controls.DeviceControl.Camera.SingleLED;
+                var led = item as VTMControls.DeviceControl.SingleLED;
                 if (led != null) led.Use = use;
             }
         }

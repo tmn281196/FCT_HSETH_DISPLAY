@@ -1,5 +1,5 @@
 ﻿using Utility;
-using Controls.DeviceControl;
+using VTMControls.DeviceControl;
 using VTMBase;
 using Microsoft.Win32;
 using System;
