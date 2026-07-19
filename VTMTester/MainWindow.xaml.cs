@@ -1,6 +1,5 @@
 ﻿using Camera;
 using VTMBase;
-using VTMProgram;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -314,7 +313,7 @@ namespace VTMTester
         private static readonly System.Windows.Media.Brush IdleGray =
             new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xC6, 0xC6, 0xC6));
 
-        private UIElement BuildMicrophoneStatus(VTMProgram.Communication comm)
+        private UIElement BuildMicrophoneStatus(VTMBase.Communication comm)
         {
             var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(4, 0, 8, 0), VerticalAlignment = VerticalAlignment.Center };
             var icon = new FontAwesome.Sharp.IconImage { Icon = FontAwesome.Sharp.IconChar.Microphone, Foreground = IdleGray, Height = 13, Width = 13, Margin = new Thickness(0, 0, 5, 0), VerticalAlignment = VerticalAlignment.Center, ToolTip = "green = capturing, gray = idle" };
@@ -363,6 +362,8 @@ namespace VTMTester
             MainProgram.START();
             MainProgram.ResetTest();
             AutoPage.EnableLive();
+            VisionPage.DisableLive();
+            ManualPage.DisableLive();
         }
 
 

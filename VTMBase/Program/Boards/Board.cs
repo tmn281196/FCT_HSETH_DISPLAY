@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public class Board : INotifyPropertyChanged
     {

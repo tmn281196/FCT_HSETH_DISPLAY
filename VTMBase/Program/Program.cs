@@ -1,7 +1,7 @@
 ﻿using VTMBase;
 using Utility;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public partial class Program
     {

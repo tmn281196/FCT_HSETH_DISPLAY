@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public static class DiagLog
     {

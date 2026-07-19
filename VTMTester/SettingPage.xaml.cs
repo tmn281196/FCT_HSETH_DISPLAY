@@ -1,5 +1,5 @@
 ﻿using Utility;
-using VTMProgram;
+using VTMBase;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace VTMTester
     public partial class SettingPage : Page
     {
         public AppSettingParam Setting = new AppSettingParam();
-        private VTMProgram.Program _Program = new Program();
+        private VTMBase.Program _Program = new Program();
 
         public Program Program
         {
@@ -109,10 +109,10 @@ namespace VTMTester
             txtBoxExcelFileDir.Text = Setting.Communication.LogDirectory;
 
             // Microphone list (WASAPI capture endpoints)
-            var mics = VTMProgram.SoundTester.ListMicrophones();
+            var mics = VTMBase.SoundTester.ListMicrophones();
             cbbMicrophone.ItemsSource = mics;
             var savedId = Setting.Communication.MicrophoneId;
-            VTMProgram.MicDeviceInfo match = null;
+            VTMBase.MicDeviceInfo match = null;
             foreach (var m in mics)
             {
                 if (m.Id == savedId) { match = m; break; }
@@ -268,7 +268,7 @@ namespace VTMTester
                 Setting.Communication.Scan_Parity = parity;
 
                 // Microphone
-                if (cbbMicrophone.SelectedItem is VTMProgram.MicDeviceInfo mic)
+                if (cbbMicrophone.SelectedItem is VTMBase.MicDeviceInfo mic)
                 {
                     Setting.Communication.MicrophoneId = mic.Id;
                     Setting.Communication.MicrophoneName = mic.Name;

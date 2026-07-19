@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using Controls;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public partial class Program
     {

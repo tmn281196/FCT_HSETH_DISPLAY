@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public class FolderMap
     {

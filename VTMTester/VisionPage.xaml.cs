@@ -2,7 +2,6 @@
 using Camera.VisionTest;
 using Utility;
 using VTMBase;
-using VTMProgram;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -641,7 +640,7 @@ namespace VTMTester
             else
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.InitialDirectory = VTMProgram.FolderMap.RootFolder;
+                saveFileDialog.InitialDirectory = VTMBase.FolderMap.RootFolder;
                 saveFileDialog.AddExtension = true;
                 saveFileDialog.DefaultExt = FolderMap.DefaultModelFileExt;
                 if ((bool)saveFileDialog.ShowDialog())
@@ -725,7 +724,7 @@ namespace VTMTester
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = VTMProgram.FolderMap.RootFolder;
+            saveFileDialog.InitialDirectory = VTMBase.FolderMap.RootFolder;
             saveFileDialog.AddExtension = true;
             saveFileDialog.DefaultExt = FolderMap.DefaultModelFileExt;
             if ((bool)saveFileDialog.ShowDialog())

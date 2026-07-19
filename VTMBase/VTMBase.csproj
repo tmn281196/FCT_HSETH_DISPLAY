@@ -141,8 +141,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\CheckSum.cs" />
-    <Compile Include="Helper\EnumHelper.cs" />
     <Compile Include="Model\Command\CommandDescriptions.cs" />
     <Compile Include="Model\Command\Commands.cs" />
     <Compile Include="Model\Model.cs" />
@@ -172,8 +170,6 @@
     <Compile Include="Program\FileAndFolder\FolderMap.cs" />
     <Compile Include="Program\FileAndFolder\ModelLoaded.cs" />
     <Compile Include="Program\FileAndFolder\Program.cs" />
-    <Compile Include="Program\Helper\CheckSum.cs" />
-    <Compile Include="Program\Helper\EnumHelper.cs" />
     <Compile Include="Program\ModelBuilder\Program.cs" />
     <Compile Include="Program\ModelTester\Program.cs" />
     <Compile Include="Program\Program.cs" />

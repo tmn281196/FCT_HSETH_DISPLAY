@@ -12,7 +12,7 @@ using Camera;
 using Controls.Devices_Control;
 using Controls.DeviceControl;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public partial class Program
     {

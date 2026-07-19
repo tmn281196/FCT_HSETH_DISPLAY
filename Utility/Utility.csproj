@@ -92,6 +92,8 @@
   <ItemGroup>
     <Compile Include="BitmapHelper.cs" />
     <Compile Include="Debug.cs" />
+    <Compile Include="CheckSum.cs" />
+    <Compile Include="EnumHelper.cs" />
     <Compile Include="Excel.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="GT800_Printer.cs" />

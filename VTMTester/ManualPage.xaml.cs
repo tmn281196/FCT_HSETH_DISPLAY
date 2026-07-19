@@ -1,7 +1,6 @@
 ﻿using Camera;
 using Camera.VisionTest;
 using VTMBase;
-using VTMProgram;
 using System;
 using System.Collections.Generic;
 using System.Linq;

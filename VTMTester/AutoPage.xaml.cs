@@ -2,7 +2,6 @@
 using Camera.VisionTest;
 using Utility;
 using VTMBase;
-using VTMProgram;
 using Microsoft.Win32;
 
 using System;

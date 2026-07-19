@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VTMProgram
+namespace VTMBase
 {
     /// <summary>
     /// Interaction logic for BoardResultPanel.xaml

@@ -26,7 +26,7 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using OpenCvSharp.Flann;
 using System.Drawing;
 
-namespace VTMProgram
+namespace VTMBase
 {
     public partial class Program
     {

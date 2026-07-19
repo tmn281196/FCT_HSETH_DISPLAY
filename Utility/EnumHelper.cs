@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Markup;
 
-namespace VTMBase
+namespace Utility
 {
     public class EnumToItemsSource : MarkupExtension
     {

@@ -7,7 +7,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using VTMBase;
-using VTMProgram;
 
 namespace VTMTester
 {
@@ -960,9 +959,9 @@ namespace VTMTester
             SaveToStep();
             var dlg = new Microsoft.Win32.SaveFileDialog
             {
-                InitialDirectory = VTMProgram.FolderMap.RootFolder,
+                InitialDirectory = VTMBase.FolderMap.RootFolder,
                 AddExtension = true,
-                DefaultExt = VTMProgram.FolderMap.DefaultModelFileExt
+                DefaultExt = VTMBase.FolderMap.DefaultModelFileExt
             };
             if (dlg.ShowDialog() == true)
             {
@@ -1082,7 +1081,7 @@ namespace VTMTester
                 int n = cfg.Rois.Count;
                 _diagPass = new bool?[n];
                 _diagScore = new double?[n];
-                var subset = VTMProgram.Program.SelectRoisByCondition(cfg, _currentStep?.Condition2);
+                var subset = VTMBase.Program.SelectRoisByCondition(cfg, _currentStep?.Condition2);
                 // Only map when the tester produced a full per-ROI result for this subset. Otherwise the test
                 // errored early (bad config / missing template) -> leave every ROI neutral (no result).
                 bool valid = tester.LastRoiPass != null && tester.LastRoiScore != null

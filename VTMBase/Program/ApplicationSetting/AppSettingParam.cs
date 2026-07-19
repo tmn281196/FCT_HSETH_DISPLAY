@@ -1,4 +1,4 @@
-﻿namespace VTMProgram
+﻿namespace VTMBase
 {
     public class AppSettingParam
     {

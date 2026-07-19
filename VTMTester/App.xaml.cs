@@ -1,4 +1,4 @@
-﻿using VTMProgram;
+﻿using VTMBase;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -72,7 +72,7 @@ namespace VTMTester
             }
 
             string PCName = mappingPCNameDictionary[macKey];
-            VTMProgram.FolderMap.PCName = PCName;
+            VTMBase.FolderMap.PCName = PCName;
 
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread

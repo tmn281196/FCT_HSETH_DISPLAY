@@ -1,7 +1,6 @@
 ﻿using Controls;
 using Utility;
 using VTMBase;
-using VTMProgram;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -173,7 +172,7 @@ namespace VTMTester
                 saveLabel.Visibility = Visibility.Visible;
 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.InitialDirectory = VTMProgram.FolderMap.RootFolder;
+                saveFileDialog.InitialDirectory = VTMBase.FolderMap.RootFolder;
                 saveFileDialog.AddExtension = true;
                 saveFileDialog.DefaultExt = FolderMap.DefaultModelFileExt;
                 if ((bool)saveFileDialog.ShowDialog())
@@ -192,7 +191,7 @@ namespace VTMTester
         private async void btSaveAsModel_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = VTMProgram.FolderMap.RootFolder;
+            saveFileDialog.InitialDirectory = VTMBase.FolderMap.RootFolder;
             saveFileDialog.AddExtension = true;
             saveFileDialog.DefaultExt = FolderMap.DefaultModelFileExt;
             if ((bool)saveFileDialog.ShowDialog())

@@ -4,7 +4,7 @@ using VTMBase;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace VTMProgram
+namespace VTMBase
 {
     // Sound tester ported from ZEROC BuzzerCheck (D:\1ABC\TNG\#LATEST\ZEROC\HANSOL---ZEROC\ZeroC\BuzzerCheck.cs).
     // Reads the model's global SoundStepConfig (ROIs, Metric, FFT size, MaxHz, dB range). Each SND CHECK step
