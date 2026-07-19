@@ -1,14 +1,19 @@
 name: Build
 
-# Builds the VTM solution on every push / PR to main. This is a .NET Framework 4.8
-# WPF solution with a MIX of packages.config (VTMBase / VTMTester / VTMReport) and
-# PackageReference (VTMControls / VTMUtility) projects, so it needs BOTH a nuget restore
-# (packages.config -> solution `packages\` folder) and an msbuild restore
-# (PackageReference -> global NuGet cache, which is also where VTMTester's Sdcb
-# PaddleOCR native props Import expects the 3.0.0.51 runtime).
+# Builds the VTM solution. This is a .NET Framework 4.8 WPF solution with a MIX of
+# packages.config (VTMBase / VTMTester / VTMReport) and PackageReference (VTMControls /
+# VTMUtility) projects, so it needs BOTH a nuget restore (packages.config -> solution
+# `packages\` folder) and an msbuild restore (PackageReference -> global NuGet cache,
+# which is also where VTMTester's Sdcb PaddleOCR native props Import expects the
+# 3.0.0.51 runtime).
+#
+# Every push / PR to main compiles Release as a pass/fail check. A downloadable build
+# artifact (VTMTester/bin/Release, ~710MB incl. the OCR native dll/x64) is ONLY produced
+# when you trigger the workflow manually (Actions -> Run workflow) or push a `v*` tag.
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -33,7 +38,17 @@ jobs:
 
       # PackageReference projects (VTMControls / VTMUtility) + Sdcb native to the global cache
       - name: MSBuild restore (PackageReference)
-        run: msbuild VTM.sln -t:Restore -p:Configuration=Debug
+        run: msbuild VTM.sln -t:Restore -p:Configuration=Release
 
-      - name: Build (Debug)
-        run: msbuild VTM.sln -t:Build -p:Configuration=Debug -m
+      - name: Build (Release)
+        run: msbuild VTM.sln -t:Build -p:Configuration=Release -m
+
+      # Downloadable build only on manual run or a v* tag (keeps the ~710MB out of every push).
+      - name: Upload build artifact
+        if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: VTMTester-${{ github.ref_name }}
+          path: VTMTester/bin/Release/
+          if-no-files-found: error
+          retention-days: 30
