@@ -135,7 +135,7 @@
     <!-- Merged from VTMProgram (2026-07-19): its source now lives under Program\ here; namespace stays VTMProgram. -->
     <Compile Include="Program\ApplicationSetting\AppSettingParam.cs" />
     <Compile Include="Program\ApplicationSetting\Communication.cs" />
-    <Compile Include="Program\Sound\SoundTester.cs" />
+    <Compile Include="Program\Devices\SoundTester.cs" />
     <Compile Include="Program\ApplicationSetting\ETCSetting.cs" />
     <Compile Include="Program\ApplicationSetting\Operations.cs" />
     <Compile Include="Program\ApplicationSetting\SystemAccess.cs" />
@@ -145,10 +145,10 @@
     <Compile Include="Program\Boards\Board.cs" />
     <Compile Include="Program\Boards\Program.cs" />
     <Compile Include="Program\DiagLog.cs" />
-    <Compile Include="Program\Device\ProgramDevices.cs" />
-    <Compile Include="Program\FileAndFolder\FolderMap.cs" />
-    <Compile Include="Program\FileAndFolder\ModelLoaded.cs" />
-    <Compile Include="Program\FileAndFolder\Program.cs" />
+    <Compile Include="Program\Devices\ProgramDevices.cs" />
+    <Compile Include="Program\FileManagement\FolderMap.cs" />
+    <Compile Include="Program\FileManagement\ModelLoaded.cs" />
+    <Compile Include="Program\FileManagement\Program.cs" />
     <Compile Include="Program\ModelBuilder\Program.cs" />
     <Compile Include="Program\ModelTester\Program.cs" />
     <Compile Include="Program\Program.cs" />
@@ -185,6 +185,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
