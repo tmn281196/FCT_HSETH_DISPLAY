@@ -307,7 +307,8 @@ namespace VTMControls.DeviceControl
             Background = new SolidColorBrush(Colors.Transparent),
             Foreground = new SolidColorBrush(Colors.White),
             BorderThickness = new Thickness(0),
-            Padding = new Thickness(4, 0, 4, 0),
+            // Width follows the content; 5px of padding each side (same rule as the readout bars in the panels).
+            Padding = new Thickness(5, 0, 5, 0),
             Height = 22,
             FontSize = 13,
             FontWeight = FontWeights.Bold,

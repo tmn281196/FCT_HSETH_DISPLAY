@@ -61,7 +61,9 @@
        
 
             <StackPanel  Grid.Row="0"  Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Label Height="25" Foreground="White" Width="100" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding DetectedString}" HorizontalContentAlignment="Center">
+                <!--  Width follows the detected string (no fixed width - a longer reading used to be clipped),
+                      with 5px of breathing room each side.  -->
+                <Label Height="25" Foreground="White" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding DetectedString}" HorizontalContentAlignment="Center">
                     <!-- Bar colour = pass/fail state (replaces the removed dot): green when the detected string matches
                          the expected value, red otherwise. -->
                     <Label.Style>

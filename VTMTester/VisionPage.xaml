@@ -1033,10 +1033,11 @@
                         </TabItem>
                     </TabControl>
                     <StackPanel Grid.Row="0" Margin="5,5,5,5" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!--  Width follows the reading; 5px padding each side.  -->
                         <Label
                             Foreground="White"
                             Background="Black"
-                            Width="80"
+                            Padding="5,0"
                             Height="25"
                             x:Name="lbMatrixPointValue"
                             HorizontalContentAlignment="Center"
@@ -1217,10 +1218,11 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="0" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!--  Width follows the reading; 5px padding each side.  -->
                         <Label
-                            Width="75"
-                              Foreground="White"
-              Background="Black"
+                            Padding="5,0"
+                            Foreground="White"
+                            Background="Black"
                             x:Name="lbLEDvalue"
                             HorizontalContentAlignment="Center"
                             HorizontalAlignment="Center"
