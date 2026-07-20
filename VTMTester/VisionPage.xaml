@@ -1077,6 +1077,28 @@
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
 
+                    <!--  Broadcast the selected cell's value down its whole column (e.g. click Thresh on row 2 ->
+                          every LED gets that Thresh). X / Y / Index are refused in code. Collapsed until a cell
+                          is actually picked, so it cannot be pressed with nothing selected.  -->
+                    <Button
+                        x:Name="btnLedApplyAll"
+                        Grid.Row="0"
+                        Width="118"
+                        Margin="2,0,0,4"
+                        HorizontalAlignment="Left"
+                        Click="btnLedApplyAll_Click"
+                        Style="{StaticResource UseAllKey}"
+                        ToolTip="Ap gia tri cua o dang chon cho tat ca LED ROI. Cot X/Y/Index khong ap duoc."
+                        Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconBlock
+                                Margin="0,0,5,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Icon="ArrowDown" />
+                            <TextBlock VerticalAlignment="Center" Text="Apply for All" />
+                        </StackPanel>
+                    </Button>
 
                     <DataGrid
                         x:Name="LEDsData"
@@ -1217,26 +1239,6 @@
                                 <fa:IconBlock Icon="Square" FontSize="15" />
                             </Button>
                         </StackPanel>
-                        <!--  Broadcast the selected cell's value down its whole column (e.g. click Thresh on row 2
-                              -> every LED gets that Thresh). X / Y / Index are refused in code. On its own line,
-                              stretched: crammed next to the 34px Use keys it got clipped in this narrow column.  -->
-                        <Button
-                            x:Name="btnLedApplyAll"
-                            MinWidth="112"
-                            Margin="0,4,0,0"
-                            HorizontalAlignment="Stretch"
-                            Click="btnLedApplyAll_Click"
-                            Style="{StaticResource UseAllKey}"
-                            ToolTip="Chon 1 o (vd cot Thresh) roi bam - gia tri do se ap cho tat ca LED ROI. Cot X/Y/Index khong ap duoc.">
-                            <StackPanel Orientation="Horizontal">
-                                <fa:IconBlock
-                                    Margin="0,0,5,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Icon="ArrowDown" />
-                                <TextBlock VerticalAlignment="Center" Text="Apply for All" />
-                            </StackPanel>
-                        </Button>
                         <!-- Copy the live LED reading into Condition1 (teach the expected value). -->
                         <Button Click="CopyLedValueToCondition1_Click" Margin="0,0,0,0" Padding="6,2"  Height="25"
                                 HorizontalAlignment="Center" Cursor="Hand" ToolTip="Copy this reading into Oper (the expected value for FND/LED/LCD)">

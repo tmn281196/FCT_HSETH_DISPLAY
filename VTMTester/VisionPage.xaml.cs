@@ -764,6 +764,29 @@ namespace VTMTester
                 var led = picked.Item as VTMControls.DeviceControl.SingleLED;
                 if (led != null) _ledSelRow = led;
             }
+
+            // The button only makes sense with a cell picked, so it stays hidden until there is one. Hide it
+            // again on a column we refuse to broadcast (X / Y / Index) rather than offering a click that fails.
+            if (btnLedApplyAll != null)
+            {
+                string p = LedColumnPath(_ledSelColumn);
+                bool usable = _ledSelRow != null && IsBroadcastable(p);
+                btnLedApplyAll.Visibility = usable ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        // Binding path of a LED grid column ("Thresh", "ON", ...), or null when it is not a bound column.
+        private static string LedColumnPath(DataGridColumn col)
+        {
+            return ((col as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding)?.Path?.Path;
+        }
+
+        // X / Y would write one ROI's coordinate into all of them and stack every ROI onto a single point;
+        // Index is the row identity. Everything else on this grid is a per-ROI setting and is fair game.
+        private static bool IsBroadcastable(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            return path != "X" && path != "Y" && path != "Index";
         }
 
         // Feedback for Apply-for-All without a status line: flash the button green on success / red when the
@@ -1378,13 +1401,8 @@ namespace VTMTester
                 return;
             }
 
-            string path = ((col as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding)?.Path?.Path;
-            if (string.IsNullOrEmpty(path))
-            {
-                FlashLedApplyButton(false);
-                return;
-            }
-            if (path == "X" || path == "Y" || path == "Index")
+            string path = LedColumnPath(col);
+            if (!IsBroadcastable(path))
             {
                 FlashLedApplyButton(false);
                 return;

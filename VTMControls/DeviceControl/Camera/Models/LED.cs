@@ -493,10 +493,12 @@ namespace VTMControls.DeviceControl
             set
             {
                 dir = value;
-                Rect recNew = Rect;
-                recNew.Width = value;
-                recNew.Height = value;
-                Rect = recNew;
+                // Dir is the probe DIAMETER, so width and height must move together. This used to assign through
+                // the Rect property, which applies Width and Height under two SEPARATE bounds guards - when only
+                // one of them passed the probe came out as a flattened ellipse, and it only snapped round again
+                // on the next move (Translate -> SetPosition re-syncs the drawn size from rect).
+                // SetGeometry writes rect directly, keeps the top-left where it was, and redraws immediately.
+                SetGeometry(rect.X, rect.Y, value, value);
                 OnPropertyChanged(nameof(Dir));
             }
         }
