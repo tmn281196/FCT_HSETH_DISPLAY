@@ -332,6 +332,25 @@
                                 <TextBlock VerticalAlignment="Center" Text="Paste" />
                             </StackPanel>
                         </Button>
+                        <!--  Same broadcast as the LED tab, on whichever char grid a cell was picked in.
+                              Collapsed until that cell is broadcastable (X / Y / Index are refused).  -->
+                        <Button
+                            x:Name="btnFndApplyAll"
+                            Width="118"
+                            Margin="10,0,0,0"
+                            Click="btnFndApplyAll_Click"
+                            Style="{StaticResource UseAllKey}"
+                            ToolTip="Ap gia tri cua o dang chon cho tat ca segment cua FND nay. Cot X/Y/Index khong ap duoc."
+                            Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconBlock
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Icon="ArrowDown" />
+                                <TextBlock VerticalAlignment="Center" Text="Apply for All" />
+                            </StackPanel>
+                        </Button>
                         <TextBlock
                             x:Name="txtFndClipboard"
                             Margin="10,0,0,0"

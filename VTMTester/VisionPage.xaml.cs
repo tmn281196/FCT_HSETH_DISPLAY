@@ -769,14 +769,13 @@ namespace VTMTester
             // again on a column we refuse to broadcast (X / Y / Index) rather than offering a click that fails.
             if (btnLedApplyAll != null)
             {
-                string p = LedColumnPath(_ledSelColumn);
-                bool usable = _ledSelRow != null && IsBroadcastable(p);
+                bool usable = _ledSelRow != null && IsBroadcastable(ColumnPath(_ledSelColumn));
                 btnLedApplyAll.Visibility = usable ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
-        // Binding path of a LED grid column ("Thresh", "ON", ...), or null when it is not a bound column.
-        private static string LedColumnPath(DataGridColumn col)
+        // Binding path of a probe-grid column ("Thresh", "ON", ...), or null when it is not a bound column.
+        private static string ColumnPath(DataGridColumn col)
         {
             return ((col as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding)?.Path?.Path;
         }
@@ -794,9 +793,9 @@ namespace VTMTester
         // the template's border, which outranks the style's hover/pressed triggers - otherwise the colour would
         // be masked by the hover highlight, since the pointer is still on the button right after the click.
         // ClearValue at the end hands the border back to the template so hover/press behave normally again.
-        private void FlashLedApplyButton(bool ok)
+        private void FlashApplyButton(Button button, bool ok)
         {
-            var bd = btnLedApplyAll?.Template?.FindName("bd", btnLedApplyAll) as Border;
+            var bd = button?.Template?.FindName("bd", button) as Border;
             if (bd == null) return;
 
             var from = ok ? Color.FromRgb(0x2E, 0x7D, 0x32) : Color.FromRgb(0xC6, 0x28, 0x28);
@@ -1323,6 +1322,15 @@ namespace VTMTester
             return null;
         }
 
+        // Last cell picked in ANY of the seven FND segment grids, plus which grid it was - Apply-for-All works on
+        // that grid. Same reason it is remembered here rather than read from CurrentCell as the LED side: the
+        // button steals focus from the grid.
+        private DataGrid _fndSelGrid;
+
+        private DataGridColumn _fndSelColumn;
+
+        private VTMControls.DeviceControl.SingleLED _fndSelRow;
+
         private void FNDSegmentsData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             var dataGrid = sender as DataGrid;
@@ -1332,6 +1340,23 @@ namespace VTMTester
                 {
                     dataGrid.ScrollIntoView(dataGrid.SelectedItem);
                 }
+            }
+
+            if (e.AddedCells != null && e.AddedCells.Count > 0)
+            {
+                var picked = e.AddedCells[0];
+                _fndSelGrid = dataGrid;
+                if (picked.Column != null) _fndSelColumn = picked.Column;
+                var led = picked.Item as VTMControls.DeviceControl.SingleLED;
+                if (led != null) _fndSelRow = led;
+            }
+
+            // Hidden until a broadcastable cell is picked - never offer a click that would fail.
+            if (btnFndApplyAll != null)
+            {
+                bool usable = _fndSelRow != null && _fndSelGrid != null
+                              && IsBroadcastable(ColumnPath(_fndSelColumn));
+                btnFndApplyAll.Visibility = usable ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -1383,32 +1408,10 @@ namespace VTMTester
         // Only the per-ROI TUNING columns can be broadcast. X and Y are refused ON PURPOSE: writing one ROI's
         // coordinate into all of them stacks every ROI onto a single point - the exact way a bulk write wipes a
         // model's layout - and Index is the row identity, not a setting.
-        private void btnLedApplyAll_Click(object sender, RoutedEventArgs e)
+        // Copy `path`'s value from src into every OTHER probe in the grid. False = a column we do not broadcast.
+        private static bool BroadcastColumn(DataGrid grid, VTMControls.DeviceControl.SingleLED src, string path)
         {
-            if (LEDsData == null) return;
-
-            // Commit any in-progress cell edit first, otherwise we would broadcast the pre-edit value.
-            LEDsData.CommitEdit(DataGridEditingUnit.Cell, true);
-            LEDsData.CommitEdit(DataGridEditingUnit.Row, true);
-
-            // Prefer the cell remembered at selection time; fall back to CurrentCell.
-            var cell = LEDsData.CurrentCell;
-            var src = _ledSelRow ?? cell.Item as VTMControls.DeviceControl.SingleLED;
-            var col = _ledSelColumn ?? cell.Column;
-            if (src == null || col == null)
-            {
-                FlashLedApplyButton(false);
-                return;
-            }
-
-            string path = LedColumnPath(col);
-            if (!IsBroadcastable(path))
-            {
-                FlashLedApplyButton(false);
-                return;
-            }
-
-            foreach (var item in LEDsData.Items)
+            foreach (var item in grid.Items)
             {
                 var led = item as VTMControls.DeviceControl.SingleLED;
                 if (led == null || ReferenceEquals(led, src)) continue;
@@ -1420,16 +1423,45 @@ namespace VTMTester
                     case "Thresh": led.Thresh = src.Thresh; break;
                     case "Intens": led.Intens = src.Intens; break;
                     case "Use": led.Use = src.Use; break;
-                    default:
-                        FlashLedApplyButton(false);
-                        return;
+                    default: return false;
                 }
             }
 
             // ON / OFF are plain auto-properties with no PropertyChanged, so the grid will not repaint them by
             // itself - refresh once here so every broadcast column updates the same way.
-            LEDsData.Items.Refresh();
-            FlashLedApplyButton(true);
+            grid.Items.Refresh();
+            return true;
+        }
+
+        // Shared by the LED grid and the seven FND segment grids: commit any pending edit, resolve the cell the
+        // operator picked, broadcast it, and flash the button green / red.
+        private void ApplyForAll(DataGrid grid, DataGridColumn selCol, VTMControls.DeviceControl.SingleLED selRow, Button flash)
+        {
+            if (grid == null) { FlashApplyButton(flash, false); return; }
+
+            // Commit any in-progress cell edit first, otherwise we would broadcast the pre-edit value.
+            grid.CommitEdit(DataGridEditingUnit.Cell, true);
+            grid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            // Prefer the cell remembered at selection time; fall back to CurrentCell.
+            var cell = grid.CurrentCell;
+            var src = selRow ?? cell.Item as VTMControls.DeviceControl.SingleLED;
+            var col = selCol ?? cell.Column;
+            string path = ColumnPath(col);
+
+            bool ok = src != null && col != null && IsBroadcastable(path) && BroadcastColumn(grid, src, path);
+            FlashApplyButton(flash, ok);
+        }
+
+        private void btnLedApplyAll_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyForAll(LEDsData, _ledSelColumn, _ledSelRow, btnLedApplyAll);
+        }
+
+        // The FND side works on whichever of the seven char grids the operator last picked a cell in.
+        private void btnFndApplyAll_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyForAll(_fndSelGrid, _fndSelColumn, _fndSelRow, btnFndApplyAll);
         }
 
         // Copy the live reading (already updated in realtime by the vision timer) into the selected step's
