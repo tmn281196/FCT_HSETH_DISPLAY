@@ -14,19 +14,33 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <!--  Crop image takes whatever is left, so it is bounded VERTICALLY as well. With Auto here the row
                   grew to the bitmap's own height (only the width was constrained), so a crop taller than the
                   panel simply ran off the bottom instead of fitting.  -->
             <RowDefinition Height="*" MinHeight="60" />
         </Grid.RowDefinitions>
 
-        <!--  The component-name header ("LCD1") was removed: the tab already says which component this is, and
-              dropping the row hands its height to the crop image.  -->
+        <!--  Component-name header ("LCD1"). HIDDEN, not deleted - the tab already says which component this is.
+              Collapsed (not Hidden) so the Auto row measures to zero and the height goes to the crop image;
+              set this back to Visible to bring the title back.  -->
+        <Grid
+            Grid.Row="0"
+            Margin="10,6,10,6"
+            Visibility="Collapsed">
+            <Label
+                VerticalAlignment="Center"
+                Padding="0"
+                Content="{Binding Name}"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="Black" />
+        </Grid>
 
         <!--  Uniform = scale to fit the cell in BOTH directions, keeping the aspect ratio, so the crop always sits
               fully inside the panel and re-fits by itself whenever the window / tab is resized.  -->
         <Image
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,5"
             RenderOptions.BitmapScalingMode="HighQuality"
             Source="{Binding CropImage}"
@@ -34,7 +48,7 @@
             StretchDirection="Both" />
 
         <!-- Detected string + Apply-to-Spec, right-aligned above the crop image. -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <!--  Width follows the detected string (no fixed width - a longer reading used to be clipped),
                       with 5px of breathing room each side.  -->
                 <Label Height="25" Foreground="White" Padding="5,0" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding DetectedString}" HorizontalContentAlignment="Center">
