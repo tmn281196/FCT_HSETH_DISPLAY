@@ -1,0 +1,209 @@
+using VTMBase;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Linq;
+using System.Collections.Generic;
+using VTMUtility;
+using System.Windows;
+using VTMControls;
+using VTMControls.DeviceControl;
+
+namespace VTMBase
+{
+    public partial class Program
+    {
+        // Every device the tester drives lives in its own type (see ProgramDevices.cs); Program owns one as a
+        // component. The proxy properties below re-expose each device so the existing call sites - roughly 900
+        // of them, most inside the 7k-line state machine - keep reading Program.System / Program._DMM / ...
+        // unchanged. Prefer Devices.X in new code; the proxies exist purely so the split cost nothing.
+        public ProgramDevices Devices { get; } = new ProgramDevices();
+
+        public GWIN_TECH_DMM _DMM { get { return Devices._DMM; } set { Devices._DMM = value; } }
+        public MuxCardControl MuxCard { get { return Devices.MuxCard; } set { Devices.MuxCard = value; } }
+        public RelayControls Relay { get { return Devices.Relay; } set { Devices.Relay = value; } }
+        public LevelDataViewer Level { get { return Devices.Level; } set { Devices.Level = value; } }
+        public SolenoidControls Solenoid { get { return Devices.Solenoid; } set { Devices.Solenoid = value; } }
+        public VisionTester VisionTester { get { return Devices.VisionTester; } set { Devices.VisionTester = value; } }
+        public SysIOControl System { get { return Devices.System; } set { Devices.System = value; } }
+        public PowerMetter PowerMetter { get { return Devices.PowerMetter; } set { Devices.PowerMetter = value; } }
+        public BoardExtension BoardExtension { get { return Devices.BoardExtension; } set { Devices.BoardExtension = value; } }
+        public CameraControl Capture { get { return Devices.Capture; } set { Devices.Capture = value; } }
+        public SerialPortDisplay BarcodeReader { get { return Devices.BarcodeReader; } set { Devices.BarcodeReader = value; } }
+        public List<UUTPort> UUTs { get { return Devices.UUTs; } set { Devices.UUTs = value; } }
+        public Printer_QR Printer { get { return Devices.Printer; } set { Devices.Printer = value; } }
+        public SoundTester SoundTester { get { return Devices.SoundTester; } set { Devices.SoundTester = value; } }
+
+        public Program()
+        {
+            // Devices are constructed by ProgramDevices' own constructor (field initializer above).
+        }
+
+        // Check device comunications.
+        // Stays on Program (not ProgramDevices) because it needs appSetting and CheckBarcodeReader, and it wires
+        // the MachineIO events to the state-machine handlers below.
+        public async void CheckComnunication()
+        {
+            Devices.CloseAllPorts();
+            await Task.Delay(50);
+
+            // Only connect the ports flagged "Use". Un-used ports were already closed above and stay closed.
+            var comm = appSetting.Communication;
+
+            // Annotate SYS (system board output/input signals) and SOL (solenoid channels) frames in the log.
+            VTMUtility.Debug.FrameAnnotator = (dev, f, n, tx) =>
+                  dev == "SYS" ? VTMControls.DeviceControl.SystemBoard.AnnotateFrame(f, n, tx)
+                : dev == "SOL" ? VTMControls.DeviceControl.SolenoidCard.AnnotateFrame(f, n, tx)
+                : "";
+
+            // TX/RX serial traffic is logged only for the system board and the solenoid board.
+            if (System?.System_Board?.SerialPort != null)
+            {
+                System.System_Board.SerialPort.LogTxRx = true;
+                if (string.IsNullOrEmpty(System.System_Board.SerialPort.DeviceName))
+                    System.System_Board.SerialPort.DeviceName = "SystemBoard";
+            }
+            if (Solenoid?.SerialPort != null)
+            {
+                Solenoid.SerialPort.LogTxRx = true;
+                if (string.IsNullOrEmpty(Solenoid.SerialPort.DeviceName))
+                    Solenoid.SerialPort.DeviceName = "Solenoid";
+            }
+
+            //System board checking
+            if (comm.SystemIOUse)
+            {
+                System.System_Board.CheckCardComunication(comm.SystemIOPort);
+                await Task.Delay(50);
+            }
+            System.System_Board.MachineIO.OnStartRequest += MachineIO_OnStartRequest;
+            System.System_Board.MachineIO.OnManualStartRequest += MachineIO_OnManualStartRequest;
+            System.System_Board.MachineIO.OnCancleRequest += MachineIO_OnCancleRequest;
+            System.System_Board.MachineIO.OnDoorStateChange += MachineIO_OnDoorStateChange;
+
+            // Analog Extension port checking
+            if (comm.BoardExtensionUse)
+            {
+                BoardExtension.CheckCommunication(comm.BoardExtensionPort);
+                await Task.Delay(50);
+            }
+
+            ////Mux card Checking
+            //MuxCard.CheckCard1Comunication(appSetting.Communication.Mux1Port);
+            //await Task.Delay(50);
+            //MuxCard.CheckCard2Comunication(appSetting.Communication.Mux2Port);
+            //await Task.Delay(50);
+
+            //// DMM check
+            //_DMM.DMM1.CheckCommunication(appSetting.Communication.DMM1Port);
+            //await Task.Delay(50);
+            //_DMM.DMM2.CheckCommunication(appSetting.Communication.DMM2Port);
+            //await Task.Delay(50);
+
+            // RELAY CHECK
+            if (comm.RelayUse)
+            {
+                Relay.CheckCardComunication(comm.RelayPort);
+                await Task.Delay(50);
+            }
+
+            if (comm.LevelUse)
+            {
+                Level.CheckCardComunication(comm.LevelPort);
+                await Task.Delay(50);
+            }
+
+            if (comm.SolenoidUse)
+            {
+                Solenoid.CheckCardComunication(comm.SolenoidPort);
+                //Solenoid.SerialPort.Port = BoardExtension.SerialPort.Port;
+                await Task.Delay(100);
+            }
+
+            //Power metter check
+            if (comm.PowerMetterUse)
+            {
+                PowerMetter.CheckCommunication(comm.PowerMetterPort);
+                await Task.Delay(50);
+            }
+
+            // Barcode scand
+            if (comm.ScannerUse)
+            {
+                CheckBarcodeReader(comm.ScannerPort);
+                await Task.Delay(50);
+            }
+
+            // UUTs
+            if (comm.UUT1Use) { UUTs[0].CheckPort(comm.UUT1Port); await Task.Delay(50); }
+            if (comm.UUT2Use) { UUTs[1].CheckPort(comm.UUT2Port); await Task.Delay(50); }
+            if (comm.UUT3Use) { UUTs[2].CheckPort(comm.UUT3Port); await Task.Delay(50); }
+            if (comm.UUT4Use) { UUTs[3].CheckPort(comm.UUT4Port); await Task.Delay(50); }
+        }
+
+        private void MachineIO_OnDoorStateChange(object sender, EventArgs e)
+        {
+            if (System.System_Board.MachineIO.IsDoorOpen)
+            {
+                Debug.Write("Machine door open.", Debug.ContentType.Warning);
+            }
+        }
+
+        private void MachineIO_OnCancleRequest(object sender, EventArgs e)
+        {
+            DiagLog.Write("CANCEL", $"IsTestting={IsTestting} TestState={TestState}");
+            // Only a run that is genuinely in progress can be cancelled. Once it has CONCLUDED (GOOD/FAIL) the
+            // result must stand: a PASS raises the cylinder, which drops SS_DOWN by design, and that release
+            // must never overwrite the result with STOP. Likewise nothing to cancel before it starts (READY/WAIT).
+            lock (_stateLock)
+            {
+                if (IsTestting && (TestState == RunTestState.TESTTING || TestState == RunTestState.PAUSE))
+                {
+                    TestState = RunTestState.STOP;
+                    IsTestting = false;
+                    DiagLog.Write("CANCEL", "→ STOP, IsTestting=false");
+                }
+            }
+        }
+
+        private void MachineIO_OnStartRequest(object sender, EventArgs e)
+        {
+            DiagLog.Write("START_REQ", $"IsTestting={IsTestting} IsloadModel={IsloadModel} page={pageActive} TestState={TestState}");
+            ResultPanel.Dispatcher.Invoke(new Action(() =>
+            ResultPanel.Visibility = Visibility.Hidden));
+            // Only a press made while the machine is actually waiting for one counts. A press during GOOD/FAIL/STOP
+            // - i.e. while the previous result is still on screen - must NOT be banked and then auto-fire the
+            // instant READY arrives; the operator has to press again once the machine is ready for it.
+            // WAIT stays allowed: that is exactly how the "pressed with no barcode loaded" branch notices the
+            // press and pulses the jig back up.
+            if (!IsTestting && IsloadModel
+                && (TestState == RunTestState.READY || TestState == RunTestState.WAIT))
+            {
+                if (pageActive == PageActive.AutoPage)
+                {
+                    IsTestting = true;
+                    DiagLog.Write("START_REQ", "→ IsTestting=true");
+                }
+            }
+            else
+            {
+                DiagLog.Write("START_REQ", "ignored - machine not waiting for a press");
+            }
+        }
+
+
+        private void MachineIO_OnManualStartRequest(object sender, EventArgs e)
+        {
+            DiagLog.Write("MANUAL_START", $"IsTestting={IsTestting} IsloadModel={IsloadModel} page={pageActive} TestState={TestState}");
+            if (!IsTestting && IsloadModel)
+            {
+                if (pageActive == PageActive.ManualPage)
+                {
+                    IsTestting = true;
+                    DiagLog.Write("MANUAL_START", "→ IsTestting=true");
+                }
+            }
+        }
+    }
+}

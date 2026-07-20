@@ -146,6 +146,7 @@
     <Compile Include="Program\Boards\Program.cs" />
     <Compile Include="Program\DiagLog.cs" />
     <Compile Include="Program\Devices\ProgramDevices.cs" />
+    <Compile Include="Program\Devices\Program.cs" />
     <Compile Include="Program\FileManagement\FolderMap.cs" />
     <Compile Include="Program\FileManagement\ModelLoaded.cs" />
     <Compile Include="Program\FileManagement\Program.cs" />
