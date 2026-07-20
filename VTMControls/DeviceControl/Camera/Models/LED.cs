@@ -685,6 +685,10 @@ namespace VTMControls.DeviceControl
             Fill = new SolidColorBrush(Colors.Yellow),
         };
 
+        // Name caption drawn at the CENTRE of the probe - it shares the grid with the ellipse, so it is centred
+        // by construction. FontSize is recomputed as 50% of the probe diameter on every SetPosition, so it
+        // scales with the ROI. Hidden by default: it only appears while this probe (or, for an FND segment, its
+        // parent char) is selected - see SetCaption.
         [JsonIgnore]
         public Label Context = new Label()
         {
@@ -692,6 +696,7 @@ namespace VTMControls.DeviceControl
             Padding = new Thickness(0),
             FontSize = 2,
             Focusable = true,
+            Visibility = Visibility.Hidden,
             VerticalContentAlignment = VerticalAlignment.Center,
             HorizontalContentAlignment = HorizontalAlignment.Center,
         };
@@ -1017,6 +1022,24 @@ namespace VTMControls.DeviceControl
             Label.Height = rect.Height;
             elip.Width = System.Math.Max(0, rect.Width - 2);
             elip.Height = System.Math.Max(0, rect.Height - 2);
+            SyncCaptionFontSize();
+        }
+
+        // Caption text height = 50% of the probe diameter, so it keeps its proportion when Dir resizes the
+        // probe or a paste changes the layout. Driven from SetPosition, which every geometry change funnels
+        // through (Translate / SetGeometry / the Rect setter).
+        private void SyncCaptionFontSize()
+        {
+            double diameter = System.Math.Min(rect.Width, rect.Height);
+            Context.FontSize = System.Math.Max(1, diameter * 0.5);
+        }
+
+        // Show / hide the centre caption. Called per-probe for a standalone LED (only the clicked one) and for
+        // all 7 segments at once when their parent FND char is selected.
+        public void SetCaption(bool show)
+        {
+            Context.Visibility = show ? Visibility.Visible : Visibility.Hidden;
+            SyncCaptionFontSize();
         }
 
         public void TestImage(Mat source)

@@ -475,6 +475,16 @@ namespace VTMControls.DeviceControl
             DetectCaption.Visibility = (show && _Visibility == Visibility.Visible)
                 ? Visibility.Visible
                 : Visibility.Hidden;
+
+            // The 7 segment probes carry their own centre captions, and they follow the CHAR's selection - the
+            // operator selects a char, not an individual segment.
+            if (PointSegments?.LEDs != null)
+            {
+                foreach (var seg in PointSegments.LEDs)
+                {
+                    if (seg != null) seg.SetCaption(show);
+                }
+            }
         }
 
         // Move this char box by (dx, dy). Bypasses the bounds-guarded `Rect` property above - see LCD.Translate.

@@ -133,6 +133,56 @@ namespace VTMControls.DeviceControl
             {
                 Option.SetDataContext(tryCatchLCD);
                 ShowFndCaptionFor(null);   // selection moved off the FNDs - drop their caption
+                ShowLedCaptionFor(null);
+            }
+        }
+
+        // A standalone LED probe was clicked on the canvas: caption that one and clear every other probe, plus
+        // the FND captions, since the selection has moved.
+        private void SingleLed_Selected(object sender, EventArgs e)
+        {
+            ShowLedCaptionFor(sender as SingleLED);
+            ShowFndCaptionFor(null);
+        }
+
+        // Pass null to clear. Only the standalone LED family is touched here - the probes INSIDE an FND char are
+        // driven by that char's own selection (FND.SetCaption), never individually.
+        private void ShowLedCaptionFor(SingleLED selected)
+        {
+            if (LED == null) return;
+            foreach (var group in LED)
+            {
+                if (group?.LEDs == null) continue;
+                foreach (var led in group.LEDs)
+                {
+                    if (led != null) led.SetCaption(ReferenceEquals(led, selected));
+                }
+            }
+        }
+
+        // Clicking empty canvas deselects everything, so no caption is left on screen (VisionBuilder calls this
+        // from the canvas MouseDown - an ROI marks its own click Handled, so only bare-canvas clicks get here).
+        public void ClearSelection()
+        {
+            ShowFndCaptionFor(null);
+            ShowLedCaptionFor(null);
+        }
+
+        // Subscribe to every standalone probe's click. MUST be re-run whenever the model is (re)attached:
+        // loading a model REPLACES the LEDs collections, so any earlier subscription is left on discarded
+        // objects. Unsubscribe-then-subscribe keeps it idempotent, so calling it repeatedly is harmless.
+        public void WireLedSelection()
+        {
+            if (LED == null) return;
+            foreach (var group in LED)
+            {
+                if (group?.LEDs == null) continue;
+                foreach (var led in group.LEDs)
+                {
+                    if (led == null) continue;
+                    led.Sellected -= SingleLed_Selected;
+                    led.Sellected += SingleLed_Selected;
+                }
             }
         }
 

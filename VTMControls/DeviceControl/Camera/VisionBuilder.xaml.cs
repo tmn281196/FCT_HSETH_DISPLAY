@@ -53,6 +53,9 @@ namespace VTMControls.DeviceControl
                     {
                         item.SetParentCanvas(functionCanvas);
                     }
+                    // Re-subscribe here: loading a model replaces the LEDs collections, so the probe-click
+                    // subscriptions made earlier are on objects that were just thrown away.
+                    Models.WireLedSelection();
                 }
             }
         }
@@ -90,6 +93,9 @@ namespace VTMControls.DeviceControl
             {
                 Keyboard.ClearFocus();
                 FocusManager.SetFocusedElement(functionCanvas, null);
+                // Click landed on bare canvas, not on an ROI (every ROI marks its own MouseDown Handled), so
+                // this is a deselect: drop every caption.
+                Models?.ClearSelection();
             }
         }
 
@@ -117,6 +123,7 @@ namespace VTMControls.DeviceControl
             {
                 item.SetParentCanvas(functionCanvas);
             }
+            Models.WireLedSelection();
         }
     }
 }
