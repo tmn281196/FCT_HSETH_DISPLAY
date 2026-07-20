@@ -1563,22 +1563,18 @@ namespace VTMTester
 
         private FndShape _fndClipboard;
 
-        // The FND char the sub-tab strip is currently showing (FND1..FND7 -> index 0..6), on the selected board.
+        // The FND char box the operator has selected ON THE CANVAS - copy/paste points at the box on the image,
+        // not at whichever FND1..FND7 tab happens to be open. Null when nothing FND is selected (clicking bare
+        // canvas, or an LCD / LED probe, clears it).
         private FND SelectedFndChar()
         {
-            var m = VisionBuider?.Models;
-            if (m == null || m.FNDs == null) return null;
-            int b = SelectedBoardIndex();
-            int c = tabFndChars != null ? tabFndChars.SelectedIndex : -1;
-            if (b < 0 || c < 0 || c >= m.FNDs.Count) return null;
-            var col = m.FNDs[c];
-            return (col != null && b < col.Count) ? col[b] : null;
+            return VisionBuider?.Models?.SelectedFnd;
         }
 
         private void btnFndCopy_Click(object sender, RoutedEventArgs e)
         {
             var fnd = SelectedFndChar();
-            if (fnd == null) { txtFndClipboard.Text = "No FND selected"; return; }
+            if (fnd == null) { txtFndClipboard.Text = "Chua chon FND - bam vao 1 o FND tren anh"; return; }
             var segs = fnd.PointSegments?.LEDs;
             if (segs == null || segs.Count == 0) { txtFndClipboard.Text = "This FND has no segment"; return; }
 
@@ -1608,7 +1604,7 @@ namespace VTMTester
 
             _fndClipboard = shape;
             btnFndPaste.IsEnabled = true;
-            txtFndClipboard.Text = "Copied FND" + (tabFndChars.SelectedIndex + 1)
+            txtFndClipboard.Text = "Copied " + fnd.Name
                                  + "  (" + segs.Count + " segments, " + shape.Width + "x" + shape.Height + ")";
         }
 
@@ -1616,7 +1612,7 @@ namespace VTMTester
         {
             if (_fndClipboard == null) return;
             var fnd = SelectedFndChar();
-            if (fnd == null) { txtFndClipboard.Text = "No FND selected"; return; }
+            if (fnd == null) { txtFndClipboard.Text = "Chua chon FND - bam vao 1 o FND tren anh"; return; }
             var segs = fnd.PointSegments?.LEDs;
             if (segs == null || segs.Count == 0) { txtFndClipboard.Text = "This FND has no segment"; return; }
 
@@ -1641,7 +1637,7 @@ namespace VTMTester
                 dst.Intens = src.Intens;
             }
 
-            txtFndClipboard.Text = "Pasted into FND" + (tabFndChars.SelectedIndex + 1)
+            txtFndClipboard.Text = "Pasted into " + fnd.Name
                                  + "  (" + n + " segments) - remember to Save Model";
         }
 

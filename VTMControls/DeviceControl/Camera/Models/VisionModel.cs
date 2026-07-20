@@ -120,18 +120,25 @@ namespace VTMControls.DeviceControl
 
         }
 
+        // The FND char box currently selected ON THE CANVAS, or null when nothing FND is selected. This is what
+        // the FND copy/paste of shapes works on - the operator points at the box on the image rather than
+        // relying on which FND1..FND7 tab happens to be open.
+        public FND SelectedFnd { get; private set; }
+
         private void VisionModel_Selected(object sender, EventArgs e)
         {
             FND tryCatchFND = (sender as FND);
             if (tryCatchFND != null)
             {
                 Option.SetDataContext(tryCatchFND);
+                SelectedFnd = tryCatchFND;
                 ShowFndCaptionFor(tryCatchFND);
             }
             LCD tryCatchLCD = (sender as LCD);
             if (tryCatchLCD != null)
             {
                 Option.SetDataContext(tryCatchLCD);
+                SelectedFnd = null;
                 ShowFndCaptionFor(null);   // selection moved off the FNDs - drop their caption
                 ShowLedCaptionFor(null);
             }
@@ -142,6 +149,7 @@ namespace VTMControls.DeviceControl
         private void SingleLed_Selected(object sender, EventArgs e)
         {
             ShowLedCaptionFor(sender as SingleLED);
+            SelectedFnd = null;
             ShowFndCaptionFor(null);
         }
 
@@ -164,6 +172,7 @@ namespace VTMControls.DeviceControl
         // from the canvas MouseDown - an ROI marks its own click Handled, so only bare-canvas clicks get here).
         public void ClearSelection()
         {
+            SelectedFnd = null;
             ShowFndCaptionFor(null);
             ShowLedCaptionFor(null);
         }
