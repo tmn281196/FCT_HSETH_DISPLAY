@@ -1237,13 +1237,6 @@
                                 <TextBlock VerticalAlignment="Center" Text="Apply for All" />
                             </StackPanel>
                         </Button>
-                        <TextBlock
-                            x:Name="txtLedApplyInfo"
-                            Margin="0,2,0,0"
-                            HorizontalAlignment="Center"
-                            FontSize="10"
-                            Foreground="#607D8B"
-                            TextWrapping="Wrap" />
                         <!-- Copy the live LED reading into Condition1 (teach the expected value). -->
                         <Button Click="CopyLedValueToCondition1_Click" Margin="0,0,0,0" Padding="6,2"  Height="25"
                                 HorizontalAlignment="Center" Cursor="Hand" ToolTip="Copy this reading into Oper (the expected value for FND/LED/LCD)">

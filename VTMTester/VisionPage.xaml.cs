@@ -763,9 +763,32 @@ namespace VTMTester
                 if (picked.Column != null) _ledSelColumn = picked.Column;
                 var led = picked.Item as VTMControls.DeviceControl.SingleLED;
                 if (led != null) _ledSelRow = led;
-                if (txtLedApplyInfo != null && _ledSelColumn != null)
-                    txtLedApplyInfo.Text = "Da chon: " + _ledSelColumn.Header;
             }
+        }
+
+        // Feedback for Apply-for-All without a status line: flash the button green on success / red when the
+        // click was refused, then fade back to the template's default. The flash is written as a LOCAL value on
+        // the template's border, which outranks the style's hover/pressed triggers - otherwise the colour would
+        // be masked by the hover highlight, since the pointer is still on the button right after the click.
+        // ClearValue at the end hands the border back to the template so hover/press behave normally again.
+        private void FlashLedApplyButton(bool ok)
+        {
+            var bd = btnLedApplyAll?.Template?.FindName("bd", btnLedApplyAll) as Border;
+            if (bd == null) return;
+
+            var from = ok ? Color.FromRgb(0x2E, 0x7D, 0x32) : Color.FromRgb(0xC6, 0x28, 0x28);
+            var brush = new SolidColorBrush(from);
+            bd.Background = brush;
+
+            var fade = new System.Windows.Media.Animation.ColorAnimation
+            {
+                To = Color.FromRgb(0xFF, 0xFF, 0xFF),   // the template's resting background
+                BeginTime = TimeSpan.FromMilliseconds(180),
+                Duration = new Duration(TimeSpan.FromMilliseconds(700)),
+                FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop,
+            };
+            fade.Completed += (s, ev) => bd.ClearValue(Border.BackgroundProperty);
+            brush.BeginAnimation(SolidColorBrush.ColorProperty, fade);
         }
 
         private void waitCheckboxLED_Unchecked(object sender, RoutedEventArgs e)
@@ -1351,24 +1374,22 @@ namespace VTMTester
             var col = _ledSelColumn ?? cell.Column;
             if (src == null || col == null)
             {
-                txtLedApplyInfo.Text = "Chua chon o nao - bam vao 1 o trong bang truoc";
+                FlashLedApplyButton(false);
                 return;
             }
 
             string path = ((col as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding)?.Path?.Path;
             if (string.IsNullOrEmpty(path))
             {
-                txtLedApplyInfo.Text = "Cot nay khong ap duoc";
+                FlashLedApplyButton(false);
                 return;
             }
             if (path == "X" || path == "Y" || path == "Index")
             {
-                txtLedApplyInfo.Text = path + ": khong ap duoc (se don moi ROI ve 1 diem)";
+                FlashLedApplyButton(false);
                 return;
             }
 
-            string shown;
-            int n = 0;
             foreach (var item in LEDsData.Items)
             {
                 var led = item as VTMControls.DeviceControl.SingleLED;
@@ -1382,26 +1403,15 @@ namespace VTMTester
                     case "Intens": led.Intens = src.Intens; break;
                     case "Use": led.Use = src.Use; break;
                     default:
-                        txtLedApplyInfo.Text = path + ": khong ho tro";
+                        FlashLedApplyButton(false);
                         return;
                 }
-                n++;
-            }
-
-            switch (path)
-            {
-                case "Dir": shown = src.Dir.ToString(); break;
-                case "ON": shown = src.ON.ToString(); break;
-                case "OFF": shown = src.OFF.ToString(); break;
-                case "Thresh": shown = src.Thresh.ToString(); break;
-                case "Intens": shown = src.Intens.ToString(); break;
-                default: shown = src.Use.ToString(); break;
             }
 
             // ON / OFF are plain auto-properties with no PropertyChanged, so the grid will not repaint them by
             // itself - refresh once here so every broadcast column updates the same way.
             LEDsData.Items.Refresh();
-            txtLedApplyInfo.Text = path + " = " + shown + "  ap cho " + n + " ROI";
+            FlashLedApplyButton(true);
         }
 
         // Copy the live reading (already updated in realtime by the vision timer) into the selected step's
