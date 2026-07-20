@@ -38,8 +38,9 @@ namespace VTMBase
         public List<UUTPort> UUTs { get; set; }
         public Printer_QR Printer { get; set; }
 
-        // Sound processing (capture itself lives in ProgramDevices -> SoundTester.Mic)
-        public SoundTester SoundTester { get; set; } = new SoundTester();
+        // Sound processing. The mic hardware itself is SoundTester.Mic (a DeviceControl.Microphone);
+        // SoundTester on top of it is pure DSP / test logic.
+        public SoundTester SoundTester { get; set; }
 
         public ProgramDevices()
         {
@@ -84,6 +85,7 @@ namespace VTMBase
             };
 
             Printer = new Printer_QR();
+            SoundTester = new SoundTester();
         }
 
         // Close every port before re-checking communications. Ports whose device is not flagged "Use" in the
