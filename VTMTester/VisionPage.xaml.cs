@@ -743,11 +743,28 @@ namespace VTMTester
             Program.OnEditModelSave();
         }
 
+        // Last cell the operator picked in the LED grid. Remembered HERE rather than read from CurrentCell when
+        // Apply-for-All is clicked: pressing that button moves focus out of the grid, and CurrentCell is not a
+        // reliable record of the operator's pick once the grid has lost focus / committed an edit.
+        private DataGridColumn _ledSelColumn;
+
+        private VTMControls.DeviceControl.SingleLED _ledSelRow;
+
         private void LEDsData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             if (LEDsData.SelectedItem != null)
             {
                 LEDsData.ScrollIntoView(LEDsData.SelectedItem);
+            }
+
+            if (e.AddedCells != null && e.AddedCells.Count > 0)
+            {
+                var picked = e.AddedCells[0];
+                if (picked.Column != null) _ledSelColumn = picked.Column;
+                var led = picked.Item as VTMControls.DeviceControl.SingleLED;
+                if (led != null) _ledSelRow = led;
+                if (txtLedApplyInfo != null && _ledSelColumn != null)
+                    txtLedApplyInfo.Text = "Da chon: " + _ledSelColumn.Header;
             }
         }
 
@@ -1328,12 +1345,13 @@ namespace VTMTester
             LEDsData.CommitEdit(DataGridEditingUnit.Cell, true);
             LEDsData.CommitEdit(DataGridEditingUnit.Row, true);
 
+            // Prefer the cell remembered at selection time; fall back to CurrentCell.
             var cell = LEDsData.CurrentCell;
-            var src = cell.Item as VTMControls.DeviceControl.SingleLED;
-            var col = cell.Column;
+            var src = _ledSelRow ?? cell.Item as VTMControls.DeviceControl.SingleLED;
+            var col = _ledSelColumn ?? cell.Column;
             if (src == null || col == null)
             {
-                txtLedApplyInfo.Text = "Chon 1 o trong bang truoc";
+                txtLedApplyInfo.Text = "Chua chon o nao - bam vao 1 o trong bang truoc";
                 return;
             }
 
