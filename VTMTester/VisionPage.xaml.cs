@@ -1531,6 +1531,33 @@ namespace VTMTester
 
         private FndShape _fndClipboard;
 
+        // Name the selected FND char on the canvas: only that char gets a caption above its box, so the operator
+        // can tell which of the seven boxes the FND1..FND7 tab is editing. Same placement LCD uses for its
+        // detected string (FND.DetectCaption / SetCaption).
+        private void tabFndChars_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // A TabControl bubbles SelectionChanged from inner selectors (the grids); only react to our own.
+            if (!ReferenceEquals(e.OriginalSource, tabFndChars)) return;
+            RefreshFndCaptions();
+        }
+
+        private void RefreshFndCaptions()
+        {
+            var m = VisionBuider?.Models;
+            if (m == null || m.FNDs == null) return;
+            int sel = tabFndChars != null ? tabFndChars.SelectedIndex : -1;
+
+            for (int c = 0; c < m.FNDs.Count; c++)
+            {
+                var col = m.FNDs[c];
+                if (col == null) continue;
+                for (int b = 0; b < col.Count; b++)
+                {
+                    if (col[b] != null) col[b].SetCaption("FND" + (c + 1), c == sel);
+                }
+            }
+        }
+
         // The FND char the sub-tab strip is currently showing (FND1..FND7 -> index 0..6), on the selected board.
         private FND SelectedFndChar()
         {

@@ -204,6 +204,11 @@ namespace VTMControls.DeviceControl
             {
                 if (value != _Visibility) _Visibility = value;
                 Label.Visibility = value;
+
+                // A hidden box must not leave its caption floating over the image.
+                DetectCaption.Visibility = (_captionOn && value == Visibility.Visible)
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
                 if (_Visibility != Visibility.Visible)
                 {
                     LabelBotLeft.Visibility = value;
@@ -291,6 +296,24 @@ namespace VTMControls.DeviceControl
             Padding = new Thickness(0),
             Cursor = Cursors.SizeAll,
             VerticalContentAlignment = VerticalAlignment.Top,
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+        };
+
+        // Name caption drawn ABOVE the box, in exactly the spot LCD puts its detected string (see
+        // LCD.DetectCaption and SetPosition). Shown only for the FND char the operator has selected, so the
+        // canvas is not covered by seven labels at once. Starts hidden; SetCaption() drives it.
+        public Label DetectCaption = new Label()
+        {
+            Background = new SolidColorBrush(Colors.Transparent),
+            Foreground = new SolidColorBrush(Colors.White),
+            BorderThickness = new Thickness(0),
+            Padding = new Thickness(4, 0, 4, 0),
+            Height = 22,
+            FontSize = 13,
+            FontWeight = FontWeights.Bold,
+            IsHitTestVisible = false,
+            Visibility = Visibility.Hidden,
+            VerticalContentAlignment = VerticalAlignment.Center,
             HorizontalContentAlignment = HorizontalAlignment.Left,
         };
 
@@ -439,6 +462,19 @@ namespace VTMControls.DeviceControl
                     SetPosition();
                 }
             }
+        }
+
+        private bool _captionOn;
+
+        // Show / hide the name caption above this char box (VisionPage turns it on for the selected FND tab only).
+        // Never forces the caption visible while the box itself is hidden.
+        public void SetCaption(string text, bool show)
+        {
+            DetectCaption.Content = text ?? "";
+            _captionOn = show;
+            DetectCaption.Visibility = (show && _Visibility == Visibility.Visible)
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
 
         // Move this char box by (dx, dy). Bypasses the bounds-guarded `Rect` property above - see LCD.Translate.
@@ -718,6 +754,7 @@ namespace VTMControls.DeviceControl
             if (ParentCanvas != null)
             {
                 ParentCanvas.Children.Remove(Label);
+                ParentCanvas.Children.Remove(DetectCaption);
                 ParentCanvas.Children.Remove(LabelTopLeft);
                 ParentCanvas.Children.Remove(LabelTopMid);
                 ParentCanvas.Children.Remove(LabelTopRight);
@@ -735,6 +772,10 @@ namespace VTMControls.DeviceControl
 
             Canvas.SetTop(this.Label, rect.Y);
             Canvas.SetLeft(this.Label, rect.X);
+
+            // Caption sits just above the box, left-aligned with it - identical placement to LCD.DetectCaption.
+            Canvas.SetTop(this.DetectCaption, rect.Y - this.DetectCaption.Height);
+            Canvas.SetLeft(this.DetectCaption, rect.X);
 
             // Each handle sits OUTSIDE the box, touching the matching rect edge/corner (no overlap, no gap). Corner
             // handles meet the box at the corner point (e.g. top-left is shifted left by its width and up by its
@@ -765,6 +806,7 @@ namespace VTMControls.DeviceControl
             Canvas.SetLeft(this.LabelBotRight, rect.X + rect.Width);
 
             placeCanvas.Children.Add(Label);
+            placeCanvas.Children.Add(DetectCaption);
 
             placeCanvas.Children.Add(LabelTopLeft);
             placeCanvas.Children.Add(LabelTopMid);
@@ -1096,6 +1138,11 @@ namespace VTMControls.DeviceControl
         {
             Canvas.SetTop(this.Label, rect.Y);
             Canvas.SetLeft(this.Label, rect.X);
+
+            // Caption follows the box - same spot LCD.DetectCaption uses (just above it, left-aligned).
+            Canvas.SetTop(this.DetectCaption, rect.Y - this.DetectCaption.Height);
+            Canvas.SetLeft(this.DetectCaption, rect.X);
+
             // Sync the box size to rect HERE too. A move/resize that bypasses the Rect setter (Translate, X/Y setters)
             // left Label.Width stale, so the right/bottom handles - which read Label.Width - drifted off the corners.
             // Handles now key off rect (the single source of truth), identical to the SetParentCanvas block above.
