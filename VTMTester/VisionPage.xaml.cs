@@ -1312,6 +1312,80 @@ namespace VTMTester
             }
         }
 
+        // ---- Apply for All: broadcast the selected cell's value down its whole column ----
+        // Pick any cell in the LED grid (e.g. Thresh on row 2) and this writes that value into the SAME column of
+        // every other LED ROI. The grid is already SelectionUnit="Cell", so CurrentCell tells us both the row
+        // (the source ROI) and the column (which property to copy).
+        //
+        // Only the per-ROI TUNING columns can be broadcast. X and Y are refused ON PURPOSE: writing one ROI's
+        // coordinate into all of them stacks every ROI onto a single point - the exact way a bulk write wipes a
+        // model's layout - and Index is the row identity, not a setting.
+        private void btnLedApplyAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (LEDsData == null) return;
+
+            // Commit any in-progress cell edit first, otherwise we would broadcast the pre-edit value.
+            LEDsData.CommitEdit(DataGridEditingUnit.Cell, true);
+            LEDsData.CommitEdit(DataGridEditingUnit.Row, true);
+
+            var cell = LEDsData.CurrentCell;
+            var src = cell.Item as VTMControls.DeviceControl.SingleLED;
+            var col = cell.Column;
+            if (src == null || col == null)
+            {
+                txtLedApplyInfo.Text = "Chon 1 o trong bang truoc";
+                return;
+            }
+
+            string path = ((col as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding)?.Path?.Path;
+            if (string.IsNullOrEmpty(path))
+            {
+                txtLedApplyInfo.Text = "Cot nay khong ap duoc";
+                return;
+            }
+            if (path == "X" || path == "Y" || path == "Index")
+            {
+                txtLedApplyInfo.Text = path + ": khong ap duoc (se don moi ROI ve 1 diem)";
+                return;
+            }
+
+            string shown;
+            int n = 0;
+            foreach (var item in LEDsData.Items)
+            {
+                var led = item as VTMControls.DeviceControl.SingleLED;
+                if (led == null || ReferenceEquals(led, src)) continue;
+                switch (path)
+                {
+                    case "Dir": led.Dir = src.Dir; break;
+                    case "ON": led.ON = src.ON; break;
+                    case "OFF": led.OFF = src.OFF; break;
+                    case "Thresh": led.Thresh = src.Thresh; break;
+                    case "Intens": led.Intens = src.Intens; break;
+                    case "Use": led.Use = src.Use; break;
+                    default:
+                        txtLedApplyInfo.Text = path + ": khong ho tro";
+                        return;
+                }
+                n++;
+            }
+
+            switch (path)
+            {
+                case "Dir": shown = src.Dir.ToString(); break;
+                case "ON": shown = src.ON.ToString(); break;
+                case "OFF": shown = src.OFF.ToString(); break;
+                case "Thresh": shown = src.Thresh.ToString(); break;
+                case "Intens": shown = src.Intens.ToString(); break;
+                default: shown = src.Use.ToString(); break;
+            }
+
+            // ON / OFF are plain auto-properties with no PropertyChanged, so the grid will not repaint them by
+            // itself - refresh once here so every broadcast column updates the same way.
+            LEDsData.Items.Refresh();
+            txtLedApplyInfo.Text = path + " = " + shown + "  ap cho " + n + " ROI";
+        }
+
         // Copy the live reading (already updated in realtime by the vision timer) into the selected step's
         // Condition1 - a teach gesture: capture the current value as the expected one.
         private void CopyLedValueToCondition1_Click(object sender, RoutedEventArgs e)

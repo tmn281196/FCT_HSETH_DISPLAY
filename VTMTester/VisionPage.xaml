@@ -1216,7 +1216,31 @@
                             <Button Style="{StaticResource UseAllKey}" Click="LedUseNone_Click" ToolTip="Use no LED">
                                 <fa:IconBlock Icon="Square" FontSize="15" />
                             </Button>
+                            <!--  Broadcast the selected cell's value down its whole column (e.g. click Thresh on
+                                  row 2 -> every LED gets that Thresh). X / Y / Index are refused in code.  -->
+                            <Button
+                                x:Name="btnLedApplyAll"
+                                Width="112"
+                                Click="btnLedApplyAll_Click"
+                                Style="{StaticResource UseAllKey}"
+                                ToolTip="Chon 1 o (vd cot Thresh) roi bam - gia tri do se ap cho tat ca LED ROI. Cot X/Y/Index khong ap duoc.">
+                                <StackPanel Orientation="Horizontal">
+                                    <fa:IconBlock
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Icon="ArrowDown" />
+                                    <TextBlock VerticalAlignment="Center" Text="Apply for All" />
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
+                        <TextBlock
+                            x:Name="txtLedApplyInfo"
+                            Margin="0,2,0,0"
+                            HorizontalAlignment="Center"
+                            FontSize="10"
+                            Foreground="#607D8B"
+                            TextWrapping="Wrap" />
                         <!-- Copy the live LED reading into Condition1 (teach the expected value). -->
                         <Button Click="CopyLedValueToCondition1_Click" Margin="0,0,0,0" Padding="6,2"  Height="25"
                                 HorizontalAlignment="Center" Cursor="Hand" ToolTip="Copy this reading into Oper (the expected value for FND/LED/LCD)">
