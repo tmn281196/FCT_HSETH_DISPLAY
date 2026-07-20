@@ -149,8 +149,6 @@
     <Compile Include="Program\Devices\Program.cs" />
     <Compile Include="Program\FileManagement\FolderMap.cs" />
     <Compile Include="Program\FileManagement\ModelLoaded.cs" />
-    <Compile Include="Program\FileManagement\Program.cs" />
-    <Compile Include="Program\ModelBuilder\Program.cs" />
     <Compile Include="Program\ModelTester\Program.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Program\StepViewer.xaml.cs">
