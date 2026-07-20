@@ -150,9 +150,8 @@ namespace VTMControls.DeviceControl
                 for (int b = 0; b < col.Count; b++)
                 {
                     var fnd = col[b];
-                    // "Fnd1", not the all-caps "FND1" the model's Name uses - the caption sits on the image and
-                    // all-caps reads as shouting there.
-                    if (fnd != null) fnd.SetCaption("Fnd" + (c + 1), ReferenceEquals(fnd, selected));
+                    // All-caps "FND1", matching the model's own Name (FND.cs sets Name = "FND" + index).
+                    if (fnd != null) fnd.SetCaption("FND" + (c + 1), ReferenceEquals(fnd, selected));
                 }
             }
         }
