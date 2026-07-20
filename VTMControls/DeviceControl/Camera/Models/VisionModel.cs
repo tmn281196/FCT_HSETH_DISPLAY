@@ -126,12 +126,32 @@ namespace VTMControls.DeviceControl
             if (tryCatchFND != null)
             {
                 Option.SetDataContext(tryCatchFND);
-
+                ShowFndCaptionFor(tryCatchFND);
             }
             LCD tryCatchLCD = (sender as LCD);
             if (tryCatchLCD != null)
             {
                 Option.SetDataContext(tryCatchLCD);
+                ShowFndCaptionFor(null);   // selection moved off the FNDs - drop their caption
+            }
+        }
+
+        // Name the FND char that was just clicked on the canvas ("FND1".."FND7") and clear every other one, so
+        // exactly one caption is on screen. Coordinated here because a char cannot see its siblings; this class
+        // already owns the list and is already the single subscriber of every ROI's Selected event.
+        // Pass null to clear them all. Caption placement matches LCD's detected string - see FND.DetectCaption.
+        private void ShowFndCaptionFor(FND selected)
+        {
+            if (FNDs == null) return;
+            for (int c = 0; c < FNDs.Count; c++)
+            {
+                var col = FNDs[c];
+                if (col == null) continue;
+                for (int b = 0; b < col.Count; b++)
+                {
+                    var fnd = col[b];
+                    if (fnd != null) fnd.SetCaption("FND" + (c + 1), ReferenceEquals(fnd, selected));
+                }
             }
         }
 

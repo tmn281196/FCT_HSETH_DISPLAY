@@ -342,7 +342,6 @@
 
                     <TabControl
                         x:Name="tabFndChars"
-                        SelectionChanged="tabFndChars_SelectionChanged"
                         Grid.Row="1"
                         Grid.Column="1"
                         Grid.ColumnSpan="2"
