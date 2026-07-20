@@ -1033,14 +1033,17 @@
                         </TabItem>
                     </TabControl>
                     <StackPanel Grid.Row="0" Margin="5,5,5,5" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <!--  Width follows the reading; 5px padding each side.  -->
+                        <!--  Width follows the reading (MinWidth 80 so it never collapses when empty), fixed
+                              height 25, 5px padding each side, text centred both ways. Same as LCD / LED.  -->
                         <Label
+                            x:Name="lbMatrixPointValue"
+                            MinWidth="80"
+                            Height="25"
+                            Padding="5,0"
                             Foreground="White"
                             Background="Black"
-                            Padding="5,0"
-                            Height="25"
-                            x:Name="lbMatrixPointValue"
                             HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Content=""
@@ -1220,11 +1223,14 @@
                     <StackPanel Grid.Row="0" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
                         <!--  Width follows the reading; 5px padding each side.  -->
                         <Label
+                            x:Name="lbLEDvalue"
+                            MinWidth="80"
+                            Height="25"
                             Padding="5,0"
                             Foreground="White"
                             Background="Black"
-                            x:Name="lbLEDvalue"
                             HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Content=""
