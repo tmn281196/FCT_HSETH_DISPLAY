@@ -15,7 +15,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <!--  Crop image takes whatever is left, so it is bounded VERTICALLY as well. With Auto here the row
+                  grew to the bitmap's own height (only the width was constrained), so a crop taller than the
+                  panel simply ran off the bottom instead of fitting.  -->
+            <RowDefinition Height="*" MinHeight="60" />
         </Grid.RowDefinitions>
 
         <!-- Header: component name, live detect / expected string, pass-fail dot -->
@@ -43,10 +46,15 @@
      
         </Grid>
 
+        <!--  Uniform = scale to fit the cell in BOTH directions, keeping the aspect ratio, so the crop always sits
+              fully inside the panel and re-fits by itself whenever the window / tab is resized.  -->
         <Image
             Grid.Row="2"
-            Margin="0 5"
-            Source="{Binding CropImage}" />
+            Margin="0,5"
+            RenderOptions.BitmapScalingMode="HighQuality"
+            Source="{Binding CropImage}"
+            Stretch="Uniform"
+            StretchDirection="Both" />
 
         <!-- Parameters: label in a fixed left column, control right-aligned - everything lines up. -->
         <Grid Grid.Row="1" >
