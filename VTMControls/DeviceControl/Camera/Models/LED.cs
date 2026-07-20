@@ -330,6 +330,26 @@ namespace VTMControls.DeviceControl
             OnPropertyChanged("Rect");
         }
 
+        // Set position AND size in one shot. Like Translate() this writes `rect` directly instead of going
+        // through the bounds-guarded Rect property, which silently DROPS a value whose box would fall outside
+        // the parent canvas - and unlike the Width/Height setters (which route through Rect) it also keeps the
+        // _x/_y/_w/_h caches in sync, so the grid and any later Translate() read the real numbers.
+        // Used by the FND copy/paste of segment layouts.
+        public void SetGeometry(double x, double y, double w, double h)
+        {
+            rect = new Rect(Math.Round(x, 2), Math.Round(y, 2), Math.Round(w, 2), Math.Round(h, 2));
+            _x = rect.X;
+            _y = rect.Y;
+            _w = rect.Width;
+            _h = rect.Height;
+            SetPosition();
+            OnPropertyChanged("X");
+            OnPropertyChanged("Y");
+            OnPropertyChanged("Width");
+            OnPropertyChanged("Height");
+            OnPropertyChanged("Rect");
+        }
+
         private double _w;
 
         public double Width

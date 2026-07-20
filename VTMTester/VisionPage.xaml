@@ -295,6 +295,50 @@
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
 
+                    <!--  Copy / paste one char's SHAPE onto another: the FND width+height, the 7 segment ROIs as
+                          offsets RELATIVE to the char box (plus each segment's Dir/On/Off/Thresh/Intens).
+                          Absolute positions are never copied - the target char stays exactly where it is.  -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Margin="3,0,5,4"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="btnFndCopy"
+                            Width="92"
+                            Click="btnFndCopy_Click"
+                            Style="{StaticResource UseAllKey}"
+                            ToolTip="Copy thong so cua FND dang chon (Width/Height + bo cuc 7 segment + tham so do)">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconBlock
+                                    Margin="0,0,5,0"
+                                    FontSize="13"
+                                    Icon="Copy" />
+                                <TextBlock VerticalAlignment="Center" Text="Copy" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="btnFndPaste"
+                            Width="92"
+                            Click="btnFndPaste_Click"
+                            IsEnabled="False"
+                            Style="{StaticResource UseAllKey}"
+                            ToolTip="Dan vao FND dang chon - giu nguyen vi tri tuyet doi cua FND dich">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconBlock
+                                    Margin="0,0,5,0"
+                                    FontSize="13"
+                                    Icon="Paste" />
+                                <TextBlock VerticalAlignment="Center" Text="Paste" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock
+                            x:Name="txtFndClipboard"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            Foreground="#607D8B" />
+                    </StackPanel>
 
                     <TabControl
                         x:Name="tabFndChars"

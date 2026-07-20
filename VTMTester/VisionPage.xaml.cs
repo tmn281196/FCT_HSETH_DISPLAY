@@ -1382,6 +1382,117 @@ namespace VTMTester
         // (removed FND_Use_HeaderCheckBox_Checked/_Unchecked - the per-char header checkboxes they served were
         //  replaced by the FndUseAll/FndUseNone buttons above.)
 
+        // ---- Copy / paste one FND char's shape onto another (FND1..FND7 sub-tabs) ----
+        // Copied: the char box Width/Height, and per segment its offset RELATIVE to the char box origin, its
+        // size, and its detection params (Dir/ON/OFF/Thresh/Intens).
+        // NOT copied: any absolute coordinate. Paste keeps the target char exactly where it sits and rebuilds
+        // its segments around its OWN origin - that is the point, the digits sit side by side on the panel.
+        // `Use` is deliberately left alone: it is driven by the per-char header checkbox / Use-all buttons, and
+        // silently enabling or disabling the target's segments on a paste would be a nasty surprise.
+        private class FndShape
+        {
+            public double Width;
+            public double Height;
+            public SegShape[] Segments;
+
+            public class SegShape
+            {
+                public double Dx;   // offset from the char box origin, not an absolute coordinate
+                public double Dy;
+                public double W;
+                public double H;
+                public int Dir;
+                public int On;
+                public int Off;
+                public int Thresh;
+                public int Intens;
+            }
+        }
+
+        private FndShape _fndClipboard;
+
+        // The FND char the sub-tab strip is currently showing (FND1..FND7 -> index 0..6), on the selected board.
+        private FND SelectedFndChar()
+        {
+            var m = VisionBuider?.Models;
+            if (m == null || m.FNDs == null) return null;
+            int b = SelectedBoardIndex();
+            int c = tabFndChars != null ? tabFndChars.SelectedIndex : -1;
+            if (b < 0 || c < 0 || c >= m.FNDs.Count) return null;
+            var col = m.FNDs[c];
+            return (col != null && b < col.Count) ? col[b] : null;
+        }
+
+        private void btnFndCopy_Click(object sender, RoutedEventArgs e)
+        {
+            var fnd = SelectedFndChar();
+            if (fnd == null) { txtFndClipboard.Text = "No FND selected"; return; }
+            var segs = fnd.PointSegments?.LEDs;
+            if (segs == null || segs.Count == 0) { txtFndClipboard.Text = "This FND has no segment"; return; }
+
+            var shape = new FndShape
+            {
+                Width = fnd.rect.Width,
+                Height = fnd.rect.Height,
+                Segments = new FndShape.SegShape[segs.Count],
+            };
+            for (int i = 0; i < segs.Count; i++)
+            {
+                var s = segs[i];
+                shape.Segments[i] = new FndShape.SegShape
+                {
+                    // Relative to the char box origin - this is what makes the paste position-independent.
+                    Dx = s.rect.X - fnd.rect.X,
+                    Dy = s.rect.Y - fnd.rect.Y,
+                    W = s.rect.Width,
+                    H = s.rect.Height,
+                    Dir = s.Dir,
+                    On = s.ON,
+                    Off = s.OFF,
+                    Thresh = s.Thresh,
+                    Intens = s.Intens,
+                };
+            }
+
+            _fndClipboard = shape;
+            btnFndPaste.IsEnabled = true;
+            txtFndClipboard.Text = "Copied FND" + (tabFndChars.SelectedIndex + 1)
+                                 + "  (" + segs.Count + " segments, " + shape.Width + "x" + shape.Height + ")";
+        }
+
+        private void btnFndPaste_Click(object sender, RoutedEventArgs e)
+        {
+            if (_fndClipboard == null) return;
+            var fnd = SelectedFndChar();
+            if (fnd == null) { txtFndClipboard.Text = "No FND selected"; return; }
+            var segs = fnd.PointSegments?.LEDs;
+            if (segs == null || segs.Count == 0) { txtFndClipboard.Text = "This FND has no segment"; return; }
+
+            // Read the target's own origin BEFORE resizing, and never write it back - the target keeps its place.
+            double ox = fnd.rect.X;
+            double oy = fnd.rect.Y;
+
+            // SetSize / SetGeometry write `rect` directly: the Rect property would silently drop values whose box
+            // reaches the canvas edge, which is exactly how a bulk apply tears a layout apart.
+            fnd.SetSize(_fndClipboard.Width, _fndClipboard.Height);
+
+            int n = Math.Min(segs.Count, _fndClipboard.Segments.Length);
+            for (int i = 0; i < n; i++)
+            {
+                var src = _fndClipboard.Segments[i];
+                var dst = segs[i];
+                dst.SetGeometry(ox + src.Dx, oy + src.Dy, src.W, src.H);
+                dst.Dir = src.Dir;
+                dst.ON = src.On;
+                dst.OFF = src.Off;
+                dst.Thresh = src.Thresh;
+                dst.Intens = src.Intens;
+            }
+
+            txtFndClipboard.Text = "Pasted into FND" + (tabFndChars.SelectedIndex + 1)
+                                 + "  (" + n + " segments) - remember to Save Model";
+        }
+
         private ScaleTransform scaleTransform;
         private TranslateTransform translateTransform;
         private const double MinScale = 1.0;

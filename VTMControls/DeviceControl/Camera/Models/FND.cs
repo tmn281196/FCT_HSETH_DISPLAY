@@ -452,6 +452,19 @@ namespace VTMControls.DeviceControl
             OnPropertyChanged("Rect");
         }
 
+        // Resize the char box IN PLACE - keeps X/Y, changes only Width/Height. Writes `rect` directly for the
+        // same reason Translate() does: the Rect property would silently drop the value when the resized box
+        // reaches the canvas edge. Label is resized too, exactly like the Rect setter does.
+        // NOTE like Translate this touches the BOX only; PointSegments are independent absolute coordinates.
+        public void SetSize(double w, double h)
+        {
+            rect = new Rect(rect.X, rect.Y, System.Math.Round(w, 2), System.Math.Round(h, 2));
+            Label.Width = rect.Width;
+            Label.Height = rect.Height;
+            SetPosition();
+            OnPropertyChanged("Rect");
+        }
+
         private string name;
 
         public string Name
