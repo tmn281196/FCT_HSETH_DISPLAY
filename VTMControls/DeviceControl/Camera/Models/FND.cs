@@ -311,7 +311,6 @@ namespace VTMControls.DeviceControl
             Padding = new Thickness(5, 0, 5, 0),
             Height = 22,
             FontSize = 13,
-            FontWeight = FontWeights.Bold,
             IsHitTestVisible = false,
             Visibility = Visibility.Hidden,
             VerticalContentAlignment = VerticalAlignment.Center,
