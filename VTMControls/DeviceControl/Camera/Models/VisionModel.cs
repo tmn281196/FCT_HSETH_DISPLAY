@@ -256,6 +256,34 @@ namespace VTMControls.DeviceControl
             LCDs[0].TestImage(ocr, mat);
         }
 
+        // Wipe every detected string so a test step can only ever match a value produced during THIS run.
+        // Nothing else clears LCD.DetectedString - it holds the last OCR result indefinitely. That was harmless
+        // while OCR ran continuously (the value tracked whatever the camera saw), but now that vision only runs
+        // during a test, the previous board's reading survives into the next run: a step that samples it before
+        // the first fresh OCR result lands would pass on the PREVIOUS board's display. Call this when vision
+        // starts for a run.
+        public void ClearDetected()
+        {
+            if (LCDs != null)
+            {
+                foreach (var lcd in LCDs)
+                {
+                    if (lcd != null) lcd.DetectedString = string.Empty;
+                }
+            }
+            if (FNDs != null)
+            {
+                foreach (var fnds_char in FNDs)
+                {
+                    if (fnds_char == null) continue;
+                    foreach (var fnd in fnds_char)
+                    {
+                        if (fnd != null) fnd.DetectedString = string.Empty;
+                    }
+                }
+            }
+        }
+
 
         public void GetGLEDSampleImage(Mat mat)
         {

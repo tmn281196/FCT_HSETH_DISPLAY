@@ -655,11 +655,20 @@ namespace VTMTester
 
         // Vision runs only while a test is actually in progress. The readout therefore freezes between runs -
         // that is the intended trade: it is what stops OCR from burning a core while the machine waits.
+        private bool _visionLive;
+
         private void SyncVisionTimers()
         {
             bool live = _autoPageVisible && (Program?.IsTestting ?? false);
+            if (live == _visionLive) return;   // only act on a transition
+            _visionLive = live;
+
             if (live)
             {
+                // Drop the previous run's readings BEFORE the timers restart. Vision no longer runs between
+                // tests, so without this the LCD still holds the last board's OCR result and a step could match
+                // it before the first fresh result of this run arrives - passing on the previous board.
+                Program?.VisionTester?.Models?.ClearDetected();
                 GetFNDImageSampleTimer.Start();
                 GetLCDSampleTimer.Start();
             }
