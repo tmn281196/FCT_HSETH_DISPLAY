@@ -72,12 +72,31 @@ namespace VTMControls.DeviceControl.VisionTest
         // lower it if the UI still stutters during a test. It is a throughput/latency dial, nothing more.
         private const int OcrCpuThreads = 2;
 
+        // How many input SHAPES MKL-DNN keeps reordered conv weights for, per engine.
+        //
+        // This is a memory dial, and an expensive one: each cached shape holds a reordered copy of the model's
+        // conv weights, and the app builds one engine PER PAGE (AutoPage, ManualPage, VisionPage each own an
+        // OCR), none of which is ever released - OCR.Dispose() is deliberately a no-op. So the cache cost is
+        // multiplied by three and never shrinks.
+        //
+        // Verified by reflecting the referenced build: Sdcb.PaddleInference 3.0.1 / net45 defaults this to 10,
+        // where 2.5.0.1 defaulted to 1 - i.e. upgrading silently allowed 10x the cached layouts per engine.
+        // (Reflect the net45 assembly specifically: the netstandard2.0 / net6.0 builds in the same package
+        // report different defaults, and .NET will not load two versions of one assembly name in a process.)
+        //
+        // 2 is plenty here: LCD.GetOrCreateQueue pins each engine to one worker thread that only ever sees that
+        // page's ROI, so in steady state there is a single shape - the spare slot just absorbs a ROI being
+        // retuned on VisionPage without forcing a reorder every frame.
+        private const int OcrMkldnnCacheCapacity = 2;
+
         private static PaddleOcrAll BuildEngine()
         {
-            // NOTE: only the thread count is set. MKL-DNN stays ENABLED and cacheCapacity keeps its default -
-            // disabling MKL-DNN was tried before and is NOT what fixed the "Filter tensor's layout should be
-            // ONEDNN" crash (a native/managed version mismatch was), so leave both alone.
-            return new PaddleOcrAll(LocalFullModels.EnglishV4, PaddleDevice.Mkldnn(cpuMathThreadCount: OcrCpuThreads))
+            // NOTE: MKL-DNN stays ENABLED. Disabling it was tried before and is NOT what fixed the "Filter
+            // tensor's layout should be ONEDNN" crash (a native/managed version mismatch was), so only the two
+            // sizing knobs are set here.
+            return new PaddleOcrAll(
+                LocalFullModels.EnglishV4,
+                PaddleDevice.Mkldnn(cacheCapacity: OcrMkldnnCacheCapacity, cpuMathThreadCount: OcrCpuThreads))
             {
                 // LCD/FND text is horizontal and fixed-orientation, so don't let the detector hunt for rotated
                 // boxes or flip 180 - that only adds mis-reads (and time) on a display that never rotates.
