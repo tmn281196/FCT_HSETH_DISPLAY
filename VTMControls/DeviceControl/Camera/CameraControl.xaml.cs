@@ -46,6 +46,16 @@ namespace VTMControls.DeviceControl
         private Mat _prevFrame1, _prevFrame2;
         private Mat _LastMatFrame;
 
+        // The preview is refreshed every Nth captured frame (3 -> ~11 fps at the 30 ms capture cadence).
+        // ToBitmapSource() colour-converts AND allocates a whole 1080p bitmap; at the full capture rate that was
+        // by far the most expensive thing in the loop (~200 MB/s of allocation, all of it GC pressure) and it
+        // ran from app start whether or not a test was in progress. The operator only needs the preview to line
+        // the board up in the jig, which 11 fps does fine. LastMatFrame - what the vision timers actually
+        // measure from - still updates on EVERY cycle, so throttling this cannot make a test read a stale frame.
+        private const int PreviewEveryNthFrame = 3;
+
+        private int _previewSkip;
+
         public Mat LastMatFrame
         {
             get { return _LastMatFrame; }
@@ -166,9 +176,11 @@ namespace VTMControls.DeviceControl
 
                         videoCapture.BufferSize = 1;
                         videoCapture.FourCC = "MJPG";
-                        // Turn OFF auto white balance so a manual WhiteBalanceBlueU write actually sticks. With AutoWB
-                        // on, the driver ignores the manual value and Get() reports the auto-computed one (e.g. set=617
-                        // read back 300). A test rig wants a fixed WB from the model, not a scene-driven auto value.
+                        // Turn OFF auto white balance so a manual WBTemperature write actually sticks. With AutoWB
+                        // on, the driver ignores the manual value and Get() reports the auto-computed one. A test rig
+                        // wants a fixed WB from the model, not a scene-driven auto value.
+                        // NOTE: WBTemperature is Kelvin (~2000-10000). WhiteBalanceBlueU is a different property -
+                        // blue-channel gain in device units - which is why it used to read back ~300 for a set of 617.
                         videoCapture.Set(VideoCaptureProperties.AutoWB, 0);
                         //videoCapture.Set(VideoCaptureProperties.Settings, 1);
 
@@ -248,9 +260,14 @@ namespace VTMControls.DeviceControl
                                 _prevFrame1 = _LastMatFrame;
                                 _LastMatFrame = frame.Clone();
 
-                                var bi = frame.ToBitmapSource();
-                                bi.Freeze();
-                                LastFrame = bi;
+                                // Measurement data (above) every cycle; preview (below) only every Nth.
+                                if (++_previewSkip >= PreviewEveryNthFrame)
+                                {
+                                    _previewSkip = 0;
+                                    var bi = frame.ToBitmapSource();
+                                    bi.Freeze();
+                                    LastFrame = bi;
+                                }
                             }
                             videoCapture.Grab();
                         }
@@ -389,7 +406,7 @@ namespace VTMControls.DeviceControl
 
                 case VideoProperties.WhiteBalance:
                     //videoCapture.Set(VideoCaptureProperties.WhiteBalanceBlueU, Value);
-                    videoCapture.Set(VideoCaptureProperties.WhiteBalanceBlueU, Value);
+                    videoCapture.Set(VideoCaptureProperties.WBTemperature, Value);
                     break;
 
                 case VideoProperties.Sharpness:
@@ -446,7 +463,7 @@ namespace VTMControls.DeviceControl
                     break;
 
                 case VideoProperties.WhiteBalance:
-                    videoCapture.Set(VideoCaptureProperties.WhiteBalanceBlueU, Value);
+                    videoCapture.Set(VideoCaptureProperties.WBTemperature, Value);
                     cameraSetting.WBTemperature = Value;
                     break;
 
@@ -503,7 +520,7 @@ namespace VTMControls.DeviceControl
                 case VideoProperties.WhiteBalance:
                     // Read the SAME property the slider/queue writes (WBTemperature), not WhiteBalanceBlueU - otherwise
                     // "write setting" and "read setting" disagree (they were two different camera controls).
-                    return (int)videoCapture.Get(VideoCaptureProperties.WhiteBalanceBlueU);
+                    return (int)videoCapture.Get(VideoCaptureProperties.WBTemperature);
 
                 case VideoProperties.Sharpness:
                     return (int)videoCapture.Sharpness;
@@ -537,7 +554,7 @@ namespace VTMControls.DeviceControl
 
                 videoCapture.Saturation = cameraSetting.Saturation;
 
-                videoCapture.Set(VideoCaptureProperties.WhiteBalanceBlueU, cameraSetting.WBTemperature);   // match the slider/read path
+                videoCapture.Set(VideoCaptureProperties.WBTemperature, cameraSetting.WBTemperature);   // match the slider/read path
 
                 videoCapture.Sharpness = cameraSetting.Sharpness;
 
@@ -567,7 +584,9 @@ namespace VTMControls.DeviceControl
 
             cameraSetting.Saturation = (int)videoCapture.Saturation;
 
-            cameraSetting.WBTemperature = (int)videoCapture.Get(VideoCaptureProperties.WhiteBalanceBlueU);
+            // WBTemperature (Kelvin), NOT WhiteBalanceBlueU (blue-channel gain, device units) - reading the gain
+            // here would drop a ~300 into a field the slider and Set() both treat as Kelvin.
+            cameraSetting.WBTemperature = (int)videoCapture.Get(VideoCaptureProperties.WBTemperature);
 
             cameraSetting.Sharpness = (int)videoCapture.Sharpness;
 
