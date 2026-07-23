@@ -61,9 +61,23 @@ namespace VTMControls.DeviceControl.VisionTest
             return bgr;   // either src itself, or the freshly converted Mat from EnsureBgr8U
         }
 
+        // How many CPU threads Paddle's math library may use per inference.
+        //
+        // PaddleDevice.Mkldnn defaults cpuMathThreadCount to 0, which means "decide for me" - Paddle then takes
+        // essentially every core. One OCR call would spread across all 8, and because the tester runs inference
+        // back to back for the length of a test, that pegged the whole machine while the WPF UI, the camera
+        // capture loop and the serial state machine were all trying to get scheduled too.
+        //
+        // Capping it leaves headroom for those. Raise this if OCR latency ever matters more than headroom;
+        // lower it if the UI still stutters during a test. It is a throughput/latency dial, nothing more.
+        private const int OcrCpuThreads = 2;
+
         private static PaddleOcrAll BuildEngine()
         {
-            return new PaddleOcrAll(LocalFullModels.EnglishV4, PaddleDevice.Mkldnn())
+            // NOTE: only the thread count is set. MKL-DNN stays ENABLED and cacheCapacity keeps its default -
+            // disabling MKL-DNN was tried before and is NOT what fixed the "Filter tensor's layout should be
+            // ONEDNN" crash (a native/managed version mismatch was), so leave both alone.
+            return new PaddleOcrAll(LocalFullModels.EnglishV4, PaddleDevice.Mkldnn(cpuMathThreadCount: OcrCpuThreads))
             {
                 // LCD/FND text is horizontal and fixed-orientation, so don't let the detector hunt for rotated
                 // boxes or flip 180 - that only adds mis-reads (and time) on a display that never rotates.
