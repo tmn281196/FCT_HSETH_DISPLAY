@@ -362,6 +362,7 @@ namespace VTMTester
 
             VisionPage.DisableLive();
             ManualPage.DisableLive();
+            SoundPage.DisableLive();
         }
 
 
@@ -488,6 +489,7 @@ namespace VTMTester
             VisionPage.DisableLive();
             AutoPage.DisableLive();
             ManualPage.DisableLive();
+            SoundPage.DisableLive();
 
             LastPageSelected = bt.Name;
             switch (bt.Name)
@@ -528,6 +530,7 @@ namespace VTMTester
                     btSoundPage.Background = new SolidColorBrush(Color.FromRgb(224, 224, 224));
                     SoundPageHolder.Visibility = Visibility.Visible;
                     SoundPage.RefreshStepList();
+                    SoundPage.EnableLive();
                     break;
 
                 case "btSettingPage":

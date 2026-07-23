@@ -98,7 +98,9 @@ namespace VTMTester
         {
             this.Dispatcher.Invoke(new Action(() =>
             {
-                btAutoRun.Content = Program.IsTestting ? "STOP" : "RUN"; 
+                btAutoRun.Content = Program.IsTestting ? "STOP" : "RUN";
+                // Start vision when the run starts, stop it when the run ends.
+                SyncVisionTimers();
             }
             ));
         }
@@ -633,17 +635,39 @@ namespace VTMTester
             finally { Interlocked.Exchange(ref _lcdProcessing, 0); }
         }
 
+        // True while AutoPage is the visible page. The vision timers need BOTH this and a running test:
+        // FND detection and (far more expensive) PaddleOCR used to run the whole time an operator sat on
+        // AutoPage, which is the normal idle screen - the OCR worker never went idle because inference takes
+        // longer than the 100 ms tick, so it just ran back to back forever.
+        private bool _autoPageVisible;
+
         public void EnableLive()
         {
-            GetFNDImageSampleTimer.Start();
-            GetLCDSampleTimer.Start();
+            _autoPageVisible = true;
+            SyncVisionTimers();
         }
 
         public void DisableLive()
         {
-            GetFNDImageSampleTimer.Stop();
-            GetLCDSampleTimer.Stop();
+            _autoPageVisible = false;
+            SyncVisionTimers();
+        }
 
+        // Vision runs only while a test is actually in progress. The readout therefore freezes between runs -
+        // that is the intended trade: it is what stops OCR from burning a core while the machine waits.
+        private void SyncVisionTimers()
+        {
+            bool live = _autoPageVisible && (Program?.IsTestting ?? false);
+            if (live)
+            {
+                GetFNDImageSampleTimer.Start();
+                GetLCDSampleTimer.Start();
+            }
+            else
+            {
+                GetFNDImageSampleTimer.Stop();
+                GetLCDSampleTimer.Stop();
+            }
         }
 
         private void ResultPannelHolder_PreviewMouseDown(object sender, MouseButtonEventArgs e)

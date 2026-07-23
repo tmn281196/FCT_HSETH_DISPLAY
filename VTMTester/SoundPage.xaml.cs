@@ -1057,7 +1057,28 @@ namespace VTMTester
         private void EnsureTestWatch()
         {
             if (!_testWatchWired) { _testWatchTimer.Tick += TestWatchTimer_Tick; _testWatchWired = true; }
-            _testWatchTimer.Start();
+            if (_soundPageVisible) _testWatchTimer.Start();
+        }
+
+        // True while SoundPage is the visible page. Both of this page's loops are pure display work, so neither
+        // has any business running while another page is up.
+        private bool _soundPageVisible;
+
+        public void EnableLive()
+        {
+            _soundPageVisible = true;
+            EnsureTestWatch();
+            // The render loop belongs to capture: resume it only if the mic is actually recording.
+            if (_program?.SoundTester?.Mic?.IsCapturing == true) _renderTimer.Start();
+        }
+
+        // Stops the page's two display loops. It deliberately does NOT stop the mic: capture is driven by the
+        // SND START/STOP steps and must keep running while the test does, whatever page is on screen.
+        public void DisableLive()
+        {
+            _soundPageVisible = false;
+            _testWatchTimer.Stop();
+            _renderTimer.Stop();
         }
         private void TestWatchTimer_Tick(object sender, EventArgs e)
         {
