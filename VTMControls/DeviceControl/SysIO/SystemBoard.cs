@@ -1,4 +1,4 @@
-﻿using VTMUtility;
+using VTMUtility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,30 +40,44 @@ namespace VTMControls.DeviceControl
         }
 
         // --- Human-readable annotation of a SYSTEM frame for the log (v2): [STX OPCODE KEY VALUE CRC ETX]. ---
+        // Fixed-width columns so the eye can scan straight down: a 3-char direction, the frame type, then
+        // SIGNAL=H/L. Signal names are all 3 chars, so the '=' lines up too.
+        //   OUT REQ    CUP=H   PC -> board : what we asked for
+        //   OUT ACK    CUP=H   board -> PC : "your frame arrived" (echoes the request, says nothing about the pin)
+        //   OUT VAL    CUP=L   board -> PC : the level the pin ACTUALLY took - here the interlock refused
+        //   IN  VAL    SDW=L   board -> PC : input state
+        private const int TagWidth = 11;
+
+        // Direction padded to 3 ("OUT"/"IN ") so the type word starts at the same column in every line.
+        private static string Tag(string dir, string type) => (dir.PadRight(3) + " " + type).PadRight(TagWidth);
+
         public static string AnnotateFrame(byte[] f, int n, bool isTx)
         {
             if (f == null || n < 6) return "";
             byte op = f[1], key = f[2];
-            string val = f[3] != 0 ? "1" : "0";
+            string val = f[3] != 0 ? "H" : "L";
             switch (op)
             {
-                case SystemComunication.CMD_INPUT: return "IN> " + InputName(key) + ":" + val;
-                case SystemComunication.CMD_OUTPUT: return "OUT> " + OutputName(key) + ":" + val;
-                case SystemComunication.CMD_ACK: return "ACK> " + OutputName(key) + ":" + val;
+                case SystemComunication.CMD_INPUT: return Tag("IN", "VAL") + InputName(key) + "=" + val;
+                case SystemComunication.CMD_OUTPUT: return Tag("OUT", "REQ") + OutputName(key) + "=" + val;
+                case SystemComunication.CMD_ACK: return Tag("OUT", "ACK") + OutputName(key) + "=" + val;
+                case SystemComunication.CMD_VAL: return Tag("OUT", "VAL") + OutputName(key) + "=" + val;
                 default: return "";
             }
         }
 
+        // All names are exactly 3 chars so the '=' lines up in the log. STA/STO are the buttons; STR is the
+        // top-right seating sensor - keep them distinct.
         private static string InputName(byte key)
         {
             switch (key)
             {
-                case SystemComunication.IN_SS_DOWN: return "SDOWN";
+                case SystemComunication.IN_SS_DOWN: return "SDW";
                 case SystemComunication.IN_SS_UP: return "SUP";
-                case SystemComunication.IN_BTN_START: return "START";
-                case SystemComunication.IN_BTN_STOP: return "STOP";
+                case SystemComunication.IN_BTN_START: return "STA";
+                case SystemComunication.IN_BTN_STOP: return "STO";
                 case SystemComunication.IN_SW_EMC: return "EMC";
-                case SystemComunication.IN_DOOR: return "DOOR";
+                case SystemComunication.IN_DOOR: return "DOR";
                 case SystemComunication.IN_SS_BF: return "SBF";
                 case SystemComunication.IN_SS_TF: return "STF";
                 case SystemComunication.IN_SS_BL: return "SBL";
@@ -78,13 +92,13 @@ namespace VTMControls.DeviceControl
         {
             switch (key)
             {
-                case SystemComunication.OUT_CLUP: return "CLUP";
-                case SystemComunication.OUT_AC110: return "AC110";
-                case SystemComunication.OUT_AC220: return "AC220";
+                case SystemComunication.OUT_CLUP: return "CUP";
+                case SystemComunication.OUT_AC110: return "110";
+                case SystemComunication.OUT_AC220: return "220";
                 case SystemComunication.OUT_LPR: return "LPR";
                 case SystemComunication.OUT_LPY: return "LPY";
                 case SystemComunication.OUT_LPG: return "LPG";
-                case SystemComunication.OUT_BZ: return "BZ";
+                case SystemComunication.OUT_BZ: return "BUZ";
                 default: return "K" + key.ToString("X2");
             }
         }
@@ -154,24 +168,29 @@ namespace VTMControls.DeviceControl
                 }
                 else if (op == SystemComunication.CMD_ACK)
                 {
-                    byte v = (byte)(on ? 1 : 0);
                     lock (_pendingLock)
                     {
-                        // The ACK carries the board's REAL pin state - the only trustworthy view of its outputs.
-                        // It also arrives unsolicited when the SDOWN interlock forces CLUP/AC low by itself.
-                        _boardOutputVal[key] = v;
-
-                        // ANY ack for this key proves the write ARRIVED, so stop retrying - even when the value
-                        // differs. A differing value is not a transport failure: it means the board deliberately
-                        // refused (interlock), and re-sending 10x would only spam a pointless REQUEST TIMEOUT for
-                        // a board that behaved correctly. The delta covers it instead - _boardOutputVal now holds
-                        // the board's real value, so the next SendControl re-sends by itself once it can take.
+                        // ACK means ONLY "the frame reached the board" - it echoes the value we asked for and says
+                        // nothing about the pin. So it settles the retry and MUST NOT touch _boardOutputVal: the
+                        // interlock may have driven the pin elsewhere, and caching the requested value here is
+                        // exactly what once made a PASS never raise the cylinder. The pin's real level arrives
+                        // separately as CMD_VAL (below), which is the only thing allowed to write the cache.
                         _pendingOut.Remove(key);
                     }
                 }
+                else if (op == SystemComunication.CMD_VAL)
+                {
+                    // The board drove this pin - whether we asked (applyOutput) or it acted alone (SDOWN
+                    // interlock). The value is the level the pin ACTUALLY took, so this is the single source of
+                    // truth for the delta and the only writer of _boardOutputVal. A CLUP:1 the interlock refused
+                    // arrives here as 0, so the next SendControl re-sends it by itself once the interlock lets go.
+                    // Deliberately does NOT touch _pendingOut: only the matching CMD_ACK settles a write.
+                    lock (_pendingLock) { _boardOutputVal[key] = (byte)(on ? 1 : 0); }
+                }
 
                 // Every valid frame is logged; identical consecutive lines collapse to "xN" in the log itself.
-                if (SerialPort.LogTxRx && (op == SystemComunication.CMD_INPUT || op == SystemComunication.CMD_ACK))
+                if (SerialPort.LogTxRx && (op == SystemComunication.CMD_INPUT || op == SystemComunication.CMD_ACK
+                                                                             || op == SystemComunication.CMD_VAL))
                     Debug.Rx(LogName, Slice(bytes, i, end));
 
                 i = end + 1;   // advance past this frame and keep scanning
@@ -209,17 +228,20 @@ namespace VTMControls.DeviceControl
             if (resend != null)
                 foreach (var r in resend)
                     SerialPort.SendBytes(SystemComunication.BuildFrame(SystemComunication.CMD_OUTPUT, r.Key, r.Value));
-            // Any ack - whatever its value - clears the pending, so reaching here means the board never answered
-            // AT ALL: a lost frame or a dead link. A board that merely refused the value is NOT reported here.
+            // The ACK is a pure transport receipt, so it arrives even when the interlock refused the value. Its
+            // absence therefore means one thing only: the board never received the frame AT ALL - a lost frame or
+            // a dead link. This warning is now unambiguous; a refusal shows up as CMD_VAL, never as a timeout.
             if (giveUp != null)
                 foreach (var g in giveUp)
-                    Debug.Write("SYS: REQUEST TIMEOUT " + OutputName(g.Key) + ":" + g.Value, Debug.ContentType.Warning);
+                    Debug.Write("SYS: REQUEST TIMEOUT " + OutputName(g.Key) + "=" + (g.Value != 0 ? "H" : "L"),
+                                Debug.ContentType.Warning);
         }
 
-        // What the BOARD last told us each output actually is (from its ACKs), NOT what we last sent.
-        // This distinction is the whole point: a send is optimistic - the board's SDOWN interlock can refuse it -
-        // so caching "what we sent" poisons the delta. Once a refused CLUP:1 was cached as 1, every later CLUP:1
-        // looked "unchanged" and was silently skipped, so a PASS would never raise the cylinder.
+        // What the BOARD last told us each output actually is (from its CMD_VAL frames), NOT what we last sent
+        // and NOT what its ACK echoed. This distinction is the whole point: a send is optimistic - the board's
+        // SDOWN interlock can refuse it - so caching "what we sent" poisons the delta. Once a refused CLUP:1 was
+        // cached as 1, every later CLUP:1 looked "unchanged" and was silently skipped, so a PASS would never
+        // raise the cylinder. Only the CMD_VAL branch may write this.
         // Guarded by _pendingLock (written from the serial RX thread, read by the state machine).
         // Clear it to force a full re-push (done on connect).
         private readonly Dictionary<byte, byte> _boardOutputVal = new Dictionary<byte, byte>();

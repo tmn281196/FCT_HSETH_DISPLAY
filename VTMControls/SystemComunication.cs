@@ -1,4 +1,4 @@
-﻿using VTMUtility;
+using VTMUtility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace VTMControls
         // ================= System-board protocol (v2) - one signal per frame =================
         // Fixed 6-byte frame:  [STX][OPCODE][KEY][VALUE][CRC][ETX]
         //   STX = 0x02, ETX = 0x03
-        //   OPCODE = CMD_INPUT / CMD_OUTPUT / CMD_ACK
+        //   OPCODE = CMD_INPUT / CMD_OUTPUT / CMD_ACK / CMD_VAL
         //   KEY    = which signal (IN_* / OUT_* below)
         //   VALUE  = 0 = OFF, non-zero = ON
         //   CRC    = XOR of STX ^ OPCODE ^ KEY ^ VALUE
@@ -26,7 +26,8 @@ namespace VTMControls
         public const byte ETX = 0x03;
         public const byte CMD_INPUT = 0x49;   // board -> PC : one input state (on change + periodic re-send)
         public const byte CMD_OUTPUT = 0x4F;  // PC -> board : one output to write
-        public const byte CMD_ACK = 0x41;     // board -> PC : echo of the output just set (confirmation)
+        public const byte CMD_ACK = 0x41;     // board -> PC : reply to a CMD_OUTPUT we sent (confirmation)
+        public const byte CMD_VAL = 0x53;     // board -> PC : the level a pin was actually driven to
 
         // Input keys (board -> PC). The current firmware only reports SS_DOWN + the two buttons; the rest are
         // reserved for when the seating/lock sensors get wired.

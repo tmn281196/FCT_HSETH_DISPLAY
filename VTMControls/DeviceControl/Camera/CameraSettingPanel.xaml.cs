@@ -178,7 +178,8 @@ namespace VTMControls.DeviceControl
 
             Capture.cameraSetting.Saturation = (int)Capture.videoCapture.Get(VideoCaptureProperties.Saturation);
 
-            Capture.cameraSetting.WBTemperature = (int)Capture.videoCapture.Get(VideoCaptureProperties.WhiteBalanceBlueU);
+            // WBTemperature (Kelvin), NOT WhiteBalanceBlueU (blue-channel gain, device units).
+            Capture.cameraSetting.WBTemperature = (int)Capture.videoCapture.Get(VideoCaptureProperties.WBTemperature);
 
             Capture.cameraSetting.Sharpness = (int)Capture.videoCapture.Get(VideoCaptureProperties.Sharpness);
 

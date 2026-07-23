@@ -170,7 +170,9 @@ namespace VTMUtility
             for (int i = 0; i < n; i++) { sb.Append(data[i].ToString("X2")); if (i < n - 1) sb.Append(' '); }
             sb.Append(FrameCrcOk(data, n) ? "  (CRC OK)" : "  (CRC NG)");
             var note = FrameAnnotator?.Invoke(dev, data, n, type == ContentType.Tx);
-            if (!string.IsNullOrEmpty(note)) sb.Append("  (").Append(note).Append(')');
+            // No brackets around the note: the annotators emit fixed-width columns, and wrapping them would
+            // shift every line's last column by one and undo the alignment.
+            if (!string.IsNullOrEmpty(note)) sb.Append("  ").Append(note);
             // "DEVICE >> FCT" / "DEVICE << FCT" prefix in the bright amber; the rest (bytes/CRC/note) in the dim amber.
             WriteFrameLine(dev + " " + dir, sb.ToString());
         }

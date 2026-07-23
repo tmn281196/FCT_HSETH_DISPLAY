@@ -260,7 +260,7 @@
                 x:Name="slWhite"
                 Grid.Row="4"
                 Grid.Column="1"
-                Maximum="1000"
+                Maximum="10000"
                 Minimum="0"
                 SmallChange="1"
                 Style="{StaticResource SliderStyle}"
