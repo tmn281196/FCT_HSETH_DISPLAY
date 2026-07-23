@@ -56,6 +56,27 @@ namespace VTMControls.DeviceControl
 
         private int _previewSkip;
 
+        // Guards the frame rotation below against CloneLastFrame(). Without it the capture loop can Dispose a Mat
+        // while a vision timer is still reading it, and OpenCV then reads freed native memory -> the app dies with
+        // AccessViolationException (0x80004003), which no catch can handle.
+        private readonly object _frameLock = new object();
+
+        // Hand a consumer its OWN copy of the latest frame. Callers must dispose it (use a `using`).
+        //
+        // Consumers used to take the LastMatFrame reference and run heavy OpenCV work on it from a timer thread,
+        // while this class disposed that same Mat three cycles (~90 ms) later. The old comment claimed consumers
+        // "finish well within that window" - they do not: the FND timer alone fires every 100 ms and processes up
+        // to 28 ROIs, and OCR takes far longer still. Saving a model made it much more likely by stalling those
+        // threads mid-read. Cloning under the lock means the source cannot be freed mid-copy, and the consumer
+        // then owns what it works on.
+        public Mat CloneLastFrame()
+        {
+            lock (_frameLock)
+            {
+                return _LastMatFrame?.Clone();
+            }
+        }
+
         public Mat LastMatFrame
         {
             get { return _LastMatFrame; }
@@ -252,13 +273,16 @@ namespace VTMControls.DeviceControl
                         {
                             if (frame != null && !frame.Empty())
                             {
-                                // Dispose frame from 3 cycles ago (~90ms old).
-                                // Current consumers (FND 100ms, LCD 500ms timers) finish
-                                // reading .Width/.Height well within that window.
-                                _prevFrame2?.Dispose();
-                                _prevFrame2 = _prevFrame1;
-                                _prevFrame1 = _LastMatFrame;
-                                _LastMatFrame = frame.Clone();
+                                // Rotate + dispose under the lock so this can never free a Mat that
+                                // CloneLastFrame() is copying. Consumers work on their own clone, so the
+                                // 3-deep rotation is now just a small reuse buffer, not a lifetime contract.
+                                lock (_frameLock)
+                                {
+                                    _prevFrame2?.Dispose();
+                                    _prevFrame2 = _prevFrame1;
+                                    _prevFrame1 = _LastMatFrame;
+                                    _LastMatFrame = frame.Clone();
+                                }
 
                                 // Measurement data (above) every cycle; preview (below) only every Nth.
                                 if (++_previewSkip >= PreviewEveryNthFrame)
@@ -600,12 +624,16 @@ namespace VTMControls.DeviceControl
         public void Dispose()
         {
             _cancellationTokenSource?.Cancel();
-            _prevFrame2?.Dispose();
-            _prevFrame1?.Dispose();
-            _LastMatFrame?.Dispose();
-            _prevFrame2 = null;
-            _prevFrame1 = null;
-            _LastMatFrame = null;
+            // Same lock as the capture loop: a vision timer may be mid-CloneLastFrame() as the page tears down.
+            lock (_frameLock)
+            {
+                _prevFrame2?.Dispose();
+                _prevFrame1?.Dispose();
+                _LastMatFrame?.Dispose();
+                _prevFrame2 = null;
+                _prevFrame1 = null;
+                _LastMatFrame = null;
+            }
         }
     }
 

@@ -269,12 +269,16 @@ namespace VTMTester
                     Program.VisionTester.LedFunctionUpdate();
                 }
 
-                var lastFrameToTest = camera.LastMatFrame;
-                if (lastFrameToTest == null)
+                // Own copy - the capture loop frees its frames a few cycles on, so reading its Mat directly is a
+                // use-after-free (AccessViolationException).
+                using (var lastFrameToTest = camera.CloneLastFrame())
                 {
-                    return;
+                    if (lastFrameToTest == null)
+                    {
+                        return;
+                    }
+                    Program.VisionTester.Models.GetLEDSampleImage(lastFrameToTest);
                 }
-                Program.VisionTester.Models.GetLEDSampleImage(lastFrameToTest);
                 manualTestOn = false;
             }
         }
@@ -484,11 +488,13 @@ namespace VTMTester
             if (Interlocked.CompareExchange(ref _fndProcessing, 1, 0) != 0) return;
             try
             {
-                var lastFrameToTest = camera.LastMatFrame;
-                if (lastFrameToTest == null) return;
-                Program.VisionTester.Models.GetFNDSampleImage(lastFrameToTest);
-                Program.VisionTester.Models.GetGLEDSampleImage(lastFrameToTest);
-                Program.VisionTester.Models.GetLEDSampleImage(lastFrameToTest);
+                using (var lastFrameToTest = camera.CloneLastFrame())
+                {
+                    if (lastFrameToTest == null) return;
+                    Program.VisionTester.Models.GetFNDSampleImage(lastFrameToTest);
+                    Program.VisionTester.Models.GetGLEDSampleImage(lastFrameToTest);
+                    Program.VisionTester.Models.GetLEDSampleImage(lastFrameToTest);
+                }
             }
             finally { Interlocked.Exchange(ref _fndProcessing, 0); }
         }
@@ -498,9 +504,11 @@ namespace VTMTester
             if (Interlocked.CompareExchange(ref _lcdProcessing, 1, 0) != 0) return;
             try
             {
-                var lastFrameToTest = camera.LastMatFrame;
-                if (lastFrameToTest == null) return;
-                Program.VisionTester.Models.GetLCDSampleImage(lastFrameToTest, ocr);
+                using (var lastFrameToTest = camera.CloneLastFrame())
+                {
+                    if (lastFrameToTest == null) return;
+                    Program.VisionTester.Models.GetLCDSampleImage(lastFrameToTest, ocr);
+                }
             }
             finally { Interlocked.Exchange(ref _lcdProcessing, 0); }
         }

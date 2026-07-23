@@ -175,9 +175,13 @@ namespace VTMTester
             if (Interlocked.CompareExchange(ref _lcdProcessing, 1, 0) != 0) return;
             try
             {
-                var lastFrame = Program.Capture?.LastMatFrame;
-                if (lastFrame == null) return;
-                Program.EditModel.VisionModels.GetLCDSampleImage(lastFrame, ocr);
+                // Own copy: the capture loop disposes its frames a few cycles on, so working on its Mat directly
+                // is a use-after-free (AccessViolationException) whenever this outlives ~90 ms.
+                using (var lastFrame = Program.Capture?.CloneLastFrame())
+                {
+                    if (lastFrame == null) return;
+                    Program.EditModel.VisionModels.GetLCDSampleImage(lastFrame, ocr);
+                }
             }
             finally { Interlocked.Exchange(ref _lcdProcessing, 0); }
         }
@@ -199,13 +203,17 @@ namespace VTMTester
             if (Interlocked.CompareExchange(ref _fndProcessing, 1, 0) != 0) return;
             try
             {
-                var lastFrame = Program.Capture?.LastMatFrame;
-                if (lastFrame == null) return;
+                // Own copy - see GetLCDImageSampleTimer_Elapsed. This block is the worst offender: up to 28 FND
+                // ROIs plus LED and GLED, comfortably longer than the capture loop's retention window.
+                using (var lastFrame = Program.Capture?.CloneLastFrame())
+                {
+                    if (lastFrame == null) return;
 
-                // Heavy OpenCV compute on ThreadPool
-                Program.EditModel.VisionModels.GetFNDSampleImage(lastFrame);
-                Program.EditModel.VisionModels.GetLEDSampleImage(lastFrame);
-                Program.EditModel.VisionModels.GetGLEDSampleImage(lastFrame);
+                    // Heavy OpenCV compute on ThreadPool
+                    Program.EditModel.VisionModels.GetFNDSampleImage(lastFrame);
+                    Program.EditModel.VisionModels.GetLEDSampleImage(lastFrame);
+                    Program.EditModel.VisionModels.GetGLEDSampleImage(lastFrame);
+                }
 
                 // Light UI label updates on UI thread
                 this.Dispatcher.BeginInvoke(new Action(() =>
@@ -1085,7 +1093,10 @@ namespace VTMTester
 
         private void btGetGLEDValue_Click(object sender, RoutedEventArgs e)
         {
-            Program.EditModel.VisionModels.GetGLEDSampleImage(Program.Capture?.LastMatFrame);
+            using (var frame = Program.Capture?.CloneLastFrame())
+            {
+                Program.EditModel.VisionModels.GetGLEDSampleImage(frame);
+            }
             int b = SelectedBoardIndex();
             if (b < 0) return;
             lbGLEDvalue.Content = Program.EditModel.VisionModels.GLED[b].CalculatorOutputString;
